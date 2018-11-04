@@ -25,94 +25,22 @@ public class MemberController {
 	@Resource(name="MemberService")
 	private IMemberService memberService;
 	
-	
-	/*
-	 * 여기는 localhost:8080/a.do라는 
-	 * 요청이 들어오고
-	 */
-	@RequestMapping(value="a")
-	public String a() throws Exception{
-		//a.jsp파일을 사용자에게 보여준다
-		return "/a";
-	}
-	/*
-	 * 여기는 localhost:8080/b.do라는
-	 * 요청이 들어오고
-	 */
-	@RequestMapping(value="b")
-	public String b() throws Exception{
-		//b.jsp파일을 사용자에게 보여준다
-		return "/b";
-	}
-	
-	@RequestMapping(value="c")
-	public String c() throws Exception{
-		return "/c";
-	}
-	
-	@RequestMapping(value="d")
-	public String d() throws Exception{
-		return "/d";
-	}
-	
-	//localhost:8080/bmi.do?cm=180&kg=70
-	@RequestMapping(value="bmi")
-	public String bmi(HttpServletRequest request, Model model) throws Exception{
-		String cm = request.getParameter("cm");
-		String kg = request.getParameter("kg");
-		int icm = Integer.parseInt(cm);
-		int ikg = Integer.parseInt(kg);
+	@RequestMapping(value="/login")
+	public String login() throws Exception{
 		
-		//전달 받은 몸무게와 키를 가지고 bmi 를 계산 해주세요...
-		//kg/(m*m)
-		double bmi = ikg/((icm*0.01) * (icm*0.01));
-		System.out.println("bmi : " + bmi);
-		
-		//데이터를 jsp로 전송하기 위해 model객체에 저장하는 코드
-		model.addAttribute("bmi", bmi);
-		//bmi.jsp를 화면에 보여줌
-		return "/bmi";
+		return "/login";
 	}
 	
-	@RequestMapping(value="post")
-	public String post() throws Exception{
-		return "/post";
+	//다음 카카오 로그인
+	@RequestMapping(value="/kakaologin", produces="application/json", method= {RequestMethod.GET, RequestMethod.POST})
+	public String kakaologin(@RequestParam("code") String code, HttpServletRequest req, HttpServletResponse rep) throws Exception{
+		System.out.println("code:" + code);
+		return "/login";
 	}
 	
-	@RequestMapping(value="postResult")
-	public String postResult(HttpServletRequest request) throws Exception{
-		String cm = request.getParameter("cm");
-		String kg = request.getParameter("kg");
-		System.out.println("cm: " + cm);
-		System.out.println("kg : " + kg);
-		return "/bmi";
-	}
-	
-	@RequestMapping(value="detail")
-	public String detail() throws Exception{
-		return "/detail";
-	}
-	
-	@RequestMapping(value="detailResult")
-	public String detailResult(HttpServletRequest req, Model model) throws Exception{
-		String name = req.getParameter("name");
-		String age = req.getParameter("age");
-		String gender = req.getParameter("gender");
-		
-		System.out.println("name : " + name);
-		System.out.println("age : " + age);
-		System.out.println("gender : " + gender);
-		
-		model.addAttribute("name", name);
-		model.addAttribute("age", age);
-		model.addAttribute("gender", gender);
-		
-		return "/detailResult";
-	}
-	
-	@RequestMapping(value="main")
-	public String main() throws Exception{
-		return "/main";
+	@RequestMapping(value="/mem/main")
+	public String MemMain() throws Exception{
+		return "/mem/main";
 	}
 	
 	@RequestMapping(value="member/memberReg")
