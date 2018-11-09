@@ -43,64 +43,24 @@
 		<div class="limiter">
 			<div class="container-login100">
 				<div class="wrap-login100">
-					<form class="login100-form validate-form" action="/cmmn/loginProc.do" method="post">
-						<span class="login100-form-title p-b-43">
-							로그인
-						</span>
-						
-						
-						<div class="wrap-input100 validate-input" data-validate = "유효한 형식을 입력해주세요.">
-							<input class="input100 has-val" type="text" name="user_id" required="required">
-							<span class="focus-input100"></span>
-							<span class="label-input100">아이디</span>
-						</div>
-						
-						
-						<div class="wrap-input100 validate-input" data-validate="패스워드를 입력해주세요.">
-							<input class="input100 has-val" type="password" name="user_passwd" required="required">
-							<span class="focus-input100"></span>
-							<span class="label-input100">패스워드</span>
-						</div>
-	
-						<div class="flex-sb-m w-full p-t-3 p-b-32">
-							<div class="contact100-form-checkbox">
-								<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-								<label class="label-checkbox100" for="ckb1">
-									아이디 기억하기
-								</label>
-							</div>
-	
-							<div>
-								<a href="/cmmn/fnd.do" class="txt1">
-									비밀번호 찾기
-								</a>
-							</div>
-						</div>
 				
-	
-						<div class="container-login100-form-btn">
-							<button class="login100-form-btn" style="font-size: 18px; font-weight: bold;" onclick="this.submit();">
-								로그인
-							</button>
+					<span class="login100-form-title p-b-43">
+						이메일 인증
+					</span>
+					<div class="row">
+						<div class="col-md-12" style="text-align: center;  margin: 20px; font-size: 20px;">
+							회원가입 인증 이메일을 전송하였습니다. <br/> 
+							가입하신 이메일을 확인 해주세요.
 						</div>
-						
-						<div class="text-center p-t-46 p-b-20" style="padding-top:20px;">
-							<span class="txt2" style="cursor:pointer; "onclick="javscript:location.href='/cmmn/reg.do'">
-								가입하기
-							</span>
-						</div>
-	
-						<div class="login100-form-social flex-c-m">
-							<a href="/assets/login#" class="login100-form-social-item flex-c-m bg1 m-r-5">
-								<i class="fa fa-facebook-f" aria-hidden="true"></i>
-							</a>
-	
-							<a href="/assets/login#" class="login100-form-social-item flex-c-m bg2 m-r-5">
-								<i class="fa fa-twitter" aria-hidden="true"></i>
-							</a>
-						</div>
-					</form>
-	
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn" style="font-size: 18px; font-weight: bold;" onclick="javscript:location.href='/cmmn/main.do'">
+							첫 화면으로 이동
+						</button>
+					</div>
+
+
 					<div class="login100-more" style="background-image: url('/assets/login/images/main.jpg');">
 					</div>
 				</div>

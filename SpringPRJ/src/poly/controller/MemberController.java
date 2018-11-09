@@ -21,15 +21,25 @@ import poly.util.CmmUtil;
 
 @Controller
 public class MemberController {
-	
+
+	//service 선언
 	@Resource(name="MemberService")
 	private IMemberService memberService;
 	
-	@RequestMapping(value="/login")
-	public String login() throws Exception{
-		
-		return "/login";
+	String msg = null, url = null;
+	
+	// 메인 화면 프레임
+	@RequestMapping(value="/mem/main")
+	public String MemMain() throws Exception{
+		return "/mem/mainFrame";
 	}
+	
+	// 메인 화면 내용
+	@RequestMapping(value="/mem/mainContentBody")
+	public String mainContentBody() throws Exception{
+		return "/mem/mainContentBody";
+	}
+	
 	
 	//다음 카카오 로그인
 	@RequestMapping(value="/kakaologin", produces="application/json", method= {RequestMethod.GET, RequestMethod.POST})
@@ -38,17 +48,12 @@ public class MemberController {
 		return "/login";
 	}
 	
-	@RequestMapping(value="/mem/main")
-	public String MemMain() throws Exception{
-		return "/mem/main";
-	}
-	
 	@RequestMapping(value="member/memberReg")
 	public String memberReg() throws Exception{
 		return "/member/memberReg";
 	}
 	
-	//회원 가입
+/*	//회원 가입
 	@RequestMapping(value="member/memberRegProc")
 	public String memberRegProc(HttpServletRequest req, Model model, UserMemberDTO mDTO) throws Exception{
 		
@@ -116,7 +121,7 @@ public class MemberController {
 		model.addAttribute("mDTO", mDTO);
 		
 		return "/member/updateView";
-	}
+	}*/
 	/*
 	@RequestMapping(value="member/memberUpdateProc")
 	public String updateProc(HttpServletRequest request, Model model) throws Exception{

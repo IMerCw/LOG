@@ -16,7 +16,7 @@ public class MemberService implements IMemberService {
 	
 	@Resource(name="MemberMapper")
 	private MemberMapper memberMapper;
-	
+/*	
 	@Override
 	public int insertMember(UserMemberDTO mDTO) throws Exception {
 		return memberMapper.insertMember(mDTO);
@@ -56,5 +56,5 @@ public class MemberService implements IMemberService {
 	public List<UserMemberDTO> getSearchList(UserMemberDTO mDTO) throws Exception {
 		return memberMapper.getSearchList(mDTO);
 	}
-
+*/
 }

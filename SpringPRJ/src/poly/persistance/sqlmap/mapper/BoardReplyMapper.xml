@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.BoardReplyMapper">
+	<!-- insert, update, delete, select -->
+		
+	<!-- 댓글 삽입 / 댓글 작성-->
+	<insert id="insertBoardReplyDTO" parameterType="BoardReplyDTO">
+		INSERT INTO 
+		    BOARD_REPLY
+		VALUES (
+		    REPLY_SEQ.NEXTVAL,
+		    #{user_seq},
+		    #{board_p_seq},
+		    #{reply_content},
+		    SYSDATE,
+		    1,
+		    #{user_seq},
+		    SYSDATE
+		 )
+	</insert>
+	
+	<!-- 특정 게시물의 댓글 가져오기 -->
+	<select id="getBoardReplyDTOs" parameterType="string" resultType="BoardReplyDTO">
+		SELECT
+		    BR.REPLY_SEQ,
+		    BR.USER_SEQ,
+		    BR.BOARD_P_SEQ,
+		    BR.REPLY_CONTENT,
+		    BR.REG_DATE,
+		    UM.USER_NAME
+		FROM 
+		    BOARD_REPLY BR
+		        INNER JOIN USER_MEMBER UM ON BR.USER_SEQ = UM.USER_SEQ
+		WHERE
+		    BR.EXP_YN = 1 AND
+		    BOARD_P_SEQ = #{board_p_seq}
+		ORDER BY 
+		    BR.REG_DATE
+	</select>
+	
+	<!-- 댓글 수정하기 -->
+	<update id="updateBoardReply" parameterType="BoardReplyDTO">
+		UPDATE
+		    BOARD_REPLY
+		SET 
+		    REPLY_CONTENT = #{reply_content}
+		WHERE
+		    REPLY_SEQ = #{reply_seq}
+	</update>
+	
+	<!-- 댓글 삭제하기 -->
+	<update id="deleteBoardReply" parameterType="string">
+		UPDATE
+		    BOARD_REPLY
+		SET 
+		    EXP_YN = 0
+		WHERE
+		    REPLY_SEQ = #{reply_seq}
+	</update>
+</mapper>

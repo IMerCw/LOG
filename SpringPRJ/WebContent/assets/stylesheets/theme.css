@@ -2326,7 +2326,7 @@ ul.nav-main > li > a {
 	padding: 12px 25px;
 }
 
-ul.nav-main > li > a:hover, ul.nav-main > li > a:focus {
+ul.nav-main > li > a:hover {
 	background-color: #21262d;
 }
 
@@ -16878,7 +16878,7 @@ html.dark .dropdown-menu {
 html.dark .dropdown-menu > li > a {
 	color: #EEE;
 }
-html.dark .dropdown-menu > li > a:hover, html.dark .dropdown-menu > li > a:focus {
+html.dark .dropdown-menu > li > a:hover {
 	background-color: #1d2127;
 	color: #FFF;
 }

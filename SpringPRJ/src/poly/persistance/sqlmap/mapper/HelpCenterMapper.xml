@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.HelpCenterMapper">
+	<!-- insert, update, delete, select -->
+	
+
+	<!-- 게시판 입력 -->
+	<insert id="insertBoardPostDTO" parameterType="BoardPostDTO">
+		INSERT INTO BOARD_POST
+		(
+			BOARD_P_SEQ,
+			USER_SEQ,
+			BOARD_SEQ,
+			BOARD_P_TITLE,
+			BOARD_P_CONTENT,
+			BOARD_COUNT,
+			REG_DATE,
+            UPDATE_USER_SEQ,
+            UPDATE_DATE,
+            EXP_YN
+		)
+		VALUES
+		(
+			BOARD_P_SEQ.NEXTVAL,
+			#{user_seq},
+			#{board_seq},
+			#{board_p_title},
+            #{board_p_content},
+            0,
+			SYSDATE,
+			#{user_seq},
+            SYSDATE,
+            1
+		)
+	</insert>
+	
+	<!-- 게시글 가져오기 -->
+	<select id="getBoardPostDTO" parameterType="hashmap" resultType="BoardPostDTO">
+	
+		SELECT *
+			FROM(
+			    SELECT
+			    	ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) AS RN,
+			        BP.BOARD_P_SEQ,
+			        BP.USER_SEQ,
+			        BP.BOARD_P_TITLE,
+			        BP.BOARD_P_CONTENT,
+			        BP.BOARD_COUNT,
+			        TO_CHAR(BP.REG_DATE,'YYYY-MM-DD HH24:mm:ss') AS reg_date,
+			        BP.UPDATE_USER_SEQ,
+			        BP.UPDATE_DATE,
+			        UM.USER_NAME
+			    FROM 
+			        BOARD_POST BP
+			        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+			    WHERE 
+		        	BOARD_SEQ = #{board_seq} AND
+			        BP.EXP_YN = 1 AND
+			        BP.USER_SEQ = #{user_seq}
+			    )
+			WHERE 
+				RN BETWEEN #{last_index} - 4 AND #{last_index}
+				
+	</select>
+	
+	<!-- 게시글 상세 가져오기 -->
+	<select id="getBoardPostDetailDTO" parameterType="string" resultType="BoardPostDTO">
+		SELECT 
+	        BP.BOARD_P_SEQ,
+	        BP.USER_SEQ,
+	        BP.BOARD_P_TITLE,
+	        BP.BOARD_P_CONTENT,
+	        BP.BOARD_COUNT,
+	        TO_CHAR(BP.REG_DATE,'YYYY-MM-DD HH24:mm:ss') AS reg_date,
+	        BP.UPDATE_USER_SEQ,
+	        BP.UPDATE_DATE,
+	        UM.USER_NAME
+	    FROM 
+	        BOARD_POST BP
+	        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+	    WHERE 
+	        BP.BOARD_P_SEQ = #{board_p_seq}
+	</select>
+	
+	
+	<!-- 게시글 조회수 증가 -->
+	<update id="increaseBoardCount" parameterType="string">
+		UPDATE 
+		    BOARD_POST
+		SET
+		    BOARD_COUNT = BOARD_COUNT + 1
+		WHERE 
+	        BOARD_P_SEQ = #{board_p_seq}
+	</update>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateBoardPostDTO" parameterType="BoardPostDTO">
+		UPDATE 
+		    BOARD_POST
+		SET
+		    BOARD_P_TITLE = #{board_p_title},
+		    BOARD_P_CONTENT = #{board_p_content},
+		    UPDATE_USER_SEQ = #{update_user_seq},
+		    UPDATE_DATE = SYSDATE
+		WHERE 
+		    BOARD_P_SEQ = #{board_p_seq}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<update id="deleteBoardPostDTO" parameterType="string">
+		UPDATE 
+		    BOARD_POST
+		SET
+		    EXP_YN = -1
+		WHERE 
+	        BOARD_P_SEQ = #{board_p_seq}
+	</update>
+	
+	<!-- 게시글 전체 갯수 가져오기-->
+	<select id="getTotalBoardPosts" parameterType="string" resultType="integer">
+		SELECT
+            COUNT(BOARD_P_SEQ) AS TOTALBOARDPOSTS
+		FROM 
+		    BOARD_POST
+		WHERE 
+	        BOARD_SEQ = #{board_seq} AND
+	        EXP_YN = 1
+	</select>
+	
+	
+</mapper>

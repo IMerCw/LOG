@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.CmmnMapper">
+	<!-- insert, update, delete, select -->
+	
+
+	<!-- 로그인 -->
+	<select id="getUserMember" parameterType="UserMemberDTO" resultType="UserMemberDTO">
+			SELECT 
+			    USER_SEQ,
+			    USER_ID,
+			    USER_PASSWD,
+			    USER_NAME,
+		    	TO_CHAR(USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date
+			FROM 
+				USER_MEMBER
+			WHERE 
+		    	USER_ID = #{user_id} AND
+		    	USER_PASSWD = #{user_passwd} AND
+		    	USER_STATE = 1
+	</select>
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="getIdChecked" parameterType="string" resultType="string">
+			SELECT 
+			    USER_SEQ
+			FROM 
+				USER_MEMBER
+			WHERE 
+		    	USER_ID = #{user_id}
+	</select>
+	
+	<!-- 유저 생성 / 회원가입 -->
+	<insert id="insertUserMember" parameterType="UserMemberDTO">
+		INSERT INTO USER_MEMBER
+		(
+			USER_SEQ,
+			USER_ID,
+			USER_PASSWD,
+			USER_NAME,
+			USER_REG_DATE,
+			USER_STATE
+		)
+		VALUES
+		(
+			USER_SEQ.NEXTVAL,
+			#{user_id},
+			#{user_passwd},
+			#{user_name},
+			SYSDATE,
+			1
+		)
+	</insert>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="fndPasswd" parameterType="string" resultType="UserMemberDTO">
+		SELECT 
+		    USER_SEQ,
+		    USER_ID,
+		    USER_PASSWD,
+		    USER_NAME,
+	    	TO_CHAR(USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') 
+		FROM 
+			USER_MEMBER
+		WHERE 
+	    	USER_ID = #{user_id} AND
+	    	USER_PASSWD = #{user_passwd}
+	</select>
+	
+	<!-- 회원탈퇴 / 유저 상태 변경 -->
+	<update id="deleteUser" parameterType="UserMemberDTO">
+		UPDATE 
+		    USER_MEMBER
+		SET
+		    USER_STATE = -1
+		WHERE
+		    USER_ID = #{user_id} AND
+		    USER_PASSWD = #{user_passwd}
+	</update>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="updateUser" parameterType="UserMemberDTO">
+		UPDATE 
+		    USER_MEMBER
+		SET
+		    USER_PASSWD = #{user_passwd}
+		    ,USER_NAME = #{user_name} 
+		WHERE
+		    USER_SEQ = #{user_seq}
+	</update>
+	
+	<!-- 
+	
+	<select id="getAllMember" resultType="MemberDTO">
+		SELECT MEMBER_ID,
+       		   MEMBER_NAME,
+       		   DECODE(GENDER, '0', '남자', '여자') AS GENDER,
+       		   ID,
+       		   PASSWORD
+  	      FROM MEMBER
+	</select>
+	
+	<select id="getMemberOne" parameterType="string" resultType="MemberDTO">
+		SELECT MEMBER_ID,
+		       MEMBER_NAME,
+		       GENDER,
+		       ID,
+		       PASSWORD
+		  FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<delete id="deleteMember" parameterType="string">
+		DELETE FROM MEMBER WHERE MEMBER_ID=#{memberId}
+	</delete>
+	
+	<update id="updateMember" parameterType="MemberDTO">
+		UPDATE MEMBER
+		   SET MEMBER_NAME = #{member_name},
+		       ID = #{id},
+		       PASSWORD = #{password},
+		       GENDER = #{gender}
+		 WHERE MEMBER_ID = #{member_id}
+	</update>
+	
+	<select id="getLogin" parameterType="java.util.HashMap" resultType="MemberDTO">
+		SELECT MEMBER_ID,
+		       MEMBER_NAME,
+		       PASSWORD,
+		       ID,
+		       GENDER
+  		  FROM MEMBER
+ 		 WHERE ID = #{id} 
+ 		   AND PASSWORD=#{password}
+	</select>
+	
+	<select id="getIdChk" parameterType="MemberDTO" resultType="string">
+		
+		SELECT COUNT(MEMBER_ID)
+		FROM MEMBER
+		WHERE ID = #{id}
+		
+	</select>
+	
+	<select id="getSearchList" parameterType="MemberDTO" resultType="MemberDTO">
+		SELECT MEMBER_ID,
+       		   MEMBER_NAME,
+       		   DECODE(GENDER, '0', '남자', '여자') AS GENDER,
+       		   ID,
+       		   PASSWORD
+  	      FROM MEMBER
+  	      WHERE ID = #{id}
+	</select> -->
+	
+</mapper>

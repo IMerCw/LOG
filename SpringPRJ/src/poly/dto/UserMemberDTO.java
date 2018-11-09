@@ -1,41 +1,54 @@
 package poly.dto;
 
 public class UserMemberDTO {
-	private String userSeq;
-	private String userId;
-	private String userPasswd;
-	private String userName;
-	private String userRegDate;
-	
-	public String getUserSeq() {
-		return userSeq;
+	private String user_seq;
+	private String user_id;
+	private String user_passwd;
+	private String user_name;
+	private String user_reg_date;
+	private String update_user_seq;
+	private String update_date;
+	public String getUser_seq() {
+		return user_seq;
 	}
-	public void setUserSeq(String userSeq) {
-		this.userSeq = userSeq;
+	public void setUser_seq(String user_seq) {
+		this.user_seq = user_seq;
 	}
-	public String getUserId() {
-		return userId;
+	public String getUser_id() {
+		return user_id;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
 	}
-	public String getUserPasswd() {
-		return userPasswd;
+	public String getUser_passwd() {
+		return user_passwd;
 	}
-	public void setUserPasswd(String userPasswd) {
-		this.userPasswd = userPasswd;
+	public void setUser_passwd(String user_passwd) {
+		this.user_passwd = user_passwd;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUser_name() {
+		return user_name;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
-	public String getUserRegDate() {
-		return userRegDate;
+	public String getUser_reg_date() {
+		return user_reg_date;
 	}
-	public void setUserRegDate(String userRegDate) {
-		this.userRegDate = userRegDate;
+	public void setUser_reg_date(String user_reg_date) {
+		this.user_reg_date = user_reg_date;
+	}
+	public String getUpdate_user_seq() {
+		return update_user_seq;
+	}
+	public void setUpdate_user_seq(String update_user_seq) {
+		this.update_user_seq = update_user_seq;
+	}
+	public String getUpdate_date() {
+		return update_date;
+	}
+	public void setUpdate_date(String update_date) {
+		this.update_date = update_date;
 	}
 	
 	
