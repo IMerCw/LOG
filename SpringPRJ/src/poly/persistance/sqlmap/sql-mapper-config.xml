@@ -8,6 +8,8 @@
 		<typeAlias type="poly.dto.UserMemberDTO" alias="UserMemberDTO"/>
 		<typeAlias type="poly.dto.BoardPostDTO" alias="BoardPostDTO"/>
 		<typeAlias type="poly.dto.BoardReplyDTO" alias="BoardReplyDTO"/>
+		<typeAlias type="poly.dto.PublicDataDTO" alias="PublicDataDTO"/>
+		<typeAlias type="poly.dto.ImageDTO" alias="ImageDTO"/>
 		
     </typeAliases>
 </configuration>

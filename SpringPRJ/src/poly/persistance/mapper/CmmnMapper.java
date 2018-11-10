@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import config.Mapper;
+import poly.dto.ImageDTO;
 import poly.dto.UserMemberDTO;
 
 @Mapper("CmmnMapper")
@@ -23,6 +24,9 @@ public interface CmmnMapper {
 	public int updateUser(UserMemberDTO uDTO) throws Exception;
 
 	public String getIdChecked(String user_id) throws Exception;
+
+	public int updateImage(ImageDTO imgDTO) throws Exception;
+
 	
 	
 /*

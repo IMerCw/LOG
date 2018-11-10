@@ -34,6 +34,9 @@
 	.boardWritingInfo > div:first-child {
 		text-align:left;
 	}
+	.img-circle {
+		width:20px;
+	}
 </style>
 </head>
 <body>
@@ -42,7 +45,7 @@
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
-			<div class="col-md-6" style="text-align:left;">사진 &nbsp; <%=bpDTO.getUser_name() %></div>
+			<div class="col-md-6" style="text-align:left;"><img src="/<%=uDTO.getFile_py_name()%>" class="img-circle" style="width:28px;"> &nbsp; <%=bpDTO.getUser_name() %></div>
 			<div class="col-md-6" style="text-align:right;">조회수:<%=bpDTO.getBoard_count() %> / <%=bpDTO.getReg_date() %></div>
 		</div>
 		
@@ -157,7 +160,9 @@
 				$.each($.parseJSON(data), function(key,value) {
 					contents += '<div class="row" id="'+ value.reply_seq +'" style="padding: 4px; border-radius: 2px; background-color: #cccccc; margin:10px 0; border: 1px solid #bbbbbb;">';
 					contents += '<div style="min-height: 64px; padding: 4px;" id="replyContent'+ value.reply_seq +'">'+ value.reply_content+'</div>';
-					contents += '<div class="col-md-6" style="text-align:left;">' + '이모티콘 ' + ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
+					contents += '<div class="col-md-6" style="text-align:left;">'
+					contents += '<img src="/' + value.file_py_name + '"alt="Joseph Doe" class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />';
+					contents += ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
 					contents += '<div class="col-md-6" style="text-align:right">';
 					
 					<%-- 현재유저와 작성자 일치 확인 --%>

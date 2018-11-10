@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.mail.Session;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -16,10 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
+import poly.dto.ImageDTO;
 import poly.dto.UserMemberDTO;
 import poly.service.ICmmnService;
 import poly.util.CmmUtil;
+import poly.util.UtilFile;
 
 
 @Controller
@@ -75,7 +81,7 @@ public class CmmnController {
 		log.info(verifiedUDTO.getUser_name());
 		log.info(verifiedUDTO.getUser_passwd());
 		log.info(verifiedUDTO.getUser_reg_date());
-		
+		log.info(verifiedUDTO.getFile_py_name());
 		
 		session.setAttribute("uDTO", verifiedUDTO);
 		
@@ -210,25 +216,43 @@ public class CmmnController {
 	
 	//회원 수정
 	@RequestMapping(value="/cmmn/updateUser")
-	public String updateUser(HttpServletRequest request, Model model, HttpSession session, UserMemberDTO updatedUDTO) throws Exception {
+	public String updateUser(@RequestParam("uploadFile") MultipartFile uploadFile, MultipartHttpServletRequest request, Model model, HttpSession session, UserMemberDTO updatedUDTO) throws Exception {
 		log.info(this.getClass() + " start");
 		
 		UserMemberDTO uDTO = (UserMemberDTO)session.getAttribute("uDTO");
-		
 		
 		updatedUDTO.setUser_seq(uDTO.getUser_seq());
 		//수정된 회원 정보 확인
 		log.info(updatedUDTO.getUser_seq());
 		log.info(updatedUDTO.getUser_passwd());
 		log.info(updatedUDTO.getUser_name());
-		
-		
-		int result = cmmnService.updateUser(updatedUDTO);
+		//파일 업로드 
+		//..UtilFile 객체 생성
+        UtilFile utilFile = new UtilFile();
+        
+        //..파일 업로드 결과값을 path로 받아온다(이미 fileUpload() 메소드에서 해당 경로에 업로드는 끝났음)
+        String uploadPath = utilFile.fileUpload(request, uploadFile);
+        //..Service DB저장
+        ImageDTO imgDTO = new ImageDTO();
+        imgDTO.setFile_path(uploadPath);
+        imgDTO.setFile_py_name(uploadPath.split("\\\\") [uploadPath.split("\\\\").length-1]);
+        imgDTO.setReg_user_seq(updatedUDTO.getUser_seq());
+        imgDTO.setUpdate_user_seq(updatedUDTO.getUser_seq());
+        
+        log.info(imgDTO.getFile_py_name());
+        log.info(imgDTO.getFile_path());
+        
+        //이미지 테이블 저장
+        int result = cmmnService.updateImage(imgDTO);
+        log.info("result======" + result);
+        
+		//회원 정보 업로드
+		result = cmmnService.updateUser(updatedUDTO);
 		
 		log.info("회원 상태 변경 결과: " + result);
 		
 		msg = "성공적으로 수정하였습니다.";
-		url = "/cmmn/main.do";
+		url = "/mem/main.do";
 		
 		model.addAttribute("msg", msg);
 		model.addAttribute("url", url);

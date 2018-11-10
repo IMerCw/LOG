@@ -12,8 +12,14 @@ public class BoardPostDTO {
 	private String update_date;
 	
 	//외부 필드
+	private String reply_total;
+	
+	//외부 필드
 	private String user_name;
 	
+	private String file_py_name;
+	
+	/////
 	public String getBoard_p_seq() {
 		return board_p_seq;
 	}
@@ -73,6 +79,18 @@ public class BoardPostDTO {
 	}
 	public void setUpdate_user_seq(String update_user_seq) {
 		this.update_user_seq = update_user_seq;
+	}
+	public String getReply_total() {
+		return reply_total;
+	}
+	public void setReply_total(String reply_total) {
+		this.reply_total = reply_total;
+	}
+	public String getFile_py_name() {
+		return file_py_name;
+	}
+	public void setFile_py_name(String file_py_name) {
+		this.file_py_name = file_py_name;
 	}
 	
 	

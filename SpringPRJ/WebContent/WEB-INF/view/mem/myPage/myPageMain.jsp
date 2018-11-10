@@ -17,7 +17,7 @@
 </head>
 <body>
 	<div class="panel-body">
-		<form class="form-horizontal form-bordered" action="/cmmn/updateUser.do" method="POST">
+		<form class="form-horizontal form-bordered" action="/cmmn/updateUser.do" method="POST" enctype="multipart/form-data">
 			<div class="form-group">
 				<label class=" col-md-3 control-label">아이디</label>
 				<div class="col-md-6">
@@ -66,7 +66,7 @@
 							<span class="btn btn-default btn-file">
 								<span class="fileupload-exists">바꾸기</span>
 								<span class="fileupload-new">파일 선택</span>
-								<input type="file">
+								<input type="file" name="uploadFile">
 							</span>
 							<a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">제거</a>
 						</div>

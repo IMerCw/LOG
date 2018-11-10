@@ -3,26 +3,14 @@ package poly.service;
 import java.util.HashMap;
 import java.util.List;
 
-import poly.dto.ImageDTO;
+import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 
-public interface ICmmnService {
+public interface IGraphService {
 
-	//로그인
-	public UserMemberDTO getUserMember(UserMemberDTO uDTO) throws Exception;
+	List<PublicDataDTO> getPublicData() throws Exception;
 
-	//회원가입
-	public int insertUserMember(UserMemberDTO uDTO) throws Exception;
-
-	public UserMemberDTO fndPasswd(String user_id) throws Exception;
-
-	public int deleteUser(UserMemberDTO uDTO) throws Exception;
-
-	public int updateUser(UserMemberDTO uDTO) throws Exception;
-
-	public String getIdChecked(String user_id) throws Exception;
-
-	public int updateImage(ImageDTO imgDTO) throws Exception;
+	PublicDataDTO getOnePublicData(String pdata_seq) throws Exception;
 
 	
 	/*

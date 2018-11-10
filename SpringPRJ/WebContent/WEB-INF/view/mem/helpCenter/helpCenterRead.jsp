@@ -42,7 +42,7 @@
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
-			<div class="col-md-12" style="text-align:right;">문의날짜:<%=bpDTO.getBoard_count() %> / 처리날짜: <%=bpDTO.getReg_date() %></div>
+			<div class="col-md-12" style="text-align:right;">문의날짜:<%=bpDTO.getReg_date() %> / <span id="reply_date" class="text-muted">상담 처리 중</span></div>
 		</div>
 		
 		<div class="row" style="width: 100%; background-color: #cccccc; margin: 10px 0; height: 2px;"></div>
@@ -53,6 +53,7 @@
 		
 		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq())) {%>
 			<div class="row" style="padding:12px;"> 
+				<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callHelpCenterUpdate()">수정하기</button>
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-danger" style="float:right; display: inline-block;" onclick="callHelpCenterDelete()">삭제하기</button>
 			</div>
@@ -67,20 +68,19 @@
 		--%>
 		</div>
 		<!-- 댓글 작성 입력 폼 -->
-		<div class="row">
-			<div class="form-group">
-				<div class="col-md-12">
-					<textarea class="form-control" id="boardReply" rows="3" id="textareaAutosize" data-plugin-textarea-autosize="" placeholder="댓글을 작성해주세요." 
-						style="width:100%; overflow: hidden; overflow-wrap: break-word; resize: none; height: 74px;"></textarea>
+		<%if (uDTO.getUser_seq().equals("0")) {%>
+			<div class="row">
+				<div class="form-group">
+					<div class="col-md-12">
+						<textarea class="form-control" id="boardReply" rows="3" id="textareaAutosize" data-plugin-textarea-autosize="" placeholder="댓글을 작성해주세요." 
+							style="width:100%; overflow: hidden; overflow-wrap: break-word; resize: none; height: 74px;"></textarea>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div> 
-			<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
-			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callBoardReplyWriteProc();">댓글작성</button>
-		</div>
-		
-		
+			<div> 
+				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callBoardReplyWriteProc();">댓글작성</button>
+			</div>
+		<%} %>
 	</div>
 </body>
 <script>
@@ -153,6 +153,11 @@
 				alert("통신실패");
 			},
 			success: function(data) {
+				
+				$('#reply_date').html('처리 날짜 : ' + $.parseJSON(data)[0].reg_date );
+				$('#reply_date').removeClass('text-muted');				
+				$('#reply_date').addClass('text-success');				
+				
 				$.each($.parseJSON(data), function(key,value) {
 					contents += '<div class="row" id="'+ value.reply_seq +'" style="padding: 4px; border-radius: 2px; background-color: #cccccc; margin:10px 0; border: 1px solid #bbbbbb;">';
 					contents += '<div style="min-height: 64px; padding: 4px;" id="replyContent'+ value.reply_seq +'">'+ value.reply_content+'</div>';

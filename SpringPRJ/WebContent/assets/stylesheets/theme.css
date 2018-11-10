@@ -4461,7 +4461,7 @@ html.dark .inner-toolbar > ul > li {
 }
 
 .img-circle {
-	border-radius: 50%;
+	border-radius: 20%;
 }
 
 .img-thumbnail {

@@ -89,8 +89,9 @@ public class HelpCenterController {
 		log.info(bpDTOs.get(0).getBoard_p_seq());
 		log.info(bpDTOs.get(0).getBoard_p_title());
 		log.info(bpDTOs.get(0).getBoard_p_content());
-		
 		log.info(totalPages);
+		
+		
 		
 		//bpDTOs, 전체 페이지 갯수, 현재페이지 전송
 		model.addAttribute("bpDTOs", bpDTOs);

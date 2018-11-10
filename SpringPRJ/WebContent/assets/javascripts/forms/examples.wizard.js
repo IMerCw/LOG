@@ -79,7 +79,7 @@
 			element.parent().append( error );
 		}
 	});
-
+	
 	$w2finish.on('click', function( ev ) {
 		ev.preventDefault();
 		var validated = $('#w2 form').valid();

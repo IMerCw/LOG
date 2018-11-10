@@ -8,13 +8,15 @@
 	<!-- 로그인 -->
 	<select id="getUserMember" parameterType="UserMemberDTO" resultType="UserMemberDTO">
 			SELECT 
-			    USER_SEQ,
-			    USER_ID,
-			    USER_PASSWD,
-			    USER_NAME,
-		    	TO_CHAR(USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date
+			    UM.USER_SEQ,
+			    UM.USER_ID,
+			    UM.USER_PASSWD,
+			    UM.USER_NAME,
+		    	TO_CHAR(UM.USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date,
+		    	IMG.FILE_PY_NAME
 			FROM 
-				USER_MEMBER
+				USER_MEMBER UM
+					LEFT OUTER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
 			WHERE 
 		    	USER_ID = #{user_id} AND
 		    	USER_PASSWD = #{user_passwd} AND
@@ -40,7 +42,8 @@
 			USER_PASSWD,
 			USER_NAME,
 			USER_REG_DATE,
-			USER_STATE
+			USER_STATE,
+			IMG_SEQ
 		)
 		VALUES
 		(
@@ -49,7 +52,8 @@
 			#{user_passwd},
 			#{user_name},
 			SYSDATE,
-			1
+			1,
+			0
 		)
 	</insert>
 	
@@ -79,13 +83,35 @@
 		    USER_PASSWD = #{user_passwd}
 	</update>
 	
+	<!-- 이미지 업로드 -->
+	<insert id="updateImage" parameterType="ImageDTO">
+		INSERT INTO
+			IMAGE
+		VALUES (
+			IMAGE_SEQ.NEXTVAL,
+			#{file_py_name},
+			#{file_path},
+			#{reg_user_seq},
+			SYSDATE,
+			#{update_user_seq},
+			SYSDATE
+		)
+	</insert>
+	
 	<!-- 회원 정보 수정 -->
 	<update id="updateUser" parameterType="UserMemberDTO">
 		UPDATE 
 		    USER_MEMBER
 		SET
 		    USER_PASSWD = #{user_passwd}
-		    ,USER_NAME = #{user_name} 
+		    ,USER_NAME = #{user_name}
+		    ,IMG_SEQ = (
+		    	SELECT 
+		    		MAX(IMG_SEQ)
+		    	FROM 
+		    		IMAGE
+		    )
+		    
 		WHERE
 		    USER_SEQ = #{user_seq}
 	</update>

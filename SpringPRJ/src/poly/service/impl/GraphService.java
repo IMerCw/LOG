@@ -7,55 +7,30 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import poly.dto.ImageDTO;
+import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 import poly.persistance.mapper.CmmnMapper;
+import poly.persistance.mapper.GraphMapper;
 import poly.service.ICmmnService;
+import poly.service.IGraphService;
 
-@Service("CmmnService")
-public class CmmnService implements ICmmnService {
+@Service("GraphService")
+public class GraphService implements IGraphService {
 	
-	@Resource(name="CmmnMapper")
-	private CmmnMapper cmmnMapper;
+	@Resource(name="GraphMapper")
+	private GraphMapper graphMapper;
+
+	@Override
+	public List<PublicDataDTO> getPublicData() throws Exception {
+		return graphMapper.getPublicData();
+	}
+
+	@Override
+	public PublicDataDTO getOnePublicData(String pdata_seq) throws Exception {
+		return graphMapper.getOnePublicData(pdata_seq);
+	}
 	
 	
-	//로그인
-	@Override
-	public UserMemberDTO getUserMember(UserMemberDTO uDTO) throws Exception {
-		return cmmnMapper.getUserMember(uDTO);
-	}
-
-	//회원가입
-	@Override
-	public int insertUserMember(UserMemberDTO uDTO) throws Exception {
-		return cmmnMapper.insertUserMember(uDTO);
-	}
-
-	@Override
-	public UserMemberDTO fndPasswd(String user_id) throws Exception {
-		return cmmnMapper.fndPasswd(user_id);
-	}
-
-	@Override
-	public int deleteUser(UserMemberDTO uDTO) throws Exception {
-		return cmmnMapper.deleteUser(uDTO);
-	}
-
-	@Override
-	public int updateUser(UserMemberDTO uDTO) throws Exception {
-		return cmmnMapper.updateUser(uDTO);
-	}
-
-	@Override
-	public String getIdChecked(String user_id) throws Exception {
-		return cmmnMapper.getIdChecked(user_id);
-	}
-
-	@Override
-	public int updateImage(ImageDTO imgDTO) throws Exception {
-		return cmmnMapper.updateImage(imgDTO);
-	}
-
 	
 /*
 	@Override

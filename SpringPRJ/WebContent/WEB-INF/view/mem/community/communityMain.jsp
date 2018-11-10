@@ -1,13 +1,18 @@
-<%@page import="poly.util.CmmUtil"%>
 <%@page import="java.util.List"%>
+<%@page import="poly.util.CmmUtil"%>
+<%@page import="poly.dto.UserMemberDTO"%>
 <%@page import="poly.dto.BoardPostDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	List<BoardPostDTO> bpDTOs = (List<BoardPostDTO>)request.getAttribute("bpDTOs");
-	int totalPages = (Integer) request.getAttribute("totalPages");
-	String currentPage = (String) request.getAttribute("currentPage");
+	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
+	int totalPages = (Integer) request.getAttribute("totalPages"); //전체 페이지 갯수
+	String currentPage = (String) request.getAttribute("currentPage"); //현재 페이지 번호
+	int startPage = ((Integer.parseInt(currentPage) - 1) / 5 * 5  ) + 1; //블럭 시작 번호	
+	int endPage = (startPage + 4) > totalPages ? totalPages : (startPage+4); // 블럭 끝 번호
+	int reply_total;
 %>
 <html>
 <head>
@@ -40,6 +45,9 @@
 	.pagination >li {
 		cursor:pointer;
 	}
+	.img-circle{
+	    width: 25px;
+	}
 </style>
 </head>
 <body>
@@ -50,10 +58,18 @@
 			<%for(int i = 0; i < bpDTOs.size(); i++) {%>
 				<div class="boardContent" onclick="javscript:callCommunityRead(<%=bpDTOs.get(i).getBoard_p_seq()%>)">	
 					<div class="row" style="">
-						<div class="col-xs-12 contentSubject"><%=bpDTOs.get(i).getBoard_p_title() %></div>
+						
+						<div class="col-xs-6 contentSubject" style="text-align:left;"><%=bpDTOs.get(i).getBoard_p_title() %></div>
+						<%reply_total = ( (bpDTOs.get(i).getReply_total()) != null ? Integer.parseInt(bpDTOs.get(i).getReply_total()) : 0 ); %>
+						<div class="col-xs-6" style="text-align:right; font-size:16px;"><i class="fa fa-comments-o">&nbsp;<%=reply_total%></i></div>
 					</div>
 					<div class="row boardWritingInfo">
-						<div class="col-xs-6 col-sm-6"><%=bpDTOs.get(i).getUser_name() %> / <%=bpDTOs.get(i).getReg_date() %></div>
+						<div class="col-xs-6 col-sm-6">
+						
+							<img src="/<%=bpDTOs.get(i).getFile_py_name()%>" alt="Joseph Doe" class="img-circle" 
+								data-lock-picture="/assets/images/!logged-user.jpg" />
+							<%=bpDTOs.get(i).getUser_name() %> / <%=bpDTOs.get(i).getReg_date() %>
+						</div>
 						<div class="col-xs-6 col-sm-6">조회수 <%=bpDTOs.get(i).getBoard_count() %></div>
 					</div>
 				</div>
@@ -71,10 +87,13 @@
 				<div class="col-md-12" style="text-align:center; margin:10px 0;">
 					<nav aria-label="...">
 						<ul class="pagination">
-					    	<li class="page-item disabled">
-					    		<span class="page-link">이전</span>
+							<%if(startPage != 1) {%>
+					    	<li class="page-item">
+					    		<span class="page-link" onclick="callCommunityMain(<%=startPage-1%>)">이전</span>
 					    	</li>
-					    	<%for(int i = 1; i <= totalPages; i++) {%>
+					    	<%} %>
+					    	
+					    	<%for (int i = startPage; i <= endPage; i++ ) {%>
 				    			<%if (i == Integer.parseInt(currentPage)) {%>
 					    			<li class="page-item active">
 									  <span class="page-link">
@@ -86,9 +105,12 @@
 					    			<li class="page-item"><a class="page-link" onclick="callCommunityMain(<%=i%>)"><%=i%></a></li>
 				    			<%} %>
 						    <%} %>
-					    	<li class="page-item">
-					      	<a class="page-link" href="#">다음</a>
-					    	</li>
+						    
+						    <%if(endPage != totalPages) {%>
+						    	<li class="page-item">
+						    		<span class="page-link" onclick="callCommunityMain(<%=endPage+1%>)">다음</span>
+						    	</li>
+						    <%} %>
 					  	</ul>
 					</nav>
 				</div>

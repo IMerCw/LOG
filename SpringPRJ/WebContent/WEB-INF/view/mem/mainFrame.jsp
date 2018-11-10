@@ -49,7 +49,7 @@
 	
 	<style>
 		body { font-family: 'Nanum Gothic', serif; }
-		ul.nav-main li a { font-size:15px; }
+		ul.nav-main li a { font-size:14px; }
 		.sidebar-widget .widget-header h6 { color:#ffffff;}
 		ul.nav-main > li > a:hover  { background-color: #171717;}
 		ul.nav-main > li > a:focus, .nav > li > a:hover, .nav > li > a:focus { background-color: transparent;}
@@ -65,6 +65,9 @@
 			.header .header-right {
 				height:50px;			
 			}
+		}
+		.img-circle{
+			border-radius:20%;
 		}
 	</style>
 </head>
@@ -154,8 +157,14 @@
 				<div id="userbox" class="userbox" style="margin: 5px;">
 					<a href="#" data-toggle="dropdown">
 						<figure class="profile-picture">
-							<img src="/assets/images/default_user.svg" alt="Joseph Doe" class="img-circle" 
-								data-lock-picture="/assets/images/!logged-user.jpg" />
+							<%if(uDTO.getFile_py_name() != null) {%>
+								<img src="/<%=uDTO.getFile_py_name()%>" alt="Joseph Doe" class="img-circle" 
+									data-lock-picture="/assets/images/!logged-user.jpg" />
+							<%} else {%>
+								<img src="/assets/images/default_user.svg" alt="Joseph Doe" class="img-circle" 
+									data-lock-picture="/assets/images/!logged-user.jpg" />
+							
+							<%} %>
 						</figure>
 						<div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@JSOFT.com">
 							<span class="name"><%=uDTO.getUser_name()%></span>

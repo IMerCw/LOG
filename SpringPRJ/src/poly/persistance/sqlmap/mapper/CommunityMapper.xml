@@ -38,29 +38,55 @@
 	<!-- 게시글 가져오기 -->
 	<select id="getBoardPostDTO" parameterType="hashmap" resultType="BoardPostDTO">
 	
-		SELECT *
-			FROM(
-			    SELECT
-			    	ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) AS RN,
-			        BP.BOARD_P_SEQ,
-			        BP.USER_SEQ,
-			        BP.BOARD_P_TITLE,
-			        BP.BOARD_P_CONTENT,
-			        BP.BOARD_COUNT,
-			        TO_CHAR(BP.REG_DATE,'YYYY-MM-DD HH24:mm:ss') AS reg_date,
-			        BP.UPDATE_USER_SEQ,
-			        BP.UPDATE_DATE,
-			        UM.USER_NAME
-			    FROM 
-			        BOARD_POST BP
-			        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
-			    WHERE 
-		        	BOARD_SEQ = #{board_seq} AND
-			        BP.EXP_YN = 1
-			    )
-			WHERE 
-				RN BETWEEN #{last_index} - 4 AND #{last_index}
-				
+		SELECT 
+			BP.BOARD_P_SEQ,
+			BP.USER_SEQ,
+			BP.BOARD_P_TITLE,
+			BP.BOARD_COUNT,
+			BP.REG_DATE,
+			BP.UPDATE_USER_SEQ,
+			BP.UPDATE_DATE,
+			BP.USER_NAME,
+			BR.REPLY_TOTAL AS REPLY_TOTAL,
+			IMG.FILE_PY_NAME AS file_py_name
+		FROM(
+		    SELECT
+		    	ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) AS RN,
+		        BP.BOARD_P_SEQ AS BOARD_P_SEQ,
+		        BP.USER_SEQ AS USER_SEQ,
+		        BP.BOARD_P_TITLE AS BOARD_P_TITLE,
+		        BP.BOARD_P_CONTENT AS BOARD_P_CONTENT,
+		        BP.BOARD_COUNT AS BOARD_COUNT,
+		        TO_CHAR(BP.REG_DATE,'YYYY-MM-DD HH24:mm:ss') AS REG_DATE,
+		        BP.UPDATE_USER_SEQ AS UPDATE_USER_SEQ,
+		        BP.UPDATE_DATE AS UPDATE_DATE,
+		        UM.USER_NAME AS USER_NAME,
+		        UM.IMG_SEQ AS IMG_SEQ
+		    FROM 
+		        BOARD_POST BP
+		        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+		    WHERE 
+	        	BOARD_SEQ = #{board_seq} AND
+		        BP.EXP_YN = 1
+	         ORDER BY BP.REG_DATE DESC, BP.BOARD_P_SEQ DESC
+		    ) BP
+		     LEFT OUTER JOIN (
+                SELECT 
+                    COUNT(REPLY_SEQ) REPLY_TOTAL,
+                    BOARD_P_SEQ
+                FROM 
+                    BOARD_REPLY
+                GROUP BY
+                    BOARD_P_SEQ
+                ) BR
+            ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
+            	
+            INNER JOIN IMAGE IMG ON BP.IMG_SEQ = IMG.IMG_SEQ
+            
+		WHERE 
+			RN BETWEEN #{last_index} - 4 AND #{last_index}
+		
+			
 	</select>
 	
 	<!-- 게시글 상세 가져오기 -->

@@ -6,8 +6,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	List<BoardPostDTO> bpDTOs = (List<BoardPostDTO>)request.getAttribute("bpDTOs");
-	int totalPages = (Integer) request.getAttribute("totalPages");
-	String currentPage = (String) request.getAttribute("currentPage");
+	int totalPages = (Integer) request.getAttribute("totalPages"); //전체 페이지 갯수
+	String currentPage = (String) request.getAttribute("currentPage"); //현재 페이지 번호
+	int startPage = ((Integer.parseInt(currentPage) - 1) / 5 * 5  ) + 1; //블럭 시작 번호	
+	int endPage = (startPage + 4) > totalPages ? totalPages : (startPage+4); // 블럭 끝 번호
 %>
 <html>
 <head>
@@ -40,6 +42,9 @@
 	.pagination >li {
 		cursor:pointer;
 	}
+	p {
+		margin:0;
+	}
 </style>
 </head>
 <body>
@@ -53,8 +58,12 @@
 						<div class="col-xs-12 contentSubject"><%=bpDTOs.get(i).getBoard_p_title() %></div>
 					</div>
 					<div class="row boardWritingInfo">
-						<div class="col-xs-6 col-sm-6"><%=bpDTOs.get(i).getUser_name() %> / <%=bpDTOs.get(i).getReg_date() %></div>
-						<div class="col-xs-6 col-sm-6">조회수 <%=bpDTOs.get(i).getBoard_count() %></div>
+						<div class="col-xs-6 col-sm-6">상담날짜: <%=bpDTOs.get(i).getReg_date() %></div>
+						<%if (bpDTOs.get(i).getReply_total() != null) { %>
+							<div class="col-xs-6 col-sm-6"><p class="text-success">처리완료</p></div>
+						<%} else {%>
+							<div class="col-xs-6 col-sm-6"><p class="text-muted">처리 중</p></div>
+						<%} %>
 					</div>
 				</div>
 			<%} %>
@@ -66,7 +75,7 @@
 				</button>
 			</div>
 			
-			<!-- start: PAGINATION -->
+		<%-- 	<!-- start: PAGINATION -->
 			<div class="row">
 				<div class="col-md-12" style="text-align:center; margin:10px 0;">
 					<nav aria-label="...">
@@ -93,6 +102,44 @@
 					</nav>
 				</div>
 			</div>
+			<!-- end: PAGINATION --> --%>
+			
+			<!-- start: PAGINATION -->
+			<div class="row">
+				<div class="col-md-12" style="text-align:center; margin:10px 0;">
+					<nav aria-label="...">
+						<ul class="pagination">
+							<!-- 이전 페이지 블럭 버튼 -->
+							<%if(startPage != 1) {%>
+					    	<li class="page-item">
+					    		<span class="page-link" onclick="callHelpCenterMain(<%=startPage-1%>)">이전</span>
+					    	</li>
+					    	<%} %>
+					    	
+					    	
+					    	<%for (int i = startPage; i <= endPage; i++ ) {%>
+				    			<%if (i == Integer.parseInt(currentPage)) {%>
+					    			<li class="page-item active">
+									  <span class="page-link">
+									    <%=i %>
+									    <span class="sr-only">(current)</span>
+									  </span>
+									</li>
+				    			<%} else { %>
+					    			<li class="page-item"><a class="page-link" onclick="callHelpCenterMain(<%=i%>)"><%=i%></a></li>
+				    			<%} %>
+						    <%} %>
+						    
+						    <!-- 다음 페이지 블럭 버튼 -->
+					       <%if(endPage != totalPages) {%>
+					    	<li class="page-item">
+					    		<span class="page-link" onclick="callHelpCenterMain(<%=endPage+1%>)">다음</span>
+					    	</li>
+						    <%} %>
+					  	</ul>
+					</nav>
+				</div>
+			</div>
 			<!-- end: PAGINATION -->
 		</div>
 </body>
@@ -106,7 +153,7 @@
 			dataType: "text",
 			data: {
 				board_p_seq : board_p_seq,
-				currentPage : <%=currentPage%>,
+				currentPage : <%=currentPage%>
 			},
 			error: function() {
 				alert("통신실패");

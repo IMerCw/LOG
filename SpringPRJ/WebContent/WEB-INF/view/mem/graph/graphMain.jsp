@@ -15,7 +15,7 @@
 <body>
 	<div class="row">
 		<div class="col-md-12">
-			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;">그래프 작성하기</button>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javascript:callWriteGraphFirstStep()">그래프 작성하기</button>
 		</div>
 	</div>
 	
@@ -45,4 +45,21 @@
 		</section>
 	</div>
 </body>
+<script>
+
+	//그래프 작성 1단계 이동
+	function callWriteGraphFirstStep() {
+		$.ajax({
+			type : "GET",
+			url : "/mem/graph/writeGraph/firstStep.do",
+			dataType: "text",
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				$('.content-body').html(data);
+			}
+		})
+	}
+</script>
 </html>

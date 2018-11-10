@@ -8,6 +8,9 @@ public class UserMemberDTO {
 	private String user_reg_date;
 	private String update_user_seq;
 	private String update_date;
+	private String img_seq;
+	private String file_py_name;
+	
 	public String getUser_seq() {
 		return user_seq;
 	}
@@ -49,6 +52,18 @@ public class UserMemberDTO {
 	}
 	public void setUpdate_date(String update_date) {
 		this.update_date = update_date;
+	}
+	public String getImg_seq() {
+		return img_seq;
+	}
+	public void setImg_seq(String img_seq) {
+		this.img_seq = img_seq;
+	}
+	public String getFile_py_name() {
+		return file_py_name;
+	}
+	public void setFile_py_name(String file_py_name) {
+		this.file_py_name = file_py_name;
 	}
 	
 	

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.GraphMapper">
+	<!-- insert, update, delete, select -->
+	
+
+	<!-- 공공데이터 목록 가져오기 -->
+	<select id="getPublicData" resultType="PublicDataDTO">
+		SELECT 
+			*
+		FROM(
+			  SELECT
+					ROW_NUMBER() OVER(ORDER BY UPDATE_DATE DESC) AS RN,
+					PDATA_SEQ,
+					PDATA_NAME,
+					PDATA_KEYWORD,
+					PDATA_CATE,
+					REG_USER_SEQ,
+					REG_DATE,
+					UPDATE_USER_SEQ,
+					UPDATE_DATE,
+					FILE_NAME
+				FROM
+					PUBLIC_DATA
+		    )
+		WHERE
+			<![CDATA[ROWNUM <= 8 ]]>
+	</select>
+	
+	<!-- 공공데이터 1개 가져오기 -->
+	<select id="getOnePublicData" parameterType="string" resultType="PublicDataDTO">
+		SELECT 
+			PDATA_SEQ,
+			PDATA_NAME,
+			PDATA_KEYWORD,
+			PDATA_CATE,
+			REG_USER_SEQ,
+			REG_DATE,
+			UPDATE_USER_SEQ,
+			UPDATE_DATE,
+			FILE_NAME
+		FROM
+			PUBLIC_DATA
+		WHERE 
+			PDATA_SEQ = #{pdata_seq}
+	</select>
+		
+</mapper>

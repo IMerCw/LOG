@@ -11,7 +11,7 @@ public class BoardReplyDTO {
 	private String update_date;
 	//외부 필드
 	private String user_name;
-	
+	private String file_py_name;
 	
 	public String getReply_seq() {
 		return reply_seq;
@@ -66,6 +66,12 @@ public class BoardReplyDTO {
 	}
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
+	}
+	public String getFile_py_name() {
+		return file_py_name;
+	}
+	public void setFile_py_name(String file_py_name) {
+		this.file_py_name = file_py_name;
 	}
 	
 	
