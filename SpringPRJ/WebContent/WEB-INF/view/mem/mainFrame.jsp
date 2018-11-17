@@ -3,7 +3,8 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
-	UserMemberDTO uDTO = (UserMemberDTO)session.getAttribute("uDTO");	
+	UserMemberDTO uDTO = (UserMemberDTO)session.getAttribute("uDTO");
+	Boolean isAdmin = (uDTO.getUser_id().equals("admin"));
 %>
 <html class="fixed">
 <head>
@@ -69,6 +70,20 @@
 		.img-circle{
 			border-radius:20%;
 		}
+		<%--관리자일 경우 CSS변경 --%>
+		<%if(isAdmin) {%>
+		
+			.sidebar-left {
+				background-color:#000000;
+			}
+			.page-header {
+				background-color:#000000;
+			}
+			ul.nav-main > li.nav-active > a  {
+				box-shadow: 2px 0 0 #ffffff inset;
+			}
+			
+		<%}%>
 	</style>
 </head>
 <body>
@@ -153,16 +168,16 @@
 					</li>
 				</ul>
 				<!-- end : 새 소식 알림 notification -->
-		
+				
 				<div id="userbox" class="userbox" style="margin: 5px;">
 					<a href="#" data-toggle="dropdown">
 						<figure class="profile-picture">
 							<%if(uDTO.getFile_py_name() != null) {%>
-								<img src="/<%=uDTO.getFile_py_name()%>" alt="Joseph Doe" class="img-circle" 
-									data-lock-picture="/assets/images/!logged-user.jpg" />
+								<img src="<%=uDTO.getFile_py_name()%>" alt="이모티콘" class="img-circle" 
+									data-lock-picture="/assets/images/!logged-user.jpg" style="max-height: 38px;" />
 							<%} else {%>
-								<img src="/assets/images/default_user.svg" alt="Joseph Doe" class="img-circle" 
-									data-lock-picture="/assets/images/!logged-user.jpg" />
+								<img src="/assets/images/default_user.svg" alt="이모티콘" class="img-circle" 
+									data-lock-picture="/assets/images/!logged-user.jpg" style="max-height: 38px;" />
 							
 							<%} %>
 						</figure>
@@ -243,6 +258,14 @@
 										<span>고객센터</span>
 									</a>
 								</li>
+								<%if(isAdmin) {%>
+								<li id="myPage">
+									<a href="#" onclick="javascript:callPage('configMember');">
+										<i class="fa fa-group"></i>
+										<span>회원관리</span>
+									</a>
+								</li>
+								<%} else {%>
 								<li id="myPage">
 									<a href="#" onclick="javascript:callPage('myPage');">
 										<i class="fa fa-wrench" aria-hidden="true"></i>
@@ -250,6 +273,7 @@
 									</a>
 								</li>
 								
+								<%} %>
 							</ul>
 						</nav>
 			
@@ -559,6 +583,22 @@
 			$.ajax({
 				type : "GET",
 				url : "/mem/myPage/myPageMain.do",
+				dataType: "text",
+				error: function() {
+					alert("통신실패");
+				},
+				success: function(data) {
+					$('.content-body').html(data);
+				}
+			})
+		}			
+		else if (pageName == 'configMember'){
+			$('.nav-main li').removeClass('nav-active'); // 이전 페이지에서의 nav-active 클래스 제거
+			$('#myPage').addClass('nav-active'); // 현재 메뉴의 nav-active 클래스 추가
+			$('#myPage>a').blur(); // focus 해제
+			$.ajax({
+				type : "GET",
+				url : "/admin/configMember.do",
 				dataType: "text",
 				error: function() {
 					alert("통신실패");

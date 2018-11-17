@@ -71,6 +71,10 @@
 							</div>
 	
 							<div>
+								<span class="txt2" style="cursor:pointer; color:#000000;" onclick="javscript:location.href='/cmmn/reg.do'">
+									가입하기
+								</span>
+								&nbsp;
 								<a href="/cmmn/fnd.do" class="txt1">
 									비밀번호 찾기
 								</a>
@@ -84,23 +88,13 @@
 							</button>
 						</div>
 						
-						<div class="text-center p-t-46 p-b-20" style="padding-top:20px;">
-							<span class="txt2" style="cursor:pointer; "onclick="javscript:location.href='/cmmn/reg.do'">
-								가입하기
-							</span>
+						<%-- 카카오 로그인 버튼 --%>
+						<div class="login100-form-social flex-c-m" style="padding: 18px 0;">
+							<img src="/assets/images/kakao_account_login_btn_medium_wide_ov.png" style="cursor:pointer;" 
+									onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=59c7e2d73ac8002bd4a89d0d5569c167&redirect_uri=http://localhost:8080/kakaoLogin.do&response_type=code'"/>
 						</div>
-	
-						<div class="login100-form-social flex-c-m">
-							<a href="/assets/login#" class="login100-form-social-item flex-c-m bg1 m-r-5">
-								<i class="fa fa-facebook-f" aria-hidden="true"></i>
-							</a>
-	
-							<a href="/assets/login#" class="login100-form-social-item flex-c-m bg2 m-r-5">
-								<i class="fa fa-twitter" aria-hidden="true"></i>
-							</a>
-						</div>
+						
 					</form>
-	
 					<div class="login100-more" style="background-image: url('/assets/login/images/main.jpg');">
 					</div>
 				</div>

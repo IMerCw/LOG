@@ -5,6 +5,7 @@ import java.util.List;
 
 import config.Mapper;
 import poly.dto.ImageDTO;
+import poly.dto.KakaoUserDTO;
 import poly.dto.UserMemberDTO;
 
 @Mapper("CmmnMapper")
@@ -26,6 +27,19 @@ public interface CmmnMapper {
 	public String getIdChecked(String user_id) throws Exception;
 
 	public int updateImage(ImageDTO imgDTO) throws Exception;
+
+	public int setUserState(UserMemberDTO uDTO) throws Exception;
+
+	public int setTempPasswd(UserMemberDTO uDTO) throws Exception;
+
+	public String getImgSeq(String user_seq) throws Exception;
+
+	public int insertKakaoUser(KakaoUserDTO kDTO) throws Exception;
+
+	public UserMemberDTO getKakaoUser(UserMemberDTO uDTO) throws Exception;
+
+	public int updateImgSeq(UserMemberDTO uDTO) throws Exception;
+
 
 	
 	

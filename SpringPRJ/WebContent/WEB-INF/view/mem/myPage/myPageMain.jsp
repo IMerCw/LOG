@@ -4,12 +4,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
-
 %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="/assets/vendor/bootstrap-fileupload/bootstrap-fileupload.min.css">
+
 <script>
 	//제목 설정
 	$('#pageName').html('마이페이지');	
@@ -62,6 +62,7 @@
 							<div class="uneditable-input">
 								<i class="fa fa-file fileupload-exists"></i>
 								<span class="fileupload-preview"></span>
+								<%=uDTO.getFile_py_name().split("/")[2] %>
 							</div>
 							<span class="btn btn-default btn-file">
 								<span class="fileupload-exists">바꾸기</span>

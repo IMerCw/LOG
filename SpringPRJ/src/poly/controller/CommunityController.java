@@ -112,6 +112,7 @@ public class CommunityController {
 		//커뮤니티 게시글 상세 확인
 		log.info(bpDTO.getBoard_p_title());
 		log.info(bpDTO.getBoard_p_content());
+		log.info(bpDTO.getFile_py_name());
 		
 		//bpDTO, 현재페이지, 댓글 내용 전송
 		model.addAttribute("bpDTO", bpDTO);
@@ -200,6 +201,19 @@ public class CommunityController {
 	
 	/*------------------------------------*/
 	
+	//댓글 가져오기 - page
+	@RequestMapping(value="/mem/community/getBoardRepliesPage")
+	public String getBoardRepliesPage(HttpServletRequest request, Model model, String board_p_seq) throws Exception {
+		log.info("start : " + this.getClass());
+		
+		//댓글 가져오기
+		List<BoardReplyDTO> brDTO = boardReplyService.getBoardReplyDTOs(board_p_seq);
+		
+		model.addAttribute("brDTO", brDTO);
+		
+		log.info("end : " + this.getClass());
+		return "/mem/community/boardRepliesPage";
+	}
 	//댓글 가져오기
 	@RequestMapping(value="/mem/community/getBoardReplies")
 	public @ResponseBody ArrayList<BoardReplyDTO> getBoardReplies(HttpServletRequest request, Model model, String board_p_seq) throws Exception {
@@ -209,6 +223,7 @@ public class CommunityController {
 		ArrayList<BoardReplyDTO> brDTO = boardReplyService.getBoardReplyDTOs(board_p_seq);
 		
 		model.addAttribute("brDTO", brDTO);
+		
 		log.info("end : " + this.getClass());
 		
 		return brDTO;

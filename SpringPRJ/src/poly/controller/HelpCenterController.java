@@ -52,7 +52,7 @@ public class HelpCenterController {
 		//pagination 설정
 		int last_index;
 		////전체 게시글 갯수 가져오기
-		int totalBoardPosts = communityService.getTotalBoardPosts(board_seq);
+		int totalBoardPosts = helpCenterService.getTotalBoardPosts(board_seq);
 		////전체 페이지 갯수 (한 페이지 보여 줄 게시글 10 개라고 가정할 때)
 		int totalPages = (totalBoardPosts-1) / 5 + 1;
 		////현재 요청 페이지
@@ -70,6 +70,7 @@ public class HelpCenterController {
 		log.info("Current page is : " + currentPage);
 		log.info("last index is : " + last_index);
 		
+		
 		Map<String, Integer> bpMap = new HashMap<String, Integer>();
 		
 		//현재 사용자 가져오기
@@ -81,17 +82,17 @@ public class HelpCenterController {
 		bpMap.put("last_index", last_index);
 		bpMap.put("user_seq", Integer.parseInt(user_seq));
 		
+		log.info("현재 유저" + user_seq);
 		
 		//게시글 가져오기 service
-		List<BoardPostDTO> bpDTOs = communityService.getBoardPostDTO(bpMap);
-		
-		//가져온 게시글 확인
-		log.info(bpDTOs.get(0).getBoard_p_seq());
-		log.info(bpDTOs.get(0).getBoard_p_title());
-		log.info(bpDTOs.get(0).getBoard_p_content());
-		log.info(totalPages);
-		
-		
+		List<BoardPostDTO> bpDTOs = helpCenterService.getBoardPostDTO(bpMap);
+		if(!bpDTOs.isEmpty()) {
+			//가져온 게시글 확인
+			log.info(bpDTOs.get(0).getBoard_p_seq());
+			log.info(bpDTOs.get(0).getBoard_p_title());
+			log.info(bpDTOs.get(0).getBoard_p_content());
+			log.info(totalPages);
+		}
 		
 		//bpDTOs, 전체 페이지 갯수, 현재페이지 전송
 		model.addAttribute("bpDTOs", bpDTOs);

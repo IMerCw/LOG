@@ -17,6 +17,11 @@
 	//제목 설정
 	$('#pageName').html('커뮤니티');
 </script>
+<!-- Specific Page Vendor -->
+<link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css">
+<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+<script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
+
 <style>
 	.contentSubject {
 		font-size:18px;
@@ -35,7 +40,7 @@
 		text-align:left;
 	}
 	.img-circle {
-		width:20px;
+		width:20px; max-height: 28px;
 	}
 </style>
 </head>
@@ -45,7 +50,7 @@
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
-			<div class="col-md-6" style="text-align:left;"><img src="/<%=uDTO.getFile_py_name()%>" class="img-circle" style="width:28px;"> &nbsp; <%=bpDTO.getUser_name() %></div>
+			<div class="col-md-6" style="text-align:left;"><img src="<%=bpDTO.getFile_py_name()%>" class="img-circle" style="width:28px;"> &nbsp; <%=bpDTO.getUser_name() %></div>
 			<div class="col-md-6" style="text-align:right;">조회수:<%=bpDTO.getBoard_count() %> / <%=bpDTO.getReg_date() %></div>
 		</div>
 		
@@ -144,6 +149,28 @@
 	
 	/*----------------------------------------*/
 	//댓글 불러오기
+	function callBoardRepliesPage() {
+		var contents = '';
+		$.ajax({
+			type : "POST",
+			url : "/mem/community/getBoardRepliesPage.do",
+			dataType: "text",
+			data : {
+				board_p_seq : '<%=bpDTO.getBoard_p_seq()%>'
+			},
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				$('#boardReplyContainer').html(data);
+			}
+		});
+	};
+
+	//댓글 목록 불러오기
+	callBoardRepliesPage();
+	<%-- 
+	//댓글 불러오기
 	function callBoardReplies() {
 		var contents = '';
 		$.ajax({
@@ -161,11 +188,11 @@
 					contents += '<div class="row" id="'+ value.reply_seq +'" style="padding: 4px; border-radius: 2px; background-color: #cccccc; margin:10px 0; border: 1px solid #bbbbbb;">';
 					contents += '<div style="min-height: 64px; padding: 4px;" id="replyContent'+ value.reply_seq +'">'+ value.reply_content+'</div>';
 					contents += '<div class="col-md-6" style="text-align:left;">'
-					contents += '<img src="/' + value.file_py_name + '"alt="Joseph Doe" class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />';
+					contents += '<img src="' + value.file_py_name + '"alt="Joseph Doe" class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />';
 					contents += ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
 					contents += '<div class="col-md-6" style="text-align:right">';
 					
-					<%-- 현재유저와 작성자 일치 확인 --%>
+					현재유저와 작성자 일치 확인
 					if(value.user_seq == '<%=uDTO.getUser_seq()%>') {
 						contents += '<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callBoardReplyUpdate(' + value.reply_seq + ')" />';
 						contents += '<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callBoardReplyDelete(' + value.reply_seq + ')" />';
@@ -178,13 +205,15 @@
 				$('#boardReplyContainer').html(contents);
 			}
 		})
-	}
-	
-	//댓글 목록 불러오기
-	callBoardReplies();
+	} --%>
 	
 	//댓글 작성
 	function callBoardReplyWriteProc(){
+		if($('#boardReply').val() == '') {
+			displayErrorNotice();
+			return null;
+		}
+		
 		$.ajax({
 			type : "POST",
 			url : "/mem/community/boardReplyWriteProc.do",
@@ -199,7 +228,8 @@
 			},
 			success: function(data) {
 				$('#boardReply').val(function(){return ''}); //작성한 내용 지우기				
-				callBoardReplies(); //댓글 목록 불러오기	
+				callBoardRepliesPage(); //댓글 목록 불러오기
+				displaySuccessNotice();
 			}
 		})
 	}
@@ -214,7 +244,7 @@
 		updateContents += $('#replyContent'+replySeq).html();
 		updateContents += '</textarea>';
 		updateContents += '<div style="text-align:right;">';
-		updateContents += '<a href="javascript:callBoardReplies()">취소</a> / <a href="javascript:callBoardReplyUpdateProc(' + replySeq + ')">수정</a></div>';
+		updateContents += '<a href="javascript:callBoardRepliesPage()">취소</a> / <a href="javascript:callBoardReplyUpdateProc(' + replySeq + ')">수정</a></div>';
 		updateContents += '</div>';
 		updateContents += '</div></div>';
 		
@@ -224,26 +254,29 @@
 	
 	//댓글 수정 처리 Procedure
 	function callBoardReplyUpdateProc(replySeq){
-		var r = confirm("수정하시겠습니까?");
-		if (r) {
-			$.ajax({
-				type : "POST",
-				url : "/mem/community/boardReplyUpdateProc.do",
-				dataType: "json",
-				data : {
-					reply_seq : replySeq,
-					reply_content : $('#replyContentUpdate').val(),
-					user_seq : '<%=uDTO.getUser_seq()%>'
-				},
-				error: function() {
-					alert("통신실패");
-				},
-				success: function(data) {
-					//댓글 목록 불러오기
-					callBoardReplies();
-				}
-			})
+		if( $('#replyContentUpdate').val() == '') {
+			displayErrorNotice();
+			return false;
 		}
+		
+		$.ajax({
+			type : "POST",
+			url : "/mem/community/boardReplyUpdateProc.do",
+			dataType: "json",
+			data : {
+				reply_seq : replySeq,
+				reply_content : $('#replyContentUpdate').val(),
+				user_seq : '<%=uDTO.getUser_seq()%>'
+			},
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				//댓글 목록 불러오기
+				callBoardRepliesPage();
+				displaySuccessNotice();
+			}
+		})
 	}
 	
 	//댓글 삭제
@@ -263,10 +296,38 @@
 				success: function(data) {
 					console.log(data);
 					//댓글 목록 불러오기 , 새로고침
-					callBoardReplies();
+					callBoardRepliesPage();
+					displayDeleteNotice();
 				}
 			})
 		}
 	}
+	
+	<%-- 모달 --%>
+	function displaySuccessNotice() {
+		new PNotify({
+			title: '댓글 쓰기 성공',
+			text: '댓글 쓰기가 완료되었습니다.',
+			type: 'success',
+			shadow: true
+		});
+	}
+	function displayErrorNotice() {
+		new PNotify({
+			title: '댓글 쓰기 실패',
+			text: '댓글을 작성해주세요.',
+			type: 'error',
+			shadow: true
+		});
+	}
+	function displayDeleteNotice() {
+		new PNotify({
+			title: '댓글 삭제 완료',
+			text: '댓글을 정상적으로 삭제하였습니다.',
+			shadow: true
+		});
+	}
 </script>
+
+
 </html>

@@ -10,6 +10,7 @@
 		<typeAlias type="poly.dto.BoardReplyDTO" alias="BoardReplyDTO"/>
 		<typeAlias type="poly.dto.PublicDataDTO" alias="PublicDataDTO"/>
 		<typeAlias type="poly.dto.ImageDTO" alias="ImageDTO"/>
+		<typeAlias type="poly.dto.KakaoUserDTO" alias="KakaoUserDTO"/>
 		
     </typeAliases>
 </configuration>

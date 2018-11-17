@@ -54,7 +54,7 @@
 					
 					
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" style="font-size: 18px; font-weight: bold;" onclick="this.submit()">
+						<button type="submit" class="login100-form-btn" style="font-size: 18px; font-weight: bold;">
 							비밀번호 찾기
 						</button>
 					</div>

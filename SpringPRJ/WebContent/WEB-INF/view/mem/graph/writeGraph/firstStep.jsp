@@ -101,7 +101,7 @@
 					</div>
 					
 					<!-- 3번 탭 -->
-					<div id="w4-billing" class="tab-pane">
+					<div id="w4-billing" class="tab-pane" style="text-align: center;">
 						
 						
 						
@@ -156,6 +156,8 @@
 			}
 		});
 	}
+	
+	
 	
 </script>
 	<!-- Specific Page Vendor -->

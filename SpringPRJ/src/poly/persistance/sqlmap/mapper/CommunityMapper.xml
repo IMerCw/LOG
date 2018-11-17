@@ -100,10 +100,12 @@
 	        TO_CHAR(BP.REG_DATE,'YYYY-MM-DD HH24:mm:ss') AS reg_date,
 	        BP.UPDATE_USER_SEQ,
 	        BP.UPDATE_DATE,
-	        UM.USER_NAME
+	        UM.USER_NAME,
+          	IMG.FILE_PY_NAME
 	    FROM 
 	        BOARD_POST BP
-	        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+		        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+		        INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
 	    WHERE 
 	        BP.BOARD_P_SEQ = #{board_p_seq}
 	</select>

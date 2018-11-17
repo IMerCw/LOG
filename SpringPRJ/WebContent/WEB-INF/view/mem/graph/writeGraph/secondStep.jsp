@@ -14,6 +14,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 </head>
+		<a href="javascript:callWriteeGraphThirdStep()">세 번째 이동</a>
 		
 		<!-- Header 목록 -->
 		<div>
@@ -47,7 +48,21 @@
 	}
 	
 
-
+	// 3번째 단계 - 그래프 선택 이동
+	function callWriteeGraphThirdStep() {
+		$.ajax({
+			type :"POST",
+			url : "/mem/graph/writeGraph/thirdStep.do",
+			dataType : "text",
+			error: function() {
+				alert("통신 실패");
+			},
+			success: function(data) {
+				$('#w4-billing').html(data);
+				$('.next').click();
+			}
+		});
+	}
 	
 
 </script>

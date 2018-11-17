@@ -8,6 +8,10 @@ public class UserMemberDTO {
 	private String user_reg_date;
 	private String update_user_seq;
 	private String update_date;
+	private String user_state;
+	private String kakao_user_yn;
+	
+	//외부 필드
 	private String img_seq;
 	private String file_py_name;
 	
@@ -64,6 +68,18 @@ public class UserMemberDTO {
 	}
 	public void setFile_py_name(String file_py_name) {
 		this.file_py_name = file_py_name;
+	}
+	public String getUser_state() {
+		return user_state;
+	}
+	public void setUser_state(String user_state) {
+		this.user_state = user_state;
+	}
+	public String getKakao_user_yn() {
+		return kakao_user_yn;
+	}
+	public void setKakao_user_yn(String kakao_user_yn) {
+		this.kakao_user_yn = kakao_user_yn;
 	}
 	
 	

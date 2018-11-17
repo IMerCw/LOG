@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.AdminMapper">
+	<!-- insert, update, delete, select -->
+	
+
+	<!-- 유저 리스트 가져오기 -->
+	<select id="getAllUser" resultType="UserMemberDTO">
+		SELECT
+		    UM.USER_SEQ as user_seq,
+		    UM.USER_ID as user_id,
+		    UM.USER_PASSWD as user_passwd,
+		    UM.USER_NAME as user_name,
+		    UM.IMG_SEQ as img_seq,
+	    	UM.USER_STATE  as user_state,
+	    	UM.KAKAO_USER_YN AS kakao_user_yn,
+	    	TO_CHAR(UM.USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date,
+	    	IMG.FILE_PY_NAME as file_py_name
+		FROM 
+			USER_MEMBER UM
+				LEFT OUTER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		WHERE
+			UM.USER_SEQ != 0
+	</select>
+	
+	<!-- 검색어 조건 유저 리스트 가져오기 -->
+	<select id="getSearchUser" resultType="UserMemberDTO" parameterType="string">
+		SELECT
+		    UM.USER_SEQ as user_seq,
+		    UM.USER_ID as user_id,
+		    UM.USER_PASSWD as user_passwd,
+		    UM.USER_NAME as user_name,
+		    UM.IMG_SEQ as img_seq,
+	    	UM.USER_STATE  as user_state,
+ 	        UM.KAKAO_USER_YN AS kakao_user_yn,
+	    	TO_CHAR(UM.USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date,
+	    	IMG.FILE_PY_NAME as file_py_name
+		FROM 
+			USER_MEMBER UM
+				LEFT OUTER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		WHERE
+			UM.USER_SEQ != 0  AND(
+	            UPPER( UM.USER_ID ) LIKE '%' ||  UPPER(#{searchContent}) || '%' OR
+	            UPPER( UM.USER_NAME ) LIKE '%' ||  UPPER(#{searchContent}) || '%'
+	        )
+	</select>
+	
+	
+	<!-- 관리자 회원 정보 수정 -->
+	<update id="updateUser" parameterType="UserMemberDTO">
+		UPDATE
+			USER_MEMBER
+		SET
+			USER_NAME = #{user_name},
+			USER_STATE = #{user_state}
+		WHERE
+			USER_SEQ = #{user_seq}
+	</update>
+		
+</mapper>

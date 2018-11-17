@@ -16,10 +16,8 @@ public class BoardPostDTO {
 	
 	//외부 필드
 	private String user_name;
-	
 	private String file_py_name;
 	
-	/////
 	public String getBoard_p_seq() {
 		return board_p_seq;
 	}

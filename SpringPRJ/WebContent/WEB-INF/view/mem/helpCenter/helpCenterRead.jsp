@@ -9,6 +9,7 @@
 	BoardPostDTO bpDTO = (BoardPostDTO)request.getAttribute("bpDTO");
 	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
 	String userSeq;
+	boolean isAdmin = uDTO.getUser_id().equals("admin"); //관리자 권한 참 거짓
 %>
 <html>
 <head>
@@ -34,6 +35,9 @@
 	.boardWritingInfo > div:first-child {
 		text-align:left;
 	}
+	.img-circle {
+		width:20px; max-height: 28px;
+	}
 </style>
 </head>
 <body>
@@ -51,7 +55,7 @@
 			<div class="col-md-12"><%=bpDTO.getBoard_p_content() %></div>
 		</div>		
 		
-		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq())) {%>
+		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq()) || isAdmin) {%>
 			<div class="row" style="padding:12px;"> 
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callHelpCenterUpdate()">수정하기</button>
@@ -140,6 +144,28 @@
 	
 	/*----------------------------------------*/
 	//댓글 불러오기
+	function callBoardRepliesPage() {
+		var contents = '';
+		$.ajax({
+			type : "POST",
+			url : "/mem/community/getBoardRepliesPage.do",
+			dataType: "text",
+			data : {
+				board_p_seq : '<%=bpDTO.getBoard_p_seq()%>'
+			},
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				$('#boardReplyContainer').html(data);
+			}
+		});
+	};
+
+	//댓글 목록 불러오기
+	callBoardRepliesPage();
+	<%-- 
+	//댓글 불러오기
 	function callBoardReplies() {
 		var contents = '';
 		$.ajax({
@@ -153,18 +179,15 @@
 				alert("통신실패");
 			},
 			success: function(data) {
-				
-				$('#reply_date').html('처리 날짜 : ' + $.parseJSON(data)[0].reg_date );
-				$('#reply_date').removeClass('text-muted');				
-				$('#reply_date').addClass('text-success');				
-				
 				$.each($.parseJSON(data), function(key,value) {
 					contents += '<div class="row" id="'+ value.reply_seq +'" style="padding: 4px; border-radius: 2px; background-color: #cccccc; margin:10px 0; border: 1px solid #bbbbbb;">';
 					contents += '<div style="min-height: 64px; padding: 4px;" id="replyContent'+ value.reply_seq +'">'+ value.reply_content+'</div>';
-					contents += '<div class="col-md-6" style="text-align:left;">' + '이모티콘 ' + ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
+					contents += '<div class="col-md-6" style="text-align:left;">'
+					contents += '<img src="' + value.file_py_name + '"alt="Joseph Doe" class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />';
+					contents += ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
 					contents += '<div class="col-md-6" style="text-align:right">';
 					
-					<%-- 현재유저와 작성자 일치 확인 --%>
+					현재유저와 작성자 일치 확인
 					if(value.user_seq == '<%=uDTO.getUser_seq()%>') {
 						contents += '<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callBoardReplyUpdate(' + value.reply_seq + ')" />';
 						contents += '<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callBoardReplyDelete(' + value.reply_seq + ')" />';
@@ -177,10 +200,7 @@
 				$('#boardReplyContainer').html(contents);
 			}
 		})
-	}
-	
-	//댓글 목록 불러오기
-	callBoardReplies();
+	} --%>
 	
 	//댓글 작성
 	function callBoardReplyWriteProc(){
@@ -198,7 +218,7 @@
 			},
 			success: function(data) {
 				$('#boardReply').val(function(){return ''}); //작성한 내용 지우기				
-				callBoardReplies(); //댓글 목록 불러오기	
+				callBoardRepliesPage(); //댓글 목록 불러오기	
 			}
 		})
 	}
@@ -213,7 +233,7 @@
 		updateContents += $('#replyContent'+replySeq).html();
 		updateContents += '</textarea>';
 		updateContents += '<div style="text-align:right;">';
-		updateContents += '<a href="javascript:callBoardReplies()">취소</a> / <a href="javascript:callBoardReplyUpdateProc(' + replySeq + ')">수정</a></div>';
+		updateContents += '<a href="javascript:callBoardRepliesPage()">취소</a> / <a href="javascript:callBoardReplyUpdateProc(' + replySeq + ')">수정</a></div>';
 		updateContents += '</div>';
 		updateContents += '</div></div>';
 		
@@ -239,7 +259,7 @@
 				},
 				success: function(data) {
 					//댓글 목록 불러오기
-					callBoardReplies();
+					callBoardRepliesPage();
 				}
 			})
 		}

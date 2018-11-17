@@ -43,24 +43,24 @@
 		<div class="limiter">
 			<div class="container-login100">
 				<div class="wrap-login100">
-				
-					<span class="login100-form-title p-b-43">
-						이메일 인증
-					</span>
-					<div class="row">
-						<div class="col-md-12" style="text-align: center;  margin: 20px; font-size: 20px;">
-							회원가입 인증 이메일을 전송하였습니다. <br/> 
-							가입하신 이메일을 확인 해주세요.
+					<form class="login100-form validate-form" action="/cmmn/loginProc.do" method="post">
+						<span class="login100-form-title p-b-43">
+							이메일 인증
+						</span>
+						<div class="row">
+							<div class="col-md-12" style="text-align: center;  margin: 20px; font-size: 20px;">
+								회원가입 인증 이메일을 전송하였습니다. <br/> 
+								가입하신 이메일을 확인 해주세요.
+							</div>
 						</div>
-					</div>
-
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" style="font-size: 18px; font-weight: bold;" onclick="javscript:location.href='/cmmn/main.do'">
-							첫 화면으로 이동
-						</button>
-					</div>
-
-
+	
+						<div class="container-login100-form-btn">
+							<button class="login100-form-btn" style="font-size: 18px; font-weight: bold;" onclick="javscript:location.href='/cmmn/main.do'">
+								첫 화면으로 이동
+							</button>
+						</div>
+					</form>
+	
 					<div class="login100-more" style="background-image: url('/assets/login/images/main.jpg');">
 					</div>
 				</div>

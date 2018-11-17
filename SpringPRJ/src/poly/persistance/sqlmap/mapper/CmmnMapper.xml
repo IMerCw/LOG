@@ -8,12 +8,13 @@
 	<!-- 로그인 -->
 	<select id="getUserMember" parameterType="UserMemberDTO" resultType="UserMemberDTO">
 			SELECT 
-			    UM.USER_SEQ,
-			    UM.USER_ID,
-			    UM.USER_PASSWD,
-			    UM.USER_NAME,
+			    UM.USER_SEQ as user_seq,
+			    UM.USER_ID as user_id,
+			    UM.USER_PASSWD as user_passwd,
+			    UM.USER_NAME as user_name,
+			    UM.IMG_SEQ as img_seq,
 		    	TO_CHAR(UM.USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date,
-		    	IMG.FILE_PY_NAME
+		    	IMG.FILE_PY_NAME as file_py_name
 			FROM 
 				USER_MEMBER UM
 					LEFT OUTER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
@@ -21,6 +22,22 @@
 		    	USER_ID = #{user_id} AND
 		    	USER_PASSWD = #{user_passwd} AND
 		    	USER_STATE = 1
+	</select>
+	
+	<!-- 카카오유저 로그인 -->
+	<select id="getKakaoUser" parameterType="UserMemberDTO" resultType="UserMemberDTO">
+			SELECT 
+			    USER_SEQ as user_seq,
+			    USER_ID as user_id,
+			    USER_PASSWD as user_passwd,
+			    USER_NAME as user_name,
+			    IMG_SEQ as img_seq,
+		    	TO_CHAR(USER_REG_DATE, 'YYYY-MM-DD HH24:mm:ss') as user_reg_date
+			FROM 
+				USER_MEMBER 
+			WHERE 
+		    	USER_ID = #{user_id} AND
+		    	USER_STATE = 2
 	</select>
 	
 	<!-- 아이디 중복 체크 -->
@@ -52,10 +69,42 @@
 			#{user_passwd},
 			#{user_name},
 			SYSDATE,
-			1,
+			#{user_state},
 			0
 		)
 	</insert>
+	
+	<!-- 카카오 유저 생성 -->
+	<insert id="insertKakaoUser" parameterType="KakaoUserDTO">
+		INSERT INTO KAKAO_USER
+		(
+			KAKAO_ID
+			,USER_SEQ
+			,PROFILE_IMAGE
+			,THUMBNAIL_IMAGE
+			,REG_USER_SEQ
+			,REG_DATE
+		)
+		VALUES
+		(
+			#{kakao_id}
+			,#{user_seq}
+			,#{profile_image}
+			,#{thumbnail_image}
+			,#{user_seq}
+			,SYSDATE
+		)
+	</insert>
+	
+	<!-- 유저 상태 변경 / 이메일 인증-->
+	<update id="setUserState" parameterType="UserMemberDTO">
+		UPDATE 
+		    USER_MEMBER
+		SET
+		    USER_STATE = #{user_state}
+		WHERE
+		    USER_ID = #{user_id}
+	</update>
 	
 	<!-- 비밀번호 찾기 -->
 	<select id="fndPasswd" parameterType="string" resultType="UserMemberDTO">
@@ -68,8 +117,7 @@
 		FROM 
 			USER_MEMBER
 		WHERE 
-	    	USER_ID = #{user_id} AND
-	    	USER_PASSWD = #{user_passwd}
+	    	USER_ID = #{user_id}
 	</select>
 	
 	<!-- 회원탈퇴 / 유저 상태 변경 -->
@@ -86,16 +134,19 @@
 	<!-- 이미지 업로드 -->
 	<insert id="updateImage" parameterType="ImageDTO">
 		INSERT INTO
-			IMAGE
+			IMAGE (
+				IMG_SEQ
+		        ,FILE_PY_NAME
+		        ,REG_USER_SEQ
+		        ,REG_DATE
+			)
 		VALUES (
 			IMAGE_SEQ.NEXTVAL,
 			#{file_py_name},
-			#{file_path},
 			#{reg_user_seq},
-			SYSDATE,
-			#{update_user_seq},
 			SYSDATE
 		)
+
 	</insert>
 	
 	<!-- 회원 정보 수정 -->
@@ -105,17 +156,41 @@
 		SET
 		    USER_PASSWD = #{user_passwd}
 		    ,USER_NAME = #{user_name}
-		    ,IMG_SEQ = (
-		    	SELECT 
-		    		MAX(IMG_SEQ)
-		    	FROM 
-		    		IMAGE
-		    )
-		    
+		    ,IMG_SEQ = #{img_seq}
 		WHERE
 		    USER_SEQ = #{user_seq}
 	</update>
 	
+	<!-- 회원 이미지 정보 수정 -->
+	<update id="updateImgSeq" parameterType="UserMemberDTO">
+		UPDATE 
+		    USER_MEMBER
+		SET
+		    IMG_SEQ = #{img_seq}
+		WHERE
+		    USER_SEQ = #{user_seq}
+	</update>
+	
+	<!-- 임시비밀번호 설정 -->
+	<update id="setTempPasswd" parameterType="UserMemberDTO">
+		UPDATE 
+		    USER_MEMBER
+		SET
+		   	USER_PASSWD = #{user_passwd} 
+		WHERE
+		    USER_ID = #{user_id}
+	</update>
+	
+	
+	<!-- 특정 회원의 이미지 번호 가져오기 -->
+	<select id="getImgSeq" parameterType="string" resultType="string">
+		SELECT
+		    MAX(IMG_SEQ)
+		FROM
+		    IMAGE
+		WHERE
+		    REG_USER_SEQ = #{user_seq}
+	</select>
 	<!-- 
 	
 	<select id="getAllMember" resultType="MemberDTO">

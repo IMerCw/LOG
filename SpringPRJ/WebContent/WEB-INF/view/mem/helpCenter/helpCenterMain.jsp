@@ -45,102 +45,124 @@
 	p {
 		margin:0;
 	}
+	.boardContent:hover{
+		background-color:#eeeeee;
+	}
 </style>
 </head>
 <body>
 	<div class="container-fluid panel" style="background-color:#ffffff; color:black; padding:10px;">
 			<!-- Board content -->
 			<div class="boardContent"></div>
-			
-			<%for(int i = 0; i < bpDTOs.size(); i++) {%>
-				<div class="boardContent" onclick="javscript:callHelpCenterRead(<%=bpDTOs.get(i).getBoard_p_seq()%>)">	
-					<div class="row" style="">
-						<div class="col-xs-12 contentSubject"><%=bpDTOs.get(i).getBoard_p_title() %></div>
+			<%if(!bpDTOs.isEmpty()) {%>
+				<%for(int i = 0; i < bpDTOs.size(); i++) {%>
+					<div class="boardContent" onclick="javscript:callHelpCenterRead(<%=bpDTOs.get(i).getBoard_p_seq()%>)">	
+						<div class="row" style="">
+							<div class="col-xs-12 contentSubject"><%=bpDTOs.get(i).getBoard_p_title() %></div>
+						</div>
+						<div class="row boardWritingInfo">
+							<div class="col-xs-6 col-sm-6">상담날짜: <%=bpDTOs.get(i).getReg_date() %></div>
+							<%if (bpDTOs.get(i).getReply_total() != null) { %>
+								<div class="col-xs-6 col-sm-6"><p class="text-success">처리완료</p></div>
+							<%} else {%>
+								<div class="col-xs-6 col-sm-6"><p class="text-muted">처리 중</p></div>
+							<%} %>
+						</div>
 					</div>
-					<div class="row boardWritingInfo">
-						<div class="col-xs-6 col-sm-6">상담날짜: <%=bpDTOs.get(i).getReg_date() %></div>
-						<%if (bpDTOs.get(i).getReply_total() != null) { %>
-							<div class="col-xs-6 col-sm-6"><p class="text-success">처리완료</p></div>
-						<%} else {%>
-							<div class="col-xs-6 col-sm-6"><p class="text-muted">처리 중</p></div>
-						<%} %>
+				<%} %>
+				
+				<!-- BUTTON -->
+				<div style="margin-top:32px;"> 
+					<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javscript:callHelpCenterWrite()">
+						<i class="fa fa-pencil">&nbsp;글쓰기</i>
+					</button>
+				</div>
+				
+			<%-- 	<!-- start: PAGINATION -->
+				<div class="row">
+					<div class="col-md-12" style="text-align:center; margin:10px 0;">
+						<nav aria-label="...">
+							<ul class="pagination">
+						    	<li class="page-item disabled">
+						    		<span class="page-link">이전</span>
+						    	</li>
+						    	<%for(int i = 1; i <= totalPages; i++) {%>
+					    			<%if (i == Integer.parseInt(currentPage)) {%>
+						    			<li class="page-item active">
+										  <span class="page-link">
+										    <%=i %>
+										    <span class="sr-only">(current)</span>
+										  </span>
+										</li>
+					    			<%} else { %>
+						    			<li class="page-item"><a class="page-link" onclick="callHelpCenterMain(<%=i%>)"><%=i%></a></li>
+					    			<%} %>
+							    <%} %>
+						    	<li class="page-item">
+						      	<a class="page-link" href="#">다음</a>
+						    	</li>
+						  	</ul>
+						</nav>
 					</div>
 				</div>
-			<%} %>
-			
-			<!-- BUTTON -->
-			<div style="margin-top:32px;"> 
-				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javscript:callHelpCenterWrite()">
-					<i class="fa fa-pencil">&nbsp;글쓰기</i>
-				</button>
-			</div>
-			
-		<%-- 	<!-- start: PAGINATION -->
-			<div class="row">
-				<div class="col-md-12" style="text-align:center; margin:10px 0;">
-					<nav aria-label="...">
-						<ul class="pagination">
-					    	<li class="page-item disabled">
-					    		<span class="page-link">이전</span>
-					    	</li>
-					    	<%for(int i = 1; i <= totalPages; i++) {%>
-				    			<%if (i == Integer.parseInt(currentPage)) {%>
-					    			<li class="page-item active">
-									  <span class="page-link">
-									    <%=i %>
-									    <span class="sr-only">(current)</span>
-									  </span>
-									</li>
-				    			<%} else { %>
-					    			<li class="page-item"><a class="page-link" onclick="callHelpCenterMain(<%=i%>)"><%=i%></a></li>
-				    			<%} %>
-						    <%} %>
-					    	<li class="page-item">
-					      	<a class="page-link" href="#">다음</a>
-					    	</li>
-					  	</ul>
-					</nav>
+				<!-- end: PAGINATION --> --%>
+				
+				<!-- start: PAGINATION -->
+				<div class="row">
+					<div class="col-md-12" style="text-align:center; margin:10px 0;">
+						<nav aria-label="...">
+							<ul class="pagination">
+								<!-- 이전 페이지 블럭 버튼 -->
+								<%if(startPage != 1) {%>
+						    	<li class="page-item">
+						    		<span class="page-link" onclick="callHelpCenterMain(<%=startPage-1%>)">이전</span>
+						    	</li>
+						    	<%} %>
+						    	
+						    	
+						    	<%for (int i = startPage; i <= endPage; i++ ) {%>
+					    			<%if (i == Integer.parseInt(currentPage)) {%>
+						    			<li class="page-item active">
+										  <span class="page-link">
+										    <%=i %>
+										    <span class="sr-only">(current)</span>
+										  </span>
+										</li>
+					    			<%} else { %>
+						    			<li class="page-item"><a class="page-link" onclick="callHelpCenterMain(<%=i%>)"><%=i%></a></li>
+					    			<%} %>
+							    <%} %>
+							    
+							    <!-- 다음 페이지 블럭 버튼 -->
+						       <%if(endPage != totalPages) {%>
+						    	<li class="page-item">
+						    		<span class="page-link" onclick="callHelpCenterMain(<%=endPage+1%>)">다음</span>
+						    	</li>
+							    <%} %>
+						  	</ul>
+						</nav>
+					</div>
 				</div>
-			</div>
-			<!-- end: PAGINATION --> --%>
-			
-			<!-- start: PAGINATION -->
-			<div class="row">
-				<div class="col-md-12" style="text-align:center; margin:10px 0;">
-					<nav aria-label="...">
-						<ul class="pagination">
-							<!-- 이전 페이지 블럭 버튼 -->
-							<%if(startPage != 1) {%>
-					    	<li class="page-item">
-					    		<span class="page-link" onclick="callHelpCenterMain(<%=startPage-1%>)">이전</span>
-					    	</li>
-					    	<%} %>
-					    	
-					    	
-					    	<%for (int i = startPage; i <= endPage; i++ ) {%>
-				    			<%if (i == Integer.parseInt(currentPage)) {%>
-					    			<li class="page-item active">
-									  <span class="page-link">
-									    <%=i %>
-									    <span class="sr-only">(current)</span>
-									  </span>
-									</li>
-				    			<%} else { %>
-					    			<li class="page-item"><a class="page-link" onclick="callHelpCenterMain(<%=i%>)"><%=i%></a></li>
-				    			<%} %>
-						    <%} %>
-						    
-						    <!-- 다음 페이지 블럭 버튼 -->
-					       <%if(endPage != totalPages) {%>
-					    	<li class="page-item">
-					    		<span class="page-link" onclick="callHelpCenterMain(<%=endPage+1%>)">다음</span>
-					    	</li>
-						    <%} %>
-					  	</ul>
-					</nav>
+				<!-- end: PAGINATION -->
+				<%}else { %>
+				
+				
+				<div class="row">
+					<div class="col-md-12 col-xs-12" style="text-align:center; font-size:18px;">
+						<section class="panel">
+							<div class="panel-body">
+								등록된 게시글이 없습니다.
+							</div>
+						</section>
+					</div>
 				</div>
-			</div>
-			<!-- end: PAGINATION -->
+				<!-- BUTTON -->
+				<div style="margin-top:32px;"> 
+					<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javscript:callHelpCenterWrite()">
+						<i class="fa fa-pencil">&nbsp;글쓰기</i>
+					</button>
+				</div>
+				<%} %>
 		</div>
 </body>
 <script>

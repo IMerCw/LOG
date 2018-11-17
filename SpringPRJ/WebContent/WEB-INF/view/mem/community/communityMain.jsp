@@ -40,33 +40,39 @@
 		text-align:left;
 	}
 	.boardWritingInfo > div:last-child {
-		text-align:right;
+		text-align:right; padding: 5px 15px;
 	}
 	.pagination >li {
 		cursor:pointer;
 	}
 	.img-circle{
-	    width: 25px;
+	    width: 25px; height: 32px;
+	}
+	.boardContent:hover{
+		background-color:#eeeeee;
+	}
+	.row {
+		display:flex;
 	}
 </style>
 </head>
 <body>
 	<div class="container-fluid panel" style="background-color:#ffffff; color:black; padding:10px;">
 			<!-- Board content -->
-			<div class="boardContent"></div>
+			<div class="boardContent" style="border-bottom: 2px solid #cccccc;"></div>
 			
 			<%for(int i = 0; i < bpDTOs.size(); i++) {%>
 				<div class="boardContent" onclick="javscript:callCommunityRead(<%=bpDTOs.get(i).getBoard_p_seq()%>)">	
-					<div class="row" style="">
+					<div class="row">
 						
 						<div class="col-xs-6 contentSubject" style="text-align:left;"><%=bpDTOs.get(i).getBoard_p_title() %></div>
 						<%reply_total = ( (bpDTOs.get(i).getReply_total()) != null ? Integer.parseInt(bpDTOs.get(i).getReply_total()) : 0 ); %>
-						<div class="col-xs-6" style="text-align:right; font-size:16px;"><i class="fa fa-comments-o">&nbsp;<%=reply_total%></i></div>
+						<div class="col-xs-6" style="text-align:right; font-size:18px;"><i class="fa fa-comments-o">&nbsp;<%=reply_total%></i></div>
 					</div>
 					<div class="row boardWritingInfo">
 						<div class="col-xs-6 col-sm-6">
 						
-							<img src="/<%=bpDTOs.get(i).getFile_py_name()%>" alt="Joseph Doe" class="img-circle" 
+							<img src="<%=bpDTOs.get(i).getFile_py_name()%>" alt="Joseph Doe" class="img-circle" 
 								data-lock-picture="/assets/images/!logged-user.jpg" />
 							<%=bpDTOs.get(i).getUser_name() %> / <%=bpDTOs.get(i).getReg_date() %>
 						</div>
@@ -76,14 +82,14 @@
 			<%} %>
 			
 			<!-- BUTTON -->
-			<div style="margin-top:32px;"> 
+			<div style="border-top: 2px solid #cccccc; padding: 10px 0;"> 
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javscript:callCommunityWrite()">
 					<i class="fa fa-pencil">&nbsp;글쓰기</i>
 				</button>
 			</div>
 			
 			<!-- start: PAGINATION -->
-			<div class="row">
+			<div class="row" style="display:block;">
 				<div class="col-md-12" style="text-align:center; margin:10px 0;">
 					<nav aria-label="...">
 						<ul class="pagination">

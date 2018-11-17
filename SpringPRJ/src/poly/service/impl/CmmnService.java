@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import poly.dto.ImageDTO;
+import poly.dto.KakaoUserDTO;
 import poly.dto.UserMemberDTO;
 import poly.persistance.mapper.CmmnMapper;
 import poly.service.ICmmnService;
@@ -55,6 +56,37 @@ public class CmmnService implements ICmmnService {
 	public int updateImage(ImageDTO imgDTO) throws Exception {
 		return cmmnMapper.updateImage(imgDTO);
 	}
+
+	@Override
+	public int setUserState(UserMemberDTO uDTO) throws Exception {
+		return cmmnMapper.setUserState(uDTO);
+	}
+
+	@Override
+	public int setTempPasswd(UserMemberDTO uDTO) throws Exception {
+		return cmmnMapper.setTempPasswd(uDTO);
+	}
+
+	@Override
+	public String getImgSeq(String user_seq) throws Exception {
+		return cmmnMapper.getImgSeq(user_seq);
+	}
+
+	@Override
+	public int insertKakaoUser(KakaoUserDTO kDTO) throws Exception {
+		return cmmnMapper.insertKakaoUser(kDTO);
+	}
+
+	@Override
+	public UserMemberDTO getKakaoUser(UserMemberDTO uDTO) throws Exception {
+		return cmmnMapper.getKakaoUser(uDTO);
+	}
+
+	@Override
+	public int updateImgSeq(UserMemberDTO uDTO) throws Exception {
+		return cmmnMapper.updateImgSeq(uDTO);
+	}
+
 
 	
 /*
