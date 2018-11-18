@@ -37,7 +37,8 @@
 				USER_MEMBER 
 			WHERE 
 		    	USER_ID = #{user_id} AND
-		    	USER_STATE = 2
+		    	USER_STATE = 1 AND
+		    	KAKAO_USER_YN = 1
 	</select>
 	
 	<!-- 아이디 중복 체크 -->

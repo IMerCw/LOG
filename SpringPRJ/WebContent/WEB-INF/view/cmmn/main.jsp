@@ -49,7 +49,7 @@
 						</span>
 						
 						
-						<div class="wrap-input100 validate-input" data-validate = "유효한 형식을 입력해주세요.">
+						<div class="wrap-input100 validate-input">
 							<input class="input100 has-val" type="text" name="user_id" required="required">
 							<span class="focus-input100"></span>
 							<span class="label-input100">아이디</span>
@@ -120,5 +120,21 @@
 	<script src="/assets/login/vendor/countdowntime/countdowntime.js"></script>
 <!--===============================================================================================-->
 	<script src="/assets/login/js/main.js"></script>
+<!--===============================================================================================-->
+
+	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+	<script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
+	<script>
+		
+		function test() {
+			new PNotify({
+		
+				title: 'With Shadow',
+				text: 'Check me out! I\'m a notice.',
+				type: 'error',
+				shadow: true
+			});
+		}
+	</script>
 </body>
 </html>

@@ -3,230 +3,333 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+	<!-- Load c3.css -->
+	<link href="/assets/c3Chart/c3.css" rel="stylesheet">
+	<!-- Load d3.js and c3.js -->
 	<script src="/assets/d3/d3.v5.js"></script>
-	
-	<!-- Resources -->
-	<script src="/assets/amChart/amcharts.js"></script>
-	<script src="/assets/amChart/serial.js"></script>
-	<script src="/assets/amChart/export.min.js"></script>
-	<link rel="stylesheet" href="/assets/amChart/export.css" type="text/css" media="all" />
-	<script src="/assets/amChart/light.js"></script>
-	
-	<style> 
-	#canvas rect { fill: steelblue } 
-	
-	#chartdiv {
-		width		: 100%;
-		height		: 500px;
-		font-size	: 11px;
-	}					
-	</style>
-
-
+	<script src="/assets/c3Chart/c3.js"></script>
 </head>
+<style>
+	.portlet-handler {
+		cursor:pointer;
+	}
+	.panel {
+		cursor:pointer;
+	}
+</style>
 <body>
-<!-- 	<svg id="canvas" width="100%" height="100%">
-		<g id="yaxis"></g>
-  		<g id="xaxis"></g>
-	</svg> -->
+	<div class="row" style="padding:20px 0"></div>
+	
+	<div class="row">
+	
+		<div class="col-md-6 col-sm-12">
+			<section class="panel" id="lineChartSelect" data-portlet-item="">
+				<header class="panel-heading portlet-handler">
+			
+					<h2 class="panel-title">라인 그래프</h2>
+				</header>
+				<div class="panel-body">
+				
+					<div id="linechart"></div>
+					
+				</div>
+			</section>
+		</div>
+		
+		<div class="col-md-6 col-sm-12">
+			<section class="panel" id="barChartSelect" data-portlet-item="">
+				<header class="panel-heading portlet-handler">
+					<h2 class="panel-title">막대 그래프</h2>
+				</header>
+				<div class="panel-body">
+					<div id="barChart"></div>
+				</div>
+			</section>
+			
+			
+		</div>
+	
+		<div class="col-md-6 col-sm-12">
+			<section class="panel" id="pieChartSelect" data-portlet-item="">
+				<header class="panel-heading portlet-handler">
+					<h2 class="panel-title">파이 그래프</h2>
+				</header>
+				<div class="panel-body">
+					<div id="pieChart"></div>
+				</div>
+			</section>
+		</div>
+		
+		<div class="col-md-6 col-sm-12">
+			<section class="panel" id="scatterChartSelect" data-portlet-item="">
+				<header class="panel-heading portlet-handler">
+					<h2 class="panel-title">점 그래프</h2>
+				</header>
+				<div class="panel-body">
+					<div id="scatterChart"></div>
+				</div>
+			</section>
+			
+			
+		</div>
 
-	<!-- HTML -->
-	<div id="chartdiv"></div>	
+	
+		<div class="col-md-6 col-sm-12">
+			<section class="panel" id="areaChartSelect" data-portlet-item="">
+				<header class="panel-heading portlet-handler">
+					<h2 class="panel-title">영역 그래프</h2>
+				</header>
+				<div class="panel-body">
+					<div id="areaChart"></div>
+				</div>
+			</section>
+		</div>
+		
+		<div class="col-md-6 col-sm-12">
+			
+		</div>
+		
+	</div>
 </body>
 
 <script>
-	//그래프 너비, 높이 지정
-	var width = window.innerWidth / 2.5;
-	var height = 380;
-	
-	var data =  d3.csv("/public_data/전국무더위쉼터표준데이터.csv", function(csv_data) {
-		
-		return {
-			
-			소재지도로명주소: csv_data.소재지도로명주소.split(' ')[0], //x축
-			소재지지번주소: csv_data.소재지지번주소.split(' ')[0], //x축
-			이용가능인원수 : +csv_data.이용가능인원수
-			
-		};
-		
-	}).then(function(data){
-		
-		
-		var nestedData = d3.nest()
-		 	.key(function(d) { 
-		  		if(d.소재지도로명주소 == '') {
-		  			return d.소재지지번주소;
-		  		}else{
-		  			return d.소재지도로명주소;	
-		  		}
-		  	
-			})
-		 	.rollup(function(v) { return d3.sum(v, function(d){ return Math.ceil(d.이용가능인원수); })})
-		 	.entries(data);
-			
-		
-		console.log(nestedData);
-		
-	/* 	//y축의 최대값
-		var maxVal = d3.max(nestedData, function(d) {return d.value;});
-		
-		//x값 스케일
-		var x = d3.scaleLinear()
-		.domain([0,6])
-	    .range([0,width]);
-		
-	    //y값 스케일
-		var y = d3.scaleLinear()
-			.domain([0,maxVal])
-		    .range([height,0]);
-		
-	    //x축
-	    xAxis = g => g
-		    .attr("transform", `translate(0,${height - margin.bottom})`)
-		    .call(d3.axisBottom(x)
-		        .tickSizeOuter(0))
-		        
-		//y축
-		var yscale = d3.scaleLinear()
-	  		.domain([0, maxVal]) //실제값의 범위
-	    	.range([height - 20, 0 + 20]); //변환할 값의 범위(역으로 처리했음!), 위아래 패딩 20을 줬다!
-		
-		    
-		//그래프 띄우기
-		d3.select("#canvas")
-			.attr("width", width)
-		    .attr("height", height)
-			.selectAll("rect")
-			.data(nestedData)
-		    .enter().append("rect")
-		    .attr("width", 19)
-		    .attr("height",function(d) { return height - y(d.value); })
-		    .attr("x",function(d,i) { return x(i); })
-		    .attr("y",function(d) { return y(d.value); });
-		
-		
-		//y축 그리기
-		d3.select("#yaxis")
-			.attr('transform', 'translate(50, 0)') //살짝 오른쪽으로 밀고
-		    .call(d3.axisLeft(yscale)); //축함수를 넘기면 알아서 그려줌.
-			 */
-		    
-	/* 
-		d3.select("#canvas")
-			.selectAll("rect")
-		  	.data(nestedData)
-			.enter()
-		 	.append("rect")
-		   	.style("fill", "steelblue")
-		   	.attr("height", function(d) { return heightScale(d.value); })
-		   	.attr("width", 30)
-		   	.attr("x", function(d,i) { return i * 40; });  */
-	
-	});
 
+//클릭 이벤트
 
-  
-	
-	
-/* 		
-	function doroAddress(addr) {
-		
-		
-		'서울특별시'
-		'부산광역시'
-		'대구광역시'
-		'인천광역시'
-		'광주광역시'
-		'대전광역시'
-		'울산광역시'
-		'경기도'
-		'강원도'
-		'충청북도'
-		'충청남도'
-		'전라북도'
-		'전라남도'
-		'경상북도'
-		'경상남도'
-		'제주특별자치도'
+$('#lineChartSelect').click(function() {
+	alert("라인그래프 선택");
+	callFourthStep('lineChart');
+});
+$('#barChartSelect').click(function() {
+	alert("바그래프 선택");	
+	callFourthStep('barChart');
+});
+$('#pieChartSelect').click(function() {
+	alert("파이그래프 선택");
+	callFourthStep('pieChart');
+});
+$('#scatterChartSelect').click(function() {
+	alert("점 그래프 선택");
+	callFourthStep('scatterChart');
+});
+$('#areaChartSelect').click(function() {
+	alert("영역그래프 선택");
+	callFourthStep('areaChart');
+});
+
+//해당 그래프 페이지 이동
+
+//그래프 이동
+function callFourthStep(graphSelect) {
+		$.ajax({
+			type : "GET",
+			url : "/mem/graph/writeGraph/FourthStep.do",
+			dataType: "text",
+			data : {graphSelect : graphSelect},
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				$('.content-body').html(data);
+			}
+		})
 	}
-*/
+	
+/*--------라인 그래프--------*/
+
+setTimeout(function () {
+	var lineChart = c3.generate({
+		bindto: "#linechart",
+	
+	    data: {
+	        x: 'x',
+	      		xFormat: '%Y%m%d', // 'xFormat' can be used as custom format of 'x'
+	        columns: [
+	          
+	           
+	        ]
+	    },
+	    axis: {
+	        x: {
+	            type: 'timeseries',
+	            tick: {
+	                format: '%Y-%m-%d'
+	            }
+	        }
+	    }
+	});
+	
+	setTimeout(function () {
+	    lineChart.load({
+	        columns: [
+	        	['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'],
+		        ['x', '20130101', '20130102', '20130103', '20130104', '20130105', '20130106'],
+	            ['data3', 400, 500, 450, 700, 600, 500]
+	        ]
+	    });
+	}, 1000);
+	setTimeout(function () {
+	    lineChart.load({
+	        columns: [
+	        	 ['data1', 30, 200, 100, 400, 150, 250],
+	             ['data2', 130, 340, 200, 500, 250, 350]
+	        ]
+	    });
+	}, 2000);
+}, 100);
+
+/*------------------------*/	
+/*--------막대 그래프--------*/	
+setTimeout(function () {
+	var barChart = c3.generate({
+		bindto: "#barChart",
+	    data: {
+	        columns: [
+	           
+	        ],
+	        type: 'bar'
+	    },
+	    bar: {
+	        width: {
+	            ratio: 0.5 // this makes bar width 50% of length between ticks
+	        }
+	        // or
+	        //width: 100 // this makes bar width 100px
+	    }
+	
+	    
+	});
+	setTimeout(function () {
+		barChart.load({
+	        columns: [
+	        	 ['data1', 30, 200, 100, 400, 150, 250],
+	             ['data2', 130, 100, 140, 200, 150, 50]
+	        ]
+	    });
+	}, 2000);
+}, 100);
+
+/*------------------------*/
+
+/*---------파이그래프--------*/
+setTimeout(function () {
+	
+	var pieChart = c3.generate({
+			bindto: "#pieChart",
+		    data: {
+		        // iris data from R
+		        columns: [
+		            ['data1', 30],
+		            ['data2', 120],
+		        ],
+		        type : 'pie',
+		        onclick: function (d, i) { console.log("onclick", d, i); },
+		        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+		    }
+		});
+		
+		setTimeout(function () {
+			pieChart.load({
+		        columns: [
+		            ["setosa", 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.6, 0.4, 0.3, 0.2, 0.2, 0.2, 0.2],
+		            ["versicolor", 1.4, 1.5, 1.5, 1.3, 1.5, 1.3, 1.6, 1.0, 1.3, 1.4, 1.0, 1.5, 1.0, 1.4, 1.3, 1.4, 1.5, 1.0, 1.5, 1.1, 1.8, 1.3, 1.5, 1.2, 1.3, 1.4, 1.4, 1.7, 1.5, 1.0, 1.1, 1.0, 1.2, 1.6, 1.5, 1.6, 1.5, 1.3, 1.3, 1.3, 1.2, 1.4, 1.2, 1.0, 1.3, 1.2, 1.3, 1.3, 1.1, 1.3],
+		            ["virginica", 2.5, 1.9, 2.1, 1.8, 2.2, 2.1, 1.7, 1.8, 1.8, 2.5, 2.0, 1.9, 2.1, 2.0, 2.4, 2.3, 1.8, 2.2, 2.3, 1.5, 2.3, 2.0, 2.0, 1.8, 2.1, 1.8, 1.8, 1.8, 2.1, 1.6, 1.9, 2.0, 2.2, 1.5, 1.4, 2.3, 2.4, 1.8, 1.8, 2.1, 2.4, 2.3, 1.9, 2.3, 2.5, 2.3, 1.9, 2.0, 2.3, 1.8],
+		        ]
+		    });
+		}, 1500);
+		
+		setTimeout(function () {
+			pieChart.unload({
+		        ids: 'data1'
+		    });
+			pieChart.unload({
+		        ids: 'data2'
+		    });
+		}, 2500);
+		
+},100);
+
+/*-----------점 그래프--------*/
+setTimeout(function () {
+	var scatterChart = c3.generate({
+		bindto: "#scatterChart",
+		data: {
+		      xs: {
+		          setosa: 'setosa_x',
+		          versicolor: 'versicolor_x',
+		      },
+		      // iris data from R
+		      columns: [
+		          ["setosa_x", 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.4, 3.0, 3.0, 4.0, 4.4, 3.9, 3.5, 3.8, 3.8, 3.4, 3.7, 3.6, 3.3, 3.4, 3.0, 3.4, 3.5, 3.4, 3.2, 3.1, 3.4, 4.1, 4.2, 3.1, 3.2, 3.5, 3.6, 3.0, 3.4, 3.5, 2.3, 3.2, 3.5, 3.8, 3.0, 3.8, 3.2, 3.7, 3.3],
+		          ["versicolor_x", 3.2, 3.2, 3.1, 2.3, 2.8, 2.8, 3.3, 2.4, 2.9, 2.7, 2.0, 3.0, 2.2, 2.9, 2.9, 3.1, 3.0, 2.7, 2.2, 2.5, 3.2, 2.8, 2.5, 2.8, 2.9, 3.0, 2.8, 3.0, 2.9, 2.6, 2.4, 2.4, 2.7, 2.7, 3.0, 3.4, 3.1, 2.3, 3.0, 2.5, 2.6, 3.0, 2.6, 2.3, 2.7, 3.0, 2.9, 2.9, 2.5, 2.8],
+		          ["setosa", 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.6, 0.4, 0.3, 0.2, 0.2, 0.2, 0.2],
+		          ["versicolor", 1.4, 1.5, 1.5, 1.3, 1.5, 1.3, 1.6, 1.0, 1.3, 1.4, 1.0, 1.5, 1.0, 1.4, 1.3, 1.4, 1.5, 1.0, 1.5, 1.1, 1.8, 1.3, 1.5, 1.2, 1.3, 1.4, 1.4, 1.7, 1.5, 1.0, 1.1, 1.0, 1.2, 1.6, 1.5, 1.6, 1.5, 1.3, 1.3, 1.3, 1.2, 1.4, 1.2, 1.0, 1.3, 1.2, 1.3, 1.3, 1.1, 1.3],
+		      ],
+		      type: 'scatter'
+		  },
+		   axis: {
+		        x: {
+		            label: 'Sepal.Width',
+		            tick: {
+		                fit: false
+		            }
+		        },
+		        y: {
+		            label: 'Petal.Width'
+		        }
+		    }
+		});
+	
+		setTimeout(function () {
+			scatterChart.load({
+		        xs: {
+		            virginica: 'virginica_x'
+		        },
+		        columns: [
+		            ["virginica_x", 3.3, 2.7, 3.0, 2.9, 3.0, 3.0, 2.5, 2.9, 2.5, 3.6, 3.2, 2.7, 3.0, 2.5, 2.8, 3.2, 3.0, 3.8, 2.6, 2.2, 3.2, 2.8, 2.8, 2.7, 3.3, 3.2, 2.8, 3.0, 2.8, 3.0, 2.8, 3.8, 2.8, 2.8, 2.6, 3.0, 3.4, 3.1, 3.0, 3.1, 3.1, 3.1, 2.7, 3.2, 3.3, 3.0, 2.5, 3.0, 3.4, 3.0],
+		            ["virginica", 2.5, 1.9, 2.1, 1.8, 2.2, 2.1, 1.7, 1.8, 1.8, 2.5, 2.0, 1.9, 2.1, 2.0, 2.4, 2.3, 1.8, 2.2, 2.3, 1.5, 2.3, 2.0, 2.0, 1.8, 2.1, 1.8, 1.8, 1.8, 2.1, 1.6, 1.9, 2.0, 2.2, 1.5, 1.4, 2.3, 2.4, 1.8, 1.8, 2.1, 2.4, 2.3, 1.9, 2.3, 2.5, 2.3, 1.9, 2.0, 2.3, 1.8],
+		        ]
+		    });
+		}, 1000);
+	
+		setTimeout(function () {
+			scatterChart.unload({
+		        ids: 'setosa'
+		    });
+		}, 2000);
+	
+		setTimeout(function () {
+			scatterChart.load({
+		        columns: [
+		            ["virginica", 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 0.2, 0.4, 0.2, 0.5, 0.2, 0.2, 0.4, 0.2, 0.2, 0.2, 0.2, 0.4, 0.1, 0.2, 0.2, 0.2, 0.2, 0.1, 0.2, 0.2, 0.3, 0.3, 0.2, 0.6, 0.4, 0.3, 0.2, 0.2, 0.2, 0.2],
+		        ]
+		    });
+		}, 3000);
+}, 100);		
+
+/*------------------------*/
+	
+
+/*-----------영역 그래프--------*/
+setTimeout(function () {
+	var chart = c3.generate({
+		bindto: "#areaChart",
+	    data: {
+	        columns: [
+	            ['data1', 300, 350, 300, 0, 0, 0],
+	            ['data2', 130, 100, 140, 200, 150, 50]
+	        ],
+	        types: {
+	            data1: 'area',
+	            data2: 'area-spline'
+	        }
+	    }
+	});
+}, 100);
+
+/*------------------------*/
+
 </script>
-	<!-- Chart code -->
-	<script>
-	var chart = AmCharts.makeChart( "chartdiv", {
-	  "type": "serial",
-	  "theme": "light",
-	  "dataProvider": [ {
-	    "country": "USA",
-	    "visits": 2025
-	  }, {
-	    "country": "China",
-	    "visits": 1882
-	  }, {
-	    "country": "Japan",
-	    "visits": 1809
-	  }, {
-	    "country": "Germany",
-	    "visits": 1322
-	  }, {
-	    "country": "UK",
-	    "visits": 1122
-	  }, {
-	    "country": "France",
-	    "visits": 1114
-	  }, {
-	    "country": "India",
-	    "visits": 984
-	  }, {
-	    "country": "Spain",
-	    "visits": 711
-	  }, {
-	    "country": "Netherlands",
-	    "visits": 665
-	  }, {
-	    "country": "Russia",
-	    "visits": 580
-	  }, {
-	    "country": "South Korea",
-	    "visits": 443
-	  }, {
-	    "country": "Canada",
-	    "visits": 441
-	  }, {
-	    "country": "Brazil",
-	    "visits": 395
-	  } ],
-	  "valueAxes": [ {
-	    "gridColor": "#FFFFFF",
-	    "gridAlpha": 0.2,
-	    "dashLength": 0
-	  } ],
-	  "gridAboveGraphs": true,
-	  "startDuration": 1,
-	  "graphs": [ {
-	    "balloonText": "[[category]]: <b>[[value]]</b>",
-	    "fillAlphas": 0.8,
-	    "lineAlpha": 0.2,
-	    "type": "column",
-	    "valueField": "visits"
-	  } ],
-	  "chartCursor": {
-	    "categoryBalloonEnabled": false,
-	    "cursorAlpha": 0,
-	    "zoomable": false
-	  },
-	  "categoryField": "country",
-	  "categoryAxis": {
-	    "gridPosition": "start",
-	    "gridAlpha": 0,
-	    "tickPosition": "start",
-	    "tickLength": 20
-	  },
-	  "export": {
-	    "enabled": true
-	  }
-
-	} );
-	</script>
-
+	
 </html>

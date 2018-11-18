@@ -209,7 +209,6 @@
 	//유저 검색
 	function adminSearchUser() {
 		var searchContent = $('#userSeach').val();
-		alert(searchContent);
 		$.ajax({
 			method : 'post',
 			url : '/admin/adminSearchUser.do',

@@ -85,8 +85,8 @@ public class GraphGalleryController {
 		String pdata_seq = request.getParameter("pdata_seq");
 		//공공데이터 정보를 가져옴
 		PublicDataDTO pdDTO = graphService.getOnePublicData(pdata_seq);
-		//세션에 공공데이터 넣기
-		session.setAttribute("pdDTO", pdDTO);
+		//모델에 공공데이터 넣기
+		model.addAttribute("pdDTO", pdDTO);
 		
 				
 		//Json파일이 저장된 실제 경로 
@@ -112,13 +112,17 @@ public class GraphGalleryController {
 		return "/mem/graph/writeGraph/thirdStep";
 	}
 	
-	//그래프 작성 2단계 - 그래프 확인
+	//그래프 작성 4단계 - 그래프 확인
 	@RequestMapping(value="/mem/graph/writeGraph/FourthStep")
 	public String writeGraphFourthStep(HttpServletRequest request, Model model) throws Exception {
 		log.info(this.getClass().getName() + "start!");
+		String graphSelect = request.getParameter("graphSelect");
+		
+		//선택된 그래프 전송 - 페이지로 보여짐
+		model.addAttribute("graphSelect", graphSelect);
 		
 		log.info(this.getClass().getName() + "end");
-		return "/mem/graph/writeGraph/FourthStep";
+		return "/mem/graph/writeGraph/fourthStep";
 	}
 	
 	//그래프 작성 최종 단계 - 글 작성

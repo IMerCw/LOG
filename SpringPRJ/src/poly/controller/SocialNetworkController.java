@@ -82,23 +82,28 @@ public class SocialNetworkController {
 		log.info(id);
 		log.info(nickName);
 		log.info(email);
+		log.info(profile_image);
 		
 		/*********************이미 가입된 회원인지 확인*********************/
-		UserMemberDTO uDTO = null;
+		UserMemberDTO uDTO = new UserMemberDTO();
+		
 		String user_seq = CmmUtil.nvl(cmmnService.getIdChecked(email));
+		
 		log.info(user_seq);
+		
 		int insertResult, updateResult;
+		
 		if("".equals(user_seq)) {
 			log.info("새로운 카카오 회원입니다.");
 			/*********************가입이 되어 있지 않은 경우*********************/
 
 			//회원가입용 멤버 DTO 설정 
-			uDTO = new UserMemberDTO();
 			uDTO.setUser_name(nickName); //유저 이름
 			uDTO.setUser_id(email); //유저 이메일
 			uDTO.setUser_passwd("0"); // 유저 비밀번호는 설정하지 않음
 			uDTO.setUser_state("1"); //가입시 유저 상태 1 - 정상 설정
 			uDTO.setKakao_user_yn("1"); // 카카오 유저일 경우 1 설정
+			uDTO.setFile_py_name(profile_image); // 이미지 정보
 			
 			cmmnService.insertUserMember(uDTO); //DB저장
 			
@@ -130,14 +135,13 @@ public class SocialNetworkController {
 			
 		} else {
 			log.info("이미 가입된 카카오 회원입니다.");
-			uDTO = new UserMemberDTO();
 			uDTO.setUser_id(email); // select 시 필요한 파라미터 설정
-			uDTO =  cmmnService.getKakaoUser(uDTO); //DB에서 정보 가져오기
+			uDTO = cmmnService.getKakaoUser(uDTO); //DB에서 정보 가져오기
+			uDTO.setFile_py_name(profile_image); // 이미지 정보
 		}
-		
-		uDTO.setFile_py_name(profile_image); // 이미지 정보
-		session.setAttribute("uDTO", uDTO); // 세션에 유저정보 저장
 
+		session.setAttribute("uDTO", uDTO); // 세션에 유저정보 저장
+		
 		log.info("End : kakaoLogin");
 		
 		return "redirect:/mem/main.do";
