@@ -11,6 +11,7 @@
 		<typeAlias type="poly.dto.PublicDataDTO" alias="PublicDataDTO"/>
 		<typeAlias type="poly.dto.ImageDTO" alias="ImageDTO"/>
 		<typeAlias type="poly.dto.KakaoUserDTO" alias="KakaoUserDTO"/>
+		<typeAlias type="poly.dto.GraphDTO" alias="GraphDTO"/>
 		
     </typeAliases>
 </configuration>

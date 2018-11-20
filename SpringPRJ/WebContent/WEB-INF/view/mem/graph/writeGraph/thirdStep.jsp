@@ -13,7 +13,7 @@
 	.portlet-handler {
 		cursor:pointer;
 	}
-	.panel {
+	.c3 {
 		cursor:pointer;
 	}
 </style>
@@ -45,8 +45,6 @@
 					<div id="barChart"></div>
 				</div>
 			</section>
-			
-			
 		</div>
 	
 		<div class="col-md-6 col-sm-12">
@@ -90,6 +88,7 @@
 		</div>
 		
 	</div>
+	
 </body>
 
 <script>
@@ -130,7 +129,8 @@ function callFourthStep(graphSelect) {
 				alert("통신실패");
 			},
 			success: function(data) {
-				$('.content-body').html(data);
+				$('#w4-confirm').html(data);
+				$('.next').click();
 			}
 		})
 	}
@@ -179,6 +179,8 @@ setTimeout(function () {
 }, 100);
 
 /*------------------------*/	
+
+
 /*--------막대 그래프--------*/	
 setTimeout(function () {
 	var barChart = c3.generate({

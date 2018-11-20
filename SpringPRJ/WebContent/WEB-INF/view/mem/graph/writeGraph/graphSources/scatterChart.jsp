@@ -7,6 +7,33 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<div id="scatterChartResult"></div>
 </body>
+<script>
+
+/*-----------점 그래프--------*/
+setTimeout(function () {
+	var scatterChart = c3.generate({
+		bindto: "#scatterChartResult",
+		data: {
+			  json:	resultData
+			  ,
+			    keys: {
+			       x: 'factor', // it's possible to specify 'x' when category axis
+			      value: resultCategory
+			    }
+			  ,
+		      type: 'scatter'
+		  },
+		  axis: {
+			    x: {
+			       type: 'category'
+			    }
+			  }
+		});
+		
+}, 100);		
+
+/*------------------------*/
+</script>
 </html>

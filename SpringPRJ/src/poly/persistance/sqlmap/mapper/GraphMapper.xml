@@ -6,6 +6,34 @@
 	
 
 	<!-- 공공데이터 목록 가져오기 -->
+	<select id="getGraphList" resultType="GraphDTO">
+		SELECT
+		    *
+		FROM
+		    (
+		    SELECT
+		        ROWNUM RNUM,
+		        GRAPH_SEQ,
+		        USER_SEQ,
+		        GRAPH_TITLE,
+		        GRAPH_CONTENT,
+		        GRAPH_HASHTAG,
+		        REG_DATE,
+		        GRAPH_TYPE,
+		        RESULT_CATE,
+		        RESULT_X,
+		        JSON_FILE_NAME
+		    FROM
+		        GRAPH
+		    ORDER BY
+		        GRAPH_SEQ DESC
+		    ) A
+		WHERE
+		    RNUM BETWEEN 1 AND 10
+	</select>
+	
+	
+	<!-- 공공데이터 목록 가져오기 -->
 	<select id="getPublicData" resultType="PublicDataDTO">
 		SELECT 
 			*
@@ -45,5 +73,39 @@
 		WHERE 
 			PDATA_SEQ = #{pdata_seq}
 	</select>
+	
+	<!-- 그래프 게시글 쓰기/저장 -->
+	<insert id="insertGraph" parameterType="GraphDTO" >
+		INSERT INTO
+			GRAPH (
+				GRAPH_SEQ
+				,USER_SEQ
+				,GRAPH_TITLE
+				,GRAPH_CONTENT
+				,GRAPH_HASHTAG
+				,REG_DATE
+				,EXP_YN
+				,GRAPH_TYPE
+				,RESULT_CATE
+				,RESULT_X
+				,JSON_FILE_NAME
+			)
+			
+			 
+		VALUES (
+			GRAPH_SEQ.NEXTVAL
+			,#{user_seq}
+			,#{graph_title}
+			,#{graph_content}
+			,#{graph_hashtag}
+			,SYSDATE
+			,1
+			,#{graph_type}
+			,#{result_cate}
+			,#{result_x}
+			,#{json_file_name}
+		)
+		
+	</insert>
 		
 </mapper>

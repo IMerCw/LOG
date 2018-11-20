@@ -1,8 +1,10 @@
+<%@page import="poly.dto.UserMemberDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	String graphSelect = (String) request.getParameter("graphSelect"); //그래프 종류
+	UserMemberDTO uDTO = (UserMemberDTO)session.getAttribute("uDTO"); //유저정보
 %>
 
 <html>
@@ -12,96 +14,89 @@
 	<!-- Load d3.js and c3.js -->
 	<script src="/assets/d3/d3.v5.js"></script>
 	<script src="/assets/c3Chart/c3.js"></script>
+	
+	<!-- ckeditor -->
+	<script src="/assets/ckeditor/ckeditor.js"></script>
 </head>
 <body>
 
-<div id="<%=graphSelect%>"></div>
+	<div class="panel-body">
+		<%if(graphSelect.equals("lineChart")){ %>
+		<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/lineChart.jsp"%>
+		<%} else if (graphSelect.equals("barChart")) {%>
+		<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/barChart.jsp"%>
+		<%} else if (graphSelect.equals("pieChart")) {%>
+		<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/pieChart.jsp"%>
+		<%} else if (graphSelect.equals("scatterChart")) {%>
+		<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/scatterChart.jsp"%>
+		<%} else if (graphSelect.equals("areaChart")) {%>
+		<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/areaChart.jsp"%>
+		<%}%>
+	</div>
 
-<%if(graphSelect.equals("lineChart")){ %>
-	<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/lineChart.jsp" %>
-<%} else if (graphSelect.equals("barChart")) {%>
-	<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/barChart.jsp" %>
-<%} else if (graphSelect.equals("pieChart")) {%>
-	<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/pieChart.jsp" %>
-<%} else if (graphSelect.equals("scatterChart")) {%>
-	<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/scatterChart.jsp" %>
-<%} else if (graphSelect.equals("areaChart")) {%>
-	<%@include file="/WEB-INF/view/mem/graph/writeGraph/graphSources/areaChart.jsp" %>
-<%} %>
+	<h1>게시글 작성</h1>
+	<input class="form-control input-lg mb-md" type="text" id="graph_title" placeholder="글 제목">
+	
+	<textarea name="content" id="graph_content" width="420px">
+	
+        	게시글 내용을 작성해주세요.
+    </textarea>
+    <div class="row">
+		<button type="button" class="btn btn-primary" id="submit" style="width: 100%;  margin: 20px 0; font-size: 18px;">작성 완료</button>
+	</div>
+</body>
 
-<body>
+
 
 <script>
-	
-	var data =  d3.csv("/public_data/전국무더위쉼터표준데이터.csv", function(csv_data) {
-		
-		return {
-			
-			소재지도로명주소: csv_data.소재지도로명주소.split(' ')[0], //x축
-			소재지지번주소: csv_data.소재지지번주소.split(' ')[0], //x축
-			이용가능인원수 : +csv_data.이용가능인원수
-			
-		};
-		
-	}).then(function(data){
-		
-		
-		var nestedData = d3.nest()
-		
-		 	.key(function(d) { 
-		 		
-		  		if(d.소재지도로명주소 == '') {
-		  			
-		  			return d.소재지지번주소;
-		  			
-		  		}else{
-		  			
-		  			return d.소재지도로명주소;	
-		  		}
-		  	
-			})
-		 	.rollup(function(v) { return d3.sum(v, function(d){ return Math.ceil(d.이용가능인원수); })})
-		 	.entries(data);
-		
-		var dataCols = [];
-		
-		for(var i = 0; i < nestedData.length; i++) {
-			var dataCol = [];
-			dataCol.push(nestedData[i].key);
-			dataCol.push(nestedData[i].value);
-			dataCols.push(dataCol);
+/* ckEditor */
+let editor;
+
+ClassicEditor
+    .create( document.querySelector( '#graph_content' ) )
+    .then( newEditor => {
+        editor = newEditor;
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+
+// Assuming there is a <button id="submit">Submit</button> in your application.
+document.querySelector( '#submit' ).addEventListener( 'click', () => {
+    const editorData = editor.getData();
+    
+    completeWriteGraph(editorData);
+    // ...
+} );
+////////////////
+
+// 1번째 단계 - 그래프 선택 완료
+function completeWriteGraph(editorData) {
+	$.ajax({
+		type : "POST",
+		url : "/mem/graph/writeGraph/completeWriteGraph.do",
+		dataType: "text",
+		data : {
+			graph_type: '<%=graphSelect%>',
+			user_seq: '<%=uDTO.getUser_seq()%>',
+			graph_title: $('#graph_title').val(),
+			graph_content: editorData,
+			graph_hashtag: 'test',
+			result_data: JSON.stringify(resultData),
+			result_cate: resultCategory.toString(),
+			result_x: resultXItem.toString()
+		},
+		error: function() {
+			alert("통신실패");
+		},
+		success: function(data) {
+			$('.content-body').html(data);
 		}
-		
-		console.log(nestedData);
-		console.log(dataCols);
-		
-	});
-	/* 
-
-	function doroAddress(addr) {
-		
-		
-		'서울특별시'
-		'부산광역시'
-		'대구광역시'
-		'인천광역시'
-		'광주광역시'
-		'대전광역시'
-		'울산광역시'
-		'경기도'
-		'강원도'
-		'충청북도'
-		'충청남도'
-		'전라북도'
-		'전라남도'
-		'경상북도'
-		'경상남도'
-		'제주특별자치도'
-	}*/
-
-	
+	})
+}
 	
 
+      
+      
 </script>
-	
 </html>

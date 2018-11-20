@@ -21,11 +21,16 @@
 		font-weight:bold;
 		padding:10px 0;
 	}
+	.radio-custom {
+		display:inline-block;
+	    font-size: 18px;
+	    padding: 0 24px;
+	}
 </style>
 </head>
 		<div class="container-fluid">
 			<div class="row">
-				<button type="button" class="btn btn-primary" onclick="callWriteeGraphThirdStep();" style="width: 100%;  margin: 20px 0; font-size: 18px;">선택 완료</button>
+				<button type="button" class="btn btn-primary" onclick="callWriteGraphThirdStep();" style="width: 100%;  margin: 20px 0; font-size: 18px;">선택 완료</button>
 			</div>
 			
 			<!-- Header 목록 -->
@@ -72,10 +77,11 @@
 				<!-- 범주 선택 박스 -->
 				<blockquote class="warning">
 				
-					<div class="headerSubject">범주 선택</div>
+					<div class="headerSubject">범주 선택(선택사항)</div>
 					
 					<select class="form-control input-lg mb-md" id="factor">	
-						<option value='' selected disabled hidden>범주 선택</option>
+						<option value='-1' selected disabled hidden>범주 선택</option>
+						<option value='-1'>선택하지 않음</option>
 						<%i = 0; %>	
 						<% for ( String item : csvResult.get(0)) {%>
 							<option value="<%=i%>"><%=item%></option>
@@ -89,55 +95,46 @@
 			
 			</div>
 			
-		<!-- 데이터 요약 -->
+	<!-- 데이터 요약 -->
+	<hr/>
 	<div class="row">
-		<div class="col-sm-12">
+	
+		<div class="col-sm-12" style="font-size:16px; font-weight:bold; padding:0 0 12px 12px;">
 			데이터 요약 통계 함수 선택
 		</div>
-		<div class="col-sm-12">
+		
+		<div class="col-sm-12 radioBox">
 			<div class="radio-custom">
-				<input type="radio" id="radioExample1" name="radioExample">
-				<label for="radioExample1">합계</label>
+				<input type="radio" value="aggSum" id="aggSum" name="aggregation">
+				<label for="aggSum">합계</label>
 			</div>
 
 			<div class="radio-custom radio-primary">
-				<input type="radio" id="radioExample2" name="radioExample">
-				<label for="radioExample2">평균</label>
+				<input type="radio" value="aggMean" id="aggMean" name="aggregation">
+				<label for="aggMean">평균</label>
 			</div>
 
 			<div class="radio-custom radio-success">
-				<input type="radio" id="radioExample3" name="radioExample">
-				<label for="radioExample3">최대값</label>
+				<input type="radio" value="aggMax" id="aggMax" name="aggregation">
+				<label for="aggMax">최대값</label>
 			</div>
 
 			<div class="radio-custom radio-warning">
-				<input type="radio" id="radioExample4" name="radioExample">
-				<label for="radioExample4">최소값</label>
+				<input type="radio" value="aggMin" id="aggMin" name="aggregation">
+				<label for="aggMin">최소값</label>
 			</div>
-
-			<div class="radio-custom radio-danger">
-				<input type="radio" id="radioExample5" name="radioExample">
-				<label for="radioExample5">Radio Danger</label>
-			</div>
-
+			
 		</div>
 	</div>
 		
 	<button type="button" class="btn btn-info" onclick="displaySelectResult();" style="width: 100%;  margin: 20px 0; font-size: 16px;">데이터 미리보기</button>
 			
 			
-			<!-- 선택된 데이터 보기 -->
-			<div class="row" id="displayDataResult">
-				<%
-					for (i = 0; i < csvResult.size(); i++) {
-				%>
-					<%=csvResult.get(i)%> <br/>
-				<%
-					}
-				%>
-			</div>
-			
+ 			<!-- 선택된 데이터 보기 -->
+		<div class="row" id="displayDataResult">
 		</div>
+			
+	</div>
 		
 </body>
 
@@ -194,8 +191,11 @@ $('#yAxis').change(function(){
 
 //범주 데이터 미리보기
 $('#factor').change(function(){
-	
 	var selectedItemFactor = $('#factor option:selected').text(); //선택된 변수 이름
+	var selectedItemFactorVal = $('#factor option:selected').val(); //선택된 변수 이름
+	if(selectedItemFactorVal == -1) {
+		return $('#factorDataList').html('선택하지 않았습니다.');
+	}
 	
 	var data =  d3.csv('/public_data/' + '<%=pdDTO.getFile_name()%>', function(csv_data) {
 		
@@ -215,8 +215,10 @@ $('#factor').change(function(){
 	});
 });
 
-var blank_pattern = /[\s]/g; //공백 검사
-
+var resultData = []; //그래프로 띄울 ARRAY 변수
+var resultXItem = []; //최종데이터 X 값 Array //중복이 없으므로 set 형식
+var resultFactorItem = new Set(); //최종데이터 X 값 Array //중복이 없으므로 set 형식
+var resultCategory = []; //최종 데이터의 X값 카테고리
 ////////////////////////////////////////////////
  
 	//데이터 미리보기함수
@@ -225,12 +227,13 @@ var blank_pattern = /[\s]/g; //공백 검사
 		var selectedItemX = $('#xAxis option:selected').text();
 		var selectedItemY = $('#yAxis option:selected').text();
 		var selectedItemFactor = $('#factor option:selected').text();
+		var selectedItemFactorVal = $('#factor option:selected').val();
 					
 		//데이터 정제		
 		var data =  d3.csv('/public_data/' + '<%=pdDTO.getFile_name()%>', function(csv_data) {
-				
+			
 				return {
-				
+					
 					[selectedItemX] : csv_data[selectedItemX], //x축 기준 aggregation
 					[selectedItemY] : csv_data[selectedItemY], //y축 기준 aggregation
 					[selectedItemFactor] : csv_data[selectedItemFactor] //범주 aggregation
@@ -241,22 +244,145 @@ var blank_pattern = /[\s]/g; //공백 검사
 				
 				var nestedData = d3.nest()
 					
+
+					
 					//Aggregation Key Setting / 어떤 키를 기준으로 잡을 것인가
 				 	.key(function(d) {
-						return d[selectedItemX].split(' ')[0] 		
+						var slctdItmX = d[selectedItemX];  
+							
+						if(slctdItmX != '' && /\s/g.test(slctdItmX)) {
+				 			
+							return slctdItmX.split(' ')[0];
+							
+				 		}else {
+				 			
+				 			return slctdItmX;
+				 			
+				 		}	
+						
+					}) 
+					
+					//Aggregation Key Setting / 어떤 키를 기준으로 잡을 것인가
+				 	.key(function(d) {
+				 		
+				 		var slctdItmFctr = d[selectedItemFactor];
+					 		
+				 		if(slctdItmFctr != '' && /\s/g.test(slctdItmFctr)) {
+				 			
+							return slctdItmFctr.split(' ')[0];
+							
+				 		}else {
+				 			
+				 			return slctdItmFctr;
+				 			
+				 		}					 			
 					}) 
 					
 					//Aggregation Y-values By Key / 기준 키를 가지고 데이터를 요약
-				 	.rollup(function(v) { return d3.sum(v, function(d){ return d[selectedItemY]; })})
+				 	.rollup(function(v) {
+				 		
+				 		var aggFunc = $('.radioBox input:checked').val(); //선택된 요약 함수
+				 		
+				 		if(aggFunc == "aggSum") {
+					 		
+				 			return d3.sum(v, function(d){ return parseInt(d[selectedItemY]); })
+					 		
+				 		} else if (aggFunc == "aggMean") {
+				 			
+				 			var temp = d3.mean(v, function(d){ return (d[selectedItemY]); });
+				 			
+					 		return (Math.round(temp * 100) / 100);  
+					 		
+				 		} else if (aggFunc == "aggMax") {
+				 			
+					 		return d3.max(v, function(d){ return parseInt(d[selectedItemY]); })
+				 			
+				 		} else if (aggFunc == "aggMin") {
+				 		
+					 		return d3.min(v, function(d){ return parseInt(d[selectedItemY]); })
+				 		
+				 		}
+				 	})
 				 	
 				 	//최종 입력
 				 	.entries(data);
 				
+				//최종 데이터
 				console.log(nestedData);
-				/* console.log(csv_data[selectedItem]);
 				
-				contents += csv_data[selectedItem];
-				$('#xAxisDataList').html(contents.toString()); */
+				
+				//그래프로 띄울 리스트에 들어가는 각 행 json
+				var rsltJson = {};
+				
+				for(var i = 0; i < nestedData.length; i++) {
+					//범주 데이터 어레이 저장					
+					if(nestedData[i].key == '') continue;
+					
+					rsltJson = {}; //결과 데이터 JSON선언
+					rsltJson.factor = nestedData[i].key; //factor이름에 key값 저장 
+					
+					//X 데이터 어레이 값 저장
+					for(var j = 0; j < nestedData[i].values.length; j++) {
+						
+						if(nestedData[i].values[j].key == '') continue;
+						
+						else if(nestedData[i].values[j].key == 'undefined') {
+							//범주 미 선택시 합계함수 이름을 저장
+							rsltJson[$('.radioBox input:checked').val()] = nestedData[i].values[j].value;
+							
+						}
+						else {
+							rsltJson[nestedData[i].values[j].key] = nestedData[i].values[j].value;
+						}
+					}
+					
+					resultData.push(rsltJson); //그래프로 띄울 각 행의 값을 최종 데이터 어레이에 저장
+				}
+				
+				for(var i = 0; i < nestedData.length; i++) {
+					resultXItem.push(nestedData[i].key);
+					for(var j = 0; j < nestedData[i].values.length; j++) {
+						if(nestedData[i].values[j].key === '') continue;
+						resultFactorItem.add(nestedData[i].values[j].key);
+					}
+				}
+				
+				//범주 미 선택시 합계요약 함수를 범주로 저장
+				if(resultFactorItem.has("undefined")){
+					var aggFunc = $('.radioBox input:checked').val(); //선택된 요약 함수
+			 		
+					resultCategory.push(aggFunc);
+					
+				} 
+				else {
+					resultCategory = Array.from(resultFactorItem);
+				}
+				
+				console.log(resultCategory); //범주에 들어갈 데이터
+				console.log(resultData);
+ 
+				
+				
+				/////////////////미리보기 표시//////////////
+				var contents = '';
+				contents += '<h4>선택된 범주 값 목록: </h4>';
+				contents += '<p>';
+				
+				resultCategory.forEach(item => {
+					
+					contents += item + ', ';	
+					
+				});
+				
+				contents += '</p>';
+				
+				
+				contents += '<h4>선택된 XY값 목록</h4>';
+				contents += '<p>';
+				contents += JSON.stringify(resultData);
+				contents += '</p>';
+				$('#displayDataResult').html(contents);
+				////////////////////////////////////////
 					
 		});
 		
@@ -280,19 +406,26 @@ var blank_pattern = /[\s]/g; //공백 검사
 	
 
 	// 3번째 단계 - 그래프 선택 이동
-	function callWriteeGraphThirdStep() {
-		$.ajax({
-			type :"POST",
-			url : "/mem/graph/writeGraph/thirdStep.do",
-			dataType : "text",
-			error: function() {
-				alert("통신 실패");
-			},
-			success: function(data) {
-				$('#w4-billing').html(data);
-				$('.next').click();
-			}
-		});
+	function callWriteGraphThirdStep() {
+		if(resultData.length > 0) {
+			
+			$.ajax({
+				type :"POST",
+				url : "/mem/graph/writeGraph/thirdStep.do",
+				dataType : "text",
+				error: function() {
+					alert("통신 실패");
+				},
+				success: function(data) {
+					$('#w4-billing').html(data);
+					$('.next').click();
+				}
+			});
+			
+		} else{
+			alert('데이터를 선택해 주세요.');
+		}
+		
 	}
 	
 

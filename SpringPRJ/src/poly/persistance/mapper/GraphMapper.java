@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import config.Mapper;
+import poly.dto.GraphDTO;
 import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 
@@ -15,6 +16,10 @@ public interface GraphMapper {
 	
 	//공공데이터 1개 가져오기
 	PublicDataDTO getOnePublicData(String pdata_seq) throws Exception;
+
+	int insertGraph(GraphDTO gDTO) throws Exception;
+
+	List<GraphDTO> getGraphList() throws Exception;
 	
 /*
 	//로그인

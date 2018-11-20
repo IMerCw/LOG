@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import poly.dto.GraphDTO;
 import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 import poly.persistance.mapper.CmmnMapper;
@@ -28,6 +29,16 @@ public class GraphService implements IGraphService {
 	@Override
 	public PublicDataDTO getOnePublicData(String pdata_seq) throws Exception {
 		return graphMapper.getOnePublicData(pdata_seq);
+	}
+
+	@Override
+	public int insertGraph(GraphDTO gDTO) throws Exception {
+		return graphMapper.insertGraph(gDTO);
+	}
+
+	@Override
+	public List<GraphDTO> getGraphList() throws Exception {
+		return graphMapper.getGraphList();
 	}
 	
 	

@@ -4,9 +4,43 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
 </head>
 <body>
-
+<div id="areaChartResult"></div>
 </body>
+<script>
+
+/*-----------영역 그래프--------*/
+
+var typesJson = {};
+for(var i = 0; i < resultCategory.length; i++) {
+	typesJson[resultCategory[i]] = 'area-spline';
+}
+resultCategory
+setTimeout(function () {
+	var chart = c3.generate({
+		bindto: "#areaChartResult",
+		data: {
+		    json: 
+		    	resultData
+		    ,
+		    keys: {
+		       x: 'factor', // it's possible to specify 'x' when category axis
+		      value: resultCategory
+		    }
+		    ,
+		    type: 
+		    	typesJson
+		  },
+		  axis: {
+		    x: {
+		       type: 'category'
+		    }
+		  }
+	});
+}, 100);
+
+/*------------------------*/
+
+</script>
 </html>
