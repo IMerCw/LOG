@@ -12,6 +12,7 @@
 		<typeAlias type="poly.dto.ImageDTO" alias="ImageDTO"/>
 		<typeAlias type="poly.dto.KakaoUserDTO" alias="KakaoUserDTO"/>
 		<typeAlias type="poly.dto.GraphDTO" alias="GraphDTO"/>
+		<typeAlias type="poly.dto.GraphReplyDTO" alias="GraphReplyDTO"/>
 		
     </typeAliases>
 </configuration>

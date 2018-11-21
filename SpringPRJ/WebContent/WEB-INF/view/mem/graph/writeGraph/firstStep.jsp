@@ -97,7 +97,6 @@
 					<!-- 2번 탭 -->
 					<div id="w4-profile" class="tab-pane">
 					
-						
 					</div>
 					
 					<!-- 3번 탭 -->
@@ -118,7 +117,7 @@
 		</div>
 		
 		<!-- 패널 푸터 panel footer -->
-		<div class="panel-footer">
+		<div class="panel-footer" style="display:none;">
 			<ul class="pager">
 				<li class="previous disabled">
 					<a><i class="fa fa-angle-left"></i> 이전</a>
@@ -130,7 +129,7 @@
 					<a>다음 <i class="fa fa-angle-right"></i></a>
 				</li>
 			</ul>
-		</div>
+		</div> 
 		
 	</section>
 								

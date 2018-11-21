@@ -5,7 +5,7 @@
 	<!-- insert, update, delete, select -->
 	
 
-	<!-- 공공데이터 목록 가져오기 -->
+	<!-- 그래프 목록 가져오기 -->
 	<select id="getGraphList" resultType="GraphDTO">
 		SELECT
 		    *
@@ -13,23 +13,98 @@
 		    (
 		    SELECT
 		        ROWNUM RNUM,
-		        GRAPH_SEQ,
-		        USER_SEQ,
-		        GRAPH_TITLE,
-		        GRAPH_CONTENT,
-		        GRAPH_HASHTAG,
-		        REG_DATE,
-		        GRAPH_TYPE,
-		        RESULT_CATE,
-		        RESULT_X,
-		        JSON_FILE_NAME
+		        G.GRAPH_SEQ,
+		        G.USER_SEQ,
+		        G.GRAPH_TITLE,
+		        G.GRAPH_CONTENT,
+		        G.GRAPH_HASHTAG,
+		        G.REG_DATE,
+		        G.GRAPH_TYPE,
+		        G.RESULT_CATE,
+		        G.RESULT_X,
+		        G.JSON_FILE_NAME,
+		        G.READ_COUNT,
+		        GR.STAR_RATE,
+                UM.USER_NAME
 		    FROM
-		        GRAPH
+		        GRAPH G
+            INNER JOIN USER_MEMBER UM ON G.USER_SEQ = UM.USER_SEQ
+            LEFT JOIN 
+                (
+                SELECT
+                    GRAPH_SEQ
+                    ,AVG(STAR_RATE) AS STAR_RATE
+                FROM
+                    GRAPH_REPLY
+                WHERE
+                    GRAPH_SEQ = 8
+                GROUP BY
+                    GRAPH_SEQ
+                ) GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+            WHERE
+            	G.EXP_YN = 1
 		    ORDER BY
 		        GRAPH_SEQ DESC
 		    ) A
 		WHERE
 		    RNUM BETWEEN 1 AND 10
+            
+	</select>
+	
+
+	<!-- 그래프 게시글 상세보기 -->
+	<update id="incrementCount" parameterType="string">
+		UPDATE
+			GRAPH
+		SET
+			READ_COUNT = READ_COUNT+1
+		WHERE
+			GRAPH_SEQ = #{graph_seq}
+	</update>
+	
+	<!-- 그래프 게시글 상세보기 -->
+	<select id="getGraphDetail" parameterType="string" resultType="GraphDTO">
+   		SELECT
+	        G.GRAPH_SEQ,
+	        G.USER_SEQ,
+	        G.GRAPH_TITLE,
+	        G.GRAPH_CONTENT,
+	        G.GRAPH_HASHTAG,
+	        G.REG_DATE,
+	        G.GRAPH_TYPE,
+	        G.READ_COUNT,
+	        G.RESULT_CATE,
+	        G.RESULT_X,
+	        GR.STAR_RATE,
+	        G.JSON_FILE_NAME,
+            UM.USER_NAME,
+            UM.FILE_PY_NAME
+	   	FROM
+    		GRAPH G
+      			INNER JOIN 
+      				(
+      					SELECT 
+      						USER_SEQ,
+                            USER_NAME,
+                            FILE_PY_NAME
+      					FROM 
+      						USER_MEMBER UM2
+      						INNER JOIN IMAGE IMG ON UM2.IMG_SEQ = IMG.IMG_SEQ
+      				) UM ON G.USER_SEQ = UM.USER_SEQ
+      			LEFT JOIN 
+	                (
+		                SELECT
+		                    GRAPH_SEQ
+		                    ,AVG(STAR_RATE) AS STAR_RATE
+		                FROM
+		                    GRAPH_REPLY
+		                WHERE
+		                    GRAPH_SEQ = #{graphSeq}
+		                GROUP BY
+		                    GRAPH_SEQ
+	                ) GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+    	WHERE
+    		G.GRAPH_SEQ = #{graphSeq}
 	</select>
 	
 	
@@ -107,5 +182,79 @@
 		)
 		
 	</insert>
-		
+	
+	<!-- 그래프 삭제 -->
+	<update id="deleteGraph" parameterType="string">
+		UPDATE
+			GRAPH
+		SET
+			EXP_YN = -1
+		WHERE
+			GRAPH_SEQ = #{graph_seq}
+			
+	</update>
+			
+	<!-- 그래프 수정 -->
+	<update id="updateGraph" parameterType="GraphDTO">
+		UPDATE
+			GRAPH
+		SET
+			GRAPH_TITLE = #{graph_title}
+			,GRAPH_CONTENT = #{graph_content}
+			,GRAPH_HASHTAG = #{graph_hashtag}
+		WHERE
+			GRAPH_SEQ = #{graph_seq}
+			
+	</update>
+	
+	
+	
+	
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertGraphReply" parameterType="GraphReplyDTO">
+		INSERT INTO
+			GRAPH_REPLY
+			(
+				REPLY_SEQ
+				,USER_SEQ
+				,GRAPH_SEQ
+				,REPLY_CONTENT
+				,REG_DATE
+				,EXP_YN
+				,STAR_RATE
+			)
+		VALUES
+			(
+				GRAPH_REPLY_SEQ.NEXTVAL
+				,#{user_seq}
+				,#{graph_seq}
+				,#{reply_content}
+				,SYSDATE
+				,1
+				,#{star_rate}
+			)
+	</insert>		
+	
+	<!-- 댓글 가져오기 -->
+	<select id="getGraphReplies" parameterType="string" resultType="GraphReplyDTO">
+		SELECT
+		    GR.REPLY_SEQ,
+		    GR.USER_SEQ,
+		    GR.GRAPH_SEQ,
+		    GR.REPLY_CONTENT,
+		    GR.REG_DATE,
+		    GR.STAR_RATE,
+		    UM.USER_NAME,
+		    IMG.FILE_PY_NAME
+		FROM 
+		    GRAPH_REPLY GR
+		        INNER JOIN USER_MEMBER UM ON GR.USER_SEQ = UM.USER_SEQ
+		        INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ 
+		WHERE
+		    GR.EXP_YN = 1 AND
+		    GR.GRAPH_SEQ = #{graph_seq}
+		ORDER BY 
+		    GR.REPLY_SEQ
+	</select>
 </mapper>

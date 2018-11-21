@@ -105,22 +105,22 @@
 		
 		<div class="col-sm-12 radioBox">
 			<div class="radio-custom">
-				<input type="radio" value="aggSum" id="aggSum" name="aggregation">
+				<input type="radio" value="합계" id="aggSum" name="aggregation">
 				<label for="aggSum">합계</label>
 			</div>
 
 			<div class="radio-custom radio-primary">
-				<input type="radio" value="aggMean" id="aggMean" name="aggregation">
+				<input type="radio" value="평균" id="aggMean" name="aggregation">
 				<label for="aggMean">평균</label>
 			</div>
 
 			<div class="radio-custom radio-success">
-				<input type="radio" value="aggMax" id="aggMax" name="aggregation">
+				<input type="radio" value="최대값" id="aggMax" name="aggregation">
 				<label for="aggMax">최대값</label>
 			</div>
 
 			<div class="radio-custom radio-warning">
-				<input type="radio" value="aggMin" id="aggMin" name="aggregation">
+				<input type="radio" value="최소값" id="aggMin" name="aggregation">
 				<label for="aggMin">최소값</label>
 			</div>
 			
@@ -223,6 +223,12 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
  
 	//데이터 미리보기함수
 	function displaySelectResult() {
+	
+		resultData = []; //그래프로 띄울 ARRAY 변수
+		resultXItem = []; //최종데이터 X 값 Array //중복이 없으므로 set 형식
+		resultFactorItem = new Set(); //최종데이터 X 값 Array //중복이 없으므로 set 형식
+		resultCategory = []
+		
 		
 		var selectedItemX = $('#xAxis option:selected').text();
 		var selectedItemY = $('#yAxis option:selected').text();
@@ -283,21 +289,21 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 				 		
 				 		var aggFunc = $('.radioBox input:checked').val(); //선택된 요약 함수
 				 		
-				 		if(aggFunc == "aggSum") {
+				 		if(aggFunc == "합계") {
 					 		
 				 			return d3.sum(v, function(d){ return parseInt(d[selectedItemY]); })
 					 		
-				 		} else if (aggFunc == "aggMean") {
+				 		} else if (aggFunc == "평균") {
 				 			
 				 			var temp = d3.mean(v, function(d){ return (d[selectedItemY]); });
 				 			
 					 		return (Math.round(temp * 100) / 100);  
 					 		
-				 		} else if (aggFunc == "aggMax") {
+				 		} else if (aggFunc == "최대값") {
 				 			
 					 		return d3.max(v, function(d){ return parseInt(d[selectedItemY]); })
 				 			
-				 		} else if (aggFunc == "aggMin") {
+				 		} else if (aggFunc == "최소값") {
 				 		
 					 		return d3.min(v, function(d){ return parseInt(d[selectedItemY]); })
 				 		

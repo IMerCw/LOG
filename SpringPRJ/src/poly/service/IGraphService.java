@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import poly.dto.GraphDTO;
+import poly.dto.GraphReplyDTO;
 import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 
@@ -16,6 +17,18 @@ public interface IGraphService {
 	int insertGraph(GraphDTO gDTO) throws Exception;
 
 	List<GraphDTO> getGraphList() throws Exception;
+
+	GraphDTO getGraphDetail(String graphSeq) throws Exception;
+
+	int deleteGraph(String string) throws Exception;
+
+	int updateGraph(GraphDTO gDTO) throws Exception;
+
+	int incrementCount(String graph_seq) throws Exception;
+
+	int insertGraphReply(GraphReplyDTO grDTO) throws Exception;
+
+	List<GraphReplyDTO> getGraphReplies(String graph_seq) throws Exception;
 
 	
 	/*

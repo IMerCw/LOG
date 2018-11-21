@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -29,7 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import poly.dto.BoardReplyDTO;
 import poly.dto.GraphDTO;
+import poly.dto.GraphReplyDTO;
 import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 import poly.service.IGraphService;
@@ -65,6 +68,15 @@ public class GraphGalleryController {
 		log.info(this.getClass().getName() + "end");
 		return "/mem/graph/graphMain";
 	}
+	
+/*	//그래프 가져오기
+	@RequestMapping(value="/mem/graph/getGraph")
+	public String getGraph() throws Exception { 
+		log.info(this.getClass().getName() + "start!");
+		
+		log.info(this.getClass().getName() + "end!");
+		return 
+	}*/
 	///////////////////////////////////////////////////////////////////
 	/*-------------------------그래프 작성------------------------------*/
 	//그래프 작성 1단계 - 데이터 선택
@@ -176,49 +188,145 @@ public class GraphGalleryController {
 		
 		log.info(this.getClass().getName() + "end");
 		
-		return "/mem/graph/graphMain";
+		return graphMain(request, model);
 	}
 	
 	///////////////////////////////////////////////////////////////////
 	/*-------------------------그래프 상세 보기------------------------------*/
 	//그래프 상세 보기
 	@RequestMapping(value="/mem/graph/readGraph")
-	public String readGraph(HttpServletRequest request, Model model) throws Exception {
+	public String readGraph(HttpServletRequest request, Model model, String graph_seq) throws Exception {
 		log.info(this.getClass().getName() + "start!");
-		
-
-		
+		log.info(graph_seq);
+		GraphDTO gDTO = graphService.getGraphDetail(graph_seq);
+		log.info(gDTO.getGraph_type());
+		model.addAttribute("gDTO", gDTO);
 		
 		log.info(this.getClass().getName() + "end");
-		return "/mem/graph/readGraph";
+		
+		return "/mem/graph/graphRead";
+	}
+	
+	//그래프 조회수 증가
+	@RequestMapping(value="/mem/graph/incrementCount")
+	public @ResponseBody int incrementCount(HttpServletRequest request, Model model, String graph_seq) throws Exception {
+		log.info(this.getClass().getName() + "start!");
+		
+		int result = graphService.incrementCount(graph_seq);
+		
+		log.info(this.getClass().getName() + "end");
+		
+		return result;
 	}
 	/////////////////////////////////////////////////////////////////
 	
 	/*-------------------------그래프 수정------------------------------*/
-	//그래프 상세 보기
+	//그래프 수정 화면 전환
 	@RequestMapping(value="/mem/graph/updateGraph")
-	public String updateGraph(HttpServletRequest request, Model model) throws Exception {
+	public String updateGraph(HttpServletRequest request, Model model, GraphDTO gDTO) throws Exception {
 		log.info(this.getClass().getName() + "start!");
 		
+		model.addAttribute("gDTO", gDTO);
 		
 		log.info(this.getClass().getName() + "end");
 		
-		return "/mem/graph/readGraph"; //수정 완료 후 상세보기로 이동
+		return "/mem/graph/graphUpdate"; //수정 완료 후 상세보기로 이동
+	}
+	
+	//그래프 수정 처리
+	@RequestMapping(value="/mem/graph/updateGraphProc")
+	public String callGraphUpdateProc(HttpServletRequest request, Model model, GraphDTO gDTO) throws Exception {
+		log.info(this.getClass().getName() + "start!");
+		
+		int result = graphService.updateGraph(gDTO);
+		String graph_seq = gDTO.getGraph_seq();
+		
+		log.info(this.getClass().getName() + "end");
+		
+		return readGraph(request, model, graph_seq); //수정 완료 후 상세보기로 이동
 	}
 	/////////////////////////////////////////////////////////////////
 	
 	/*-------------------------그래프 삭제------------------------------*/
-	//그래프 상세 보기
+	//그래프 삭제 처리 - 리스트보기 이동
 	@RequestMapping(value="/mem/graph/deleteGraph")
 	public String deleteGraph(HttpServletRequest request, Model model) throws Exception {
 		log.info(this.getClass().getName() + "start!");
-		
+		String graph_seq = request.getParameter("graph_seq");
+		int result = graphService.deleteGraph(graph_seq);
 		
 		log.info(this.getClass().getName() + "end");
-		return	"/mem/graph/graphMain"; //삭제 완료 후 리스트 보기로 이동
+		return	graphMain(request, model); //삭제 완료 후 리스트 보기로 이동
 	}
 	/////////////////////////////////////////////////////////////////
 	
 	
+
+	/*-------------------------그래프 댓글------------------------------*/
 	
+	//댓글 가져오기 - page
+	@RequestMapping(value="/mem/graph/getGraphRepliesPage")
+	public String getGraphRepliesPage(HttpServletRequest request, Model model, String graph_seq) throws Exception {
+		log.info("start : " + this.getClass());
+		
+		//댓글 가져오기
+		List<GraphReplyDTO> grDTOs = graphService.getGraphReplies(graph_seq);
+		
+		model.addAttribute("grDTOs", grDTOs);
+		
+		log.info("end : " + this.getClass());
+		return "/mem/graph/graphRepliesPage";
+	}
+	
+	//댓글 작성 Procedure
+	@RequestMapping(value="/mem/graph/boardReplyWriteProc")
+	public @ResponseBody GraphReplyDTO boardReplyWriteProc(HttpServletRequest request, Model model, GraphReplyDTO grDTO) throws Exception {
+		log.info("start : " + this.getClass());
+		
+		//수정할 댓글 확인
+		log.info(grDTO.getGraph_seq());
+		log.info(grDTO.getReply_content());
+		log.info(grDTO.getUser_seq());
+		log.info(grDTO.getStar_rate());
+		
+		//Board Reply insert service
+		int result = graphService.insertGraphReply(grDTO);
+		
+		//결과 확인
+		log.info("Result of Update Board Post : " + result);
+		log.info("end : " + this.getClass());
+		
+		return grDTO;
+	}
+	
+	/*
+	//댓글 삭제
+	@RequestMapping(value="/mem/graph/boardReplyDelete")
+	public @ResponseBody String boardReplyDelete(HttpServletRequest request, Model model, String reply_seq) throws Exception {
+		log.info("start : " + this.getClass());
+		
+		//댓글 가져오기
+		int result = boardReplyService.deleteBoardReply(reply_seq);
+		
+		String deleteResult = String.valueOf(result);
+		log.info("end : " + this.getClass());
+		
+		return deleteResult;
+	}
+	
+	//댓글 삭제
+	@RequestMapping(value="/mem/graph/boardReplyUpdateProc")
+	public @ResponseBody String boardReplyUpdateProc(HttpServletRequest request, Model model, BoardReplyDTO brDTO) throws Exception {
+		log.info("start : " + this.getClass());
+		
+		//댓글 가져오기
+		int result = boardReplyService.updateBoardReply(brDTO);
+		
+		String updateResult = String.valueOf(result);
+		log.info("end : " + this.getClass());
+		
+		return updateResult;
+	}
+
+*/	
 }

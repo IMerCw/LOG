@@ -12,7 +12,9 @@
 /*--------막대 그래프--------*/	
 setTimeout(function () {
 	var barChart = c3.generate({
+		
 		bindto: "#barChartResult",
+		
 		data: {
 		    json: 
 		    	resultData
@@ -37,7 +39,6 @@ setTimeout(function () {
 	        //width: 100 // this makes bar width 100px
 	    }
 	
-	    
 	});
 	
 }, 100);

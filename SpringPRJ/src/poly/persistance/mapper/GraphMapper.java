@@ -5,6 +5,7 @@ import java.util.List;
 
 import config.Mapper;
 import poly.dto.GraphDTO;
+import poly.dto.GraphReplyDTO;
 import poly.dto.PublicDataDTO;
 import poly.dto.UserMemberDTO;
 
@@ -20,6 +21,18 @@ public interface GraphMapper {
 	int insertGraph(GraphDTO gDTO) throws Exception;
 
 	List<GraphDTO> getGraphList() throws Exception;
+
+	GraphDTO getGraphDetail(String graphSeq) throws Exception;
+
+	int deleteGraph(String graph_seq) throws Exception;
+
+	int updateGraph(GraphDTO gDTO) throws Exception;
+
+	int incrementCount(String graph_seq) throws Exception;
+
+	int insertGraphReply(GraphReplyDTO grDTO) throws Exception;
+
+	List<GraphReplyDTO> getGraphReplies(String graph_seq) throws Exception;
 	
 /*
 	//로그인

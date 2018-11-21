@@ -214,6 +214,7 @@ public class CommunityController {
 		log.info("end : " + this.getClass());
 		return "/mem/community/boardRepliesPage";
 	}
+	
 	//댓글 가져오기
 	@RequestMapping(value="/mem/community/getBoardReplies")
 	public @ResponseBody ArrayList<BoardReplyDTO> getBoardReplies(HttpServletRequest request, Model model, String board_p_seq) throws Exception {

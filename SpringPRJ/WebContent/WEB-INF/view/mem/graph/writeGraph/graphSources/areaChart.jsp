@@ -12,11 +12,6 @@
 
 /*-----------영역 그래프--------*/
 
-var typesJson = {};
-for(var i = 0; i < resultCategory.length; i++) {
-	typesJson[resultCategory[i]] = 'area-spline';
-}
-resultCategory
 setTimeout(function () {
 	var chart = c3.generate({
 		bindto: "#areaChartResult",
@@ -26,11 +21,12 @@ setTimeout(function () {
 		    ,
 		    keys: {
 		       x: 'factor', // it's possible to specify 'x' when category axis
-		      value: resultCategory
+		       value: resultCategory
 		    }
 		    ,
-		    type: 
-		    	typesJson
+		    types : {
+		    	factor: 'area-spline'
+		    }
 		  },
 		  axis: {
 		    x: {

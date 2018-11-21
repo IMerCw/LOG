@@ -14,10 +14,13 @@ public class GraphDTO {
 	private String update_date;
 	private String exp_yn;
 	private String json_file_name;
+	private String star_rate;
+	private String read_count;
 	
 	//외부필드
 	private String user_name;
-
+	private String file_py_name;
+	
 	public String getGraph_seq() {
 		return graph_seq;
 	}
@@ -128,6 +131,30 @@ public class GraphDTO {
 
 	public void setJson_file_name(String json_file_name) {
 		this.json_file_name = json_file_name;
+	}
+
+	public String getStar_rate() {
+		return star_rate;
+	}
+
+	public void setStar_rate(String star_rate) {
+		this.star_rate = star_rate;
+	}
+
+	public String getRead_count() {
+		return read_count;
+	}
+
+	public void setRead_count(String read_count) {
+		this.read_count = read_count;
+	}
+
+	public String getFile_py_name() {
+		return file_py_name;
+	}
+
+	public void setFile_py_name(String file_py_name) {
+		this.file_py_name = file_py_name;
 	}
 	
 }

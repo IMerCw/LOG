@@ -15,8 +15,6 @@
 	<script src="/assets/d3/d3.v5.js"></script>
 	<script src="/assets/c3Chart/c3.js"></script>
 	
-	<!-- ckeditor -->
-	<script src="/assets/ckeditor/ckeditor.js"></script>
 </head>
 <body>
 
@@ -41,34 +39,24 @@
 	
         	게시글 내용을 작성해주세요.
     </textarea>
+    <div class="form-group">
+		<label class="col-sm-12 control-label">해시태그<span class="required"></span></label>
+		<div class="col-sm-12">
+			<input type="text" id="graph_hashtag" name="graph_hashtag" class="form-control" placeholder="글 제목을 작성해주세요." value="#그래프" required>
+		</div>
+	</div>
+
     <div class="row">
 		<button type="button" class="btn btn-primary" id="submit" style="width: 100%;  margin: 20px 0; font-size: 18px;">작성 완료</button>
 	</div>
+	
 </body>
 
 
 
 <script>
-/* ckEditor */
-let editor;
 
-ClassicEditor
-    .create( document.querySelector( '#graph_content' ) )
-    .then( newEditor => {
-        editor = newEditor;
-    } )
-    .catch( error => {
-        console.error( error );
-    } );
 
-// Assuming there is a <button id="submit">Submit</button> in your application.
-document.querySelector( '#submit' ).addEventListener( 'click', () => {
-    const editorData = editor.getData();
-    
-    completeWriteGraph(editorData);
-    // ...
-} );
-////////////////
 
 // 1번째 단계 - 그래프 선택 완료
 function completeWriteGraph(editorData) {
@@ -80,8 +68,8 @@ function completeWriteGraph(editorData) {
 			graph_type: '<%=graphSelect%>',
 			user_seq: '<%=uDTO.getUser_seq()%>',
 			graph_title: $('#graph_title').val(),
-			graph_content: editorData,
-			graph_hashtag: 'test',
+			graph_content: $('#graph_content').val(),
+			graph_hashtag: $('#graph_hashtag').val(),
 			result_data: JSON.stringify(resultData),
 			result_cate: resultCategory.toString(),
 			result_x: resultXItem.toString()
