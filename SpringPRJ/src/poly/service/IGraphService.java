@@ -30,6 +30,12 @@ public interface IGraphService {
 
 	List<GraphReplyDTO> getGraphReplies(String graph_seq) throws Exception;
 
+	int deleteGraphReply(String reply_seq) throws Exception;
+
+	int updateBoardReply(GraphReplyDTO grDTO) throws Exception;
+
+	List<GraphDTO> getMyGraphList(String user_seq) throws Exception;
+
 	
 	/*
 	public int deleteMember(String memberId) throws Exception;

@@ -83,14 +83,14 @@
 				
 	
 						<div class="container-login100-form-btn">
-							<button type="submit" class="login100-form-btn" style="font-size: 18px; font-weight: bold;">
+							<button type="submit" class="login100-form-btn" style="height: 48px; font-size: 18px; font-weight: bold;">
 								로그인
 							</button>
 						</div>
 						
 						<%-- 카카오 로그인 버튼 --%>
 						<div class="login100-form-social flex-c-m" style="padding: 18px 0;">
-							<img src="/assets/images/kakao_account_login_btn_medium_wide_ov.png" style="cursor:pointer;" 
+							<img src="/assets/images/kakaoLoginCustom.png" style="cursor:pointer;" 
 									onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=59c7e2d73ac8002bd4a89d0d5569c167&redirect_uri=http://localhost:8080/kakaoLogin.do&response_type=code'"/>
 						</div>
 						

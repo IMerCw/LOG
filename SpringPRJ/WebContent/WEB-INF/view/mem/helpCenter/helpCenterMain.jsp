@@ -1,3 +1,4 @@
+<%@page import="poly.dto.UserMemberDTO"%>
 <%@page import="poly.util.CmmUtil"%>
 <%@page import="java.util.List"%>
 <%@page import="poly.dto.BoardPostDTO"%>
@@ -6,11 +7,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	List<BoardPostDTO> bpDTOs = (List<BoardPostDTO>)request.getAttribute("bpDTOs");
-	int totalPages = (Integer) request.getAttribute("totalPages"); //전체 페이지 갯수
+	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
+	int totalPages = (Integer) request.getAttribute("totalPages"); //전체 페이지 개수
 	String currentPage = (String) request.getAttribute("currentPage"); //현재 페이지 번호
 	int startPage = ((Integer.parseInt(currentPage) - 1) / 5 * 5  ) + 1; //블럭 시작 번호	
 	int endPage = (startPage + 4) > totalPages ? totalPages : (startPage+4); // 블럭 끝 번호
+	if(endPage > totalPages) endPage = totalPages; //마지막 블럭 끝 번호가 전체 페이지의 갯수를 넘어가면 전체 페이지 개수로 치환
 %>
+
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -62,6 +66,7 @@
 						</div>
 						<div class="row boardWritingInfo">
 							<div class="col-xs-6 col-sm-6">상담날짜: <%=bpDTOs.get(i).getReg_date() %></div>
+							
 							<%if (bpDTOs.get(i).getReply_total() != null) { %>
 								<div class="col-xs-6 col-sm-6"><p class="text-success">처리완료</p></div>
 							<%} else {%>
@@ -71,13 +76,14 @@
 					</div>
 				<%} %>
 				
+				<%if(!"0".equals(uDTO.getUser_seq())) {%>
 				<!-- BUTTON -->
 				<div style="margin-top:32px;"> 
 					<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javscript:callHelpCenterWrite()">
 						<i class="fa fa-pencil">&nbsp;글쓰기</i>
 					</button>
 				</div>
-				
+				<%} %>
 			<%-- 	<!-- start: PAGINATION -->
 				<div class="row">
 					<div class="col-md-12" style="text-align:center; margin:10px 0;">
@@ -201,11 +207,13 @@
 		})
 	}
 	
+	
 	//페이지 이동
 	function callHelpCenterMain(pageNum) {
+		var url = '<%=("0").equals(uDTO.getUser_seq()) ?  "/admin/adminHelpCenterMain.do" : "/mem/helpCenter/helpCenterMain.do" %>'; 
 		$.ajax({
 			type : "GET",
-			url : "/mem/helpCenter/helpCenterMain.do",
+			url : url,
 			data: {currentPage: pageNum},
 			dataType: "text",
 			error: function() {

@@ -7,8 +7,8 @@ import java.util.Map;
 import config.Mapper;
 import poly.dto.BoardPostDTO;
 
-@Mapper("HelpCenterMapper")
-public interface HelpCenterMapper {
+@Mapper("AdminHelpCenterMapper")
+public interface AdminHelpCenterMapper {
 
 	//게시글 삽입
 	public int insertBoardPostDTO(BoardPostDTO bpDTO) throws Exception;
@@ -23,7 +23,7 @@ public interface HelpCenterMapper {
 	//게시글 삭제
 	public int deleteBoardPostDTO(String board_p_seq) throws Exception;
 	//게시글 전체 갯수 가져오기
-	public int getTotalBoardPosts(String user_seq) throws Exception;
+	public int getTotalBoardPosts(String board_seq) throws Exception;
 	
 }
 

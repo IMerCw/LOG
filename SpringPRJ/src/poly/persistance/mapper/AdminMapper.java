@@ -7,15 +7,18 @@ import config.Mapper;
 import poly.dto.ImageDTO;
 import poly.dto.KakaoUserDTO;
 import poly.dto.UserMemberDTO;
+import poly.dto.pageParamsDTO;
 
 @Mapper("AdminMapper")
 public interface AdminMapper {
 
-	List<UserMemberDTO> getAllUser() throws Exception;
+	List<UserMemberDTO> getAllUser(pageParamsDTO pDTO) throws Exception;
 
 	int updateUser(UserMemberDTO updatedUDTO) throws Exception;
 
 	List<UserMemberDTO> getSearchUser(String searchContent) throws Exception;
+
+	int getTotalMemberListCount(String searchContent) throws Exception;
 	
 	
 /*

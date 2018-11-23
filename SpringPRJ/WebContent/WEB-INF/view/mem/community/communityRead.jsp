@@ -17,10 +17,9 @@
 	//제목 설정
 	$('#pageName').html('커뮤니티');
 </script>
-<!-- Specific Page Vendor -->
-<link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css">
-<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
-<script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
+	
+	<!-- Specific Page Vendor CSS -->
+	<link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css" />
 
 <style>
 	.contentSubject {
@@ -60,7 +59,7 @@
 			<div class="col-md-12"><%=bpDTO.getBoard_p_content() %></div>
 		</div>		
 		
-		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq())) {%>
+		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq()) || "0".equals(uDTO.getUser_seq()) )  {%>
 			<div class="row" style="padding:12px;"> 
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callCommunityUpdate()">수정하기</button>
 				<button type="button" class="mb-xs mt-xs mr-xs btn btn-danger" style="float:right; display: inline-block;" onclick="callCommunityDelete()">삭제하기</button>
@@ -88,7 +87,6 @@
 			<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callCommunityMain();">목록보기</button>
 			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callBoardReplyWriteProc();">댓글작성</button>
 		</div>
-		
 		
 	</div>
 </body>
@@ -302,7 +300,7 @@
 			})
 		}
 	}
-	
+	/*---------------------모달---------------------*/
 	<%-- 모달 --%>
 	function displaySuccessNotice() {
 		new PNotify({
@@ -328,6 +326,28 @@
 		});
 	}
 </script>
+	<!-- Vendor -->
+	<script src="/assets/vendor/jquery/jquery.js"></script>
+	<script src="/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+	<script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+	<script src="/assets/vendor/nanoscroller/nanoscroller.js"></script>
+	<script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+	<script src="/assets/vendor/magnific-popup/magnific-popup.js"></script>
+	<script src="/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+	
+	<!-- Specific Page Vendor -->
+	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+	
+	<!-- Theme Base, Components and Settings -->
+	<script src="/assets/javascripts/theme.js"></script>
+	
+	<!-- Theme Custom -->
+	<script src="/assets/javascripts/theme.custom.js"></script>
+	
+	<!-- Theme Initialization Files -->
+	<script src="/assets/javascripts/theme.init.js"></script>
 
+	<!-- Examples -->
+	<script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
 
 </html>

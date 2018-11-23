@@ -4,7 +4,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%	List<GraphDTO> gDTO = (List<GraphDTO>) request.getAttribute("gDTO"); //그래프 리스트  
 	Float starRate; //평점
-	String graphType;
+	String graphType; //그래프 타입 전역변수
+	String accessRoot = (String) session.getAttribute("accessRoot"); //접근 한 경로 - 마이그래프 / 그래프갤러리
 %>
 <html>
 <head>
@@ -15,20 +16,29 @@
 <script src="/assets/d3/d3.v5.js"></script>
 <script src="/assets/c3Chart/c3.js"></script>
 <script>
+<%if (accessRoot.equals("graphGallery")) {%>
 	//제목 설정
 	$('#pageName').html('그래프 갤러리');
+<%} else if(accessRoot.equals("myGraph")) {%>
+	$('#pageName').html('내 그래프');
+<%}%>
 </script>
 <style>
 	.rating > .fa { color:#ed9c28 }
 </style>
 </head>
 <body>
+	<%if (accessRoot.equals("graphGallery")) {%>
 	<div class="row">
 		<div class="col-md-12">
 			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javascript:callWriteGraphFirstStep()">그래프 작성하기</button>
 		</div>
 	</div>
-	
+	<%} if (gDTO.isEmpty()) {%>
+	<div class="container-fluid">
+		<h1>작성한 그래프가 없습니다.</h1>
+	</div>
+	<%} %>
 	<div class="row">
 		<%for(int i = 0; i < gDTO.size(); i++) {%>
 		
@@ -301,7 +311,6 @@
 				$('.content-body').html(data);
 			}
 		})
-		
 	}
 </script>
 </html>

@@ -33,6 +33,12 @@ public interface GraphMapper {
 	int insertGraphReply(GraphReplyDTO grDTO) throws Exception;
 
 	List<GraphReplyDTO> getGraphReplies(String graph_seq) throws Exception;
+
+	int deleteGraphReply(String reply_seq) throws Exception;
+
+	int updateBoardReply(GraphReplyDTO grDTO) throws Exception;
+
+	List<GraphDTO> getMyGraphList(String user_seq) throws Exception;
 	
 /*
 	//로그인

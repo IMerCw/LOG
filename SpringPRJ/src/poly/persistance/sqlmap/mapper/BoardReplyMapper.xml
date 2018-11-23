@@ -47,6 +47,8 @@
 		    BOARD_REPLY
 		SET 
 		    REPLY_CONTENT = #{reply_content}
+		    ,UPDATE_USER_SEQ = #{user_seq}
+		    ,UPDATE_DATE = SYSDATE
 		WHERE
 		    REPLY_SEQ = #{reply_seq}
 	</update>

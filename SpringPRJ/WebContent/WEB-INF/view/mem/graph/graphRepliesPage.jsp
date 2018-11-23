@@ -54,10 +54,9 @@
 			
 			<div class="col-md-2" style="text-align:right">
 				<%if(uDTO.getUser_seq().equals(grDTO.getUser_seq()) || isAdmin) {%>
-					
 				<%--<img src="/assets/images/previous_white.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callReReply('<%=grDTO.getReply_seq()%>')" /> --%>
-					<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callBoardReplyUpdate('<%=grDTO.getReply_seq()%>')" />
-					<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callBoardReplyDelete('<%=grDTO.getReply_seq()%>')" />
+					<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callGraphReplyUpdate('<%=grDTO.getReply_seq()%>')" />
+					<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callGraphReplyDelete('<%=grDTO.getReply_seq()%>')" />
 				<%} %>								
 			</div>
 		</div>

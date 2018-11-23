@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- JAVA와 연결할 Mapper 파일 설정 -->
-<mapper namespace="poly.persistance.mapper.CommunityMapper">
+<mapper namespace="poly.persistance.mapper.AdminHelpCenterMapper">
 	<!-- insert, update, delete, select -->
 	
 
@@ -35,9 +35,8 @@
 		)
 	</insert>
 	
-	<!-- 게시글 가져오기 -->
+	<!-- 관리자 뷰 고객센터 게시글 목록 가져오기 -->
 	<select id="getBoardPostDTO" parameterType="hashmap" resultType="BoardPostDTO">
-	
 		SELECT 
 			BP.BOARD_P_SEQ,
 			BP.USER_SEQ,
@@ -76,6 +75,8 @@
                     BOARD_P_SEQ
                 FROM 
                     BOARD_REPLY
+                WHERE
+                	EXP_YN = 1
                 GROUP BY
                     BOARD_P_SEQ
                 ) BR
@@ -87,7 +88,7 @@
 			
 	</select>
 	
-	<!-- 게시글 상세 가져오기 -->
+	<!-- 고객센터 게시글 상세 가져오기 -->
 	<select id="getBoardPostDetailDTO" parameterType="string" resultType="BoardPostDTO">
 		SELECT 
 	        BP.BOARD_P_SEQ,
@@ -99,13 +100,24 @@
 	        BP.UPDATE_USER_SEQ,
 	        BP.UPDATE_DATE,
 	        UM.USER_NAME,
-          	IMG.FILE_PY_NAME
+            BR.REPLY_COUNT as reply_total
 	    FROM 
 	        BOARD_POST BP
-		        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
-		        INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+	        INNER JOIN USER_MEMBER UM ON BP.USER_SEQ = UM.USER_SEQ
+            LEFT JOIN (
+                SELECT
+                    COUNT(REPLY_SEQ) AS REPLY_COUNT
+                    ,BOARD_P_SEQ
+                FROM
+                    BOARD_REPLY
+                WHERE
+                    BOARD_P_SEQ = #{board_p_seq} AND EXP_YN = 1
+                GROUP BY
+                    BOARD_P_SEQ
+                ) BR ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
 	    WHERE 
 	        BP.BOARD_P_SEQ = #{board_p_seq}
+            
 	</select>
 	
 	
@@ -138,19 +150,21 @@
 		    BOARD_POST
 		SET
 		    EXP_YN = -1
+		    ,UPDATE_USER_SEQ = #{user_seq}
+		    ,UPDATE_DATE = SYSDATE
 		WHERE 
 	        BOARD_P_SEQ = #{board_p_seq}
 	</update>
 	
 	<!-- 게시글 전체 갯수 가져오기-->
-	<select id="getTotalBoardPosts" parameterType="string" resultType="integer">
+	<select id="getTotalBoardPosts" resultType="integer">
 		SELECT
             COUNT(BOARD_P_SEQ) AS TOTALBOARDPOSTS
 		FROM 
 		    BOARD_POST
 		WHERE 
-	        BOARD_SEQ = #{board_seq} AND
-	        EXP_YN = 1
+	        EXP_YN = 1 AND
+	        BOARD_SEQ = #{board_seq}
 	</select>
 	
 	

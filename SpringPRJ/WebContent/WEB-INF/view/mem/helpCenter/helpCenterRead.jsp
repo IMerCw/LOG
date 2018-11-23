@@ -46,22 +46,37 @@
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
-			<div class="col-md-12" style="text-align:right;">문의날짜:<%=bpDTO.getReg_date() %> / <span id="reply_date" class="text-muted">상담 처리 중</span></div>
-		</div>
 		
+			<%if("0".equals(uDTO.getUser_seq())) { %>
+				<div class="col-md-4" style="text-align:left;"><img src="<%=bpDTO.getFile_py_name()%>" class="img-circle">&nbsp;<%=bpDTO.getUser_name() %></div> 
+			<%} %>
+			
+			<div class="col-md-8" style="text-align:right;">
+				문의날짜:<%=bpDTO.getReg_date() %>
+			<%if (bpDTO.getReply_total() != null) { %>
+				<p class="text-success">상담 처리완료</p>
+			<%} else {%>
+				<p class="text-muted">상담 처리 중</p>
+			<%} %>
+			</div>
+		</div>
+			
 		<div class="row" style="width: 100%; background-color: #cccccc; margin: 10px 0; height: 2px;"></div>
 
 		<div class="row" style="min-height: 180px; padding-top: 6px;">
 			<div class="col-md-12"><%=bpDTO.getBoard_p_content() %></div>
 		</div>		
 		
-		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq()) || isAdmin) {%>
-			<div class="row" style="padding:12px;"> 
-				<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
-				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callHelpCenterUpdate()">수정하기</button>
-				<button type="button" class="mb-xs mt-xs mr-xs btn btn-danger" style="float:right; display: inline-block;" onclick="callHelpCenterDelete()">삭제하기</button>
-			</div>
-		<%}%>
+		<div class="row" style="padding:12px;"> 
+		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq())) {%>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callHelpCenterUpdate()">수정하기</button>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-danger" style="float:right; display: inline-block;" onclick="callHelpCenterDelete()">삭제하기</button>
+		<%}else if (isAdmin) {%>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-default" style="float:left; display: inline-block;" onclick="callHelpCenterMain();">목록보기</button>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-danger" style="float:right; display: inline-block;" onclick="callHelpCenterDelete()">삭제하기</button>
+		<%} %>
+		</div>
 		
 		<!-- 댓글 출력 -->
 		<div class="container-fluid" id="boardReplyContainer" style="padding:0;">
@@ -72,7 +87,7 @@
 		--%>
 		</div>
 		<!-- 댓글 작성 입력 폼 -->
-		<%if (uDTO.getUser_seq().equals("0")) {%>
+		<%if (isAdmin) {%>
 			<div class="row">
 				<div class="form-group">
 					<div class="col-md-12">
@@ -82,7 +97,7 @@
 				</div>
 			</div>
 			<div> 
-				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callBoardReplyWriteProc();">댓글작성</button>
+				<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; display: inline-block;" onclick="callBoardReplyWriteProc();">답변 작성</button>
 			</div>
 		<%} %>
 	</div>
@@ -91,9 +106,10 @@
 
 	//게시글 목록
 	function callHelpCenterMain() {
+		var url = '<%=("0").equals(uDTO.getUser_seq()) ?  "/admin/adminHelpCenterMain.do" : "/mem/helpCenter/helpCenterMain.do" %>';
 		$.ajax({
 			type : "POST",
-			url : "/mem/helpCenter/helpCenterMain.do",
+			url : url,
 			dataType: "text",
 			data:{currentPage: '${currentPage}' },
 			error: function() {
@@ -137,7 +153,7 @@
 				alert("통신실패");
 			},
 			success: function(data) {
-				$('.content-body').html(data);
+				callHelpCenterMain();
 			}
 		})
 	}
@@ -162,45 +178,8 @@
 		});
 	};
 
-	//댓글 목록 불러오기
+	//댓글 목록 불러오기 실행
 	callBoardRepliesPage();
-	<%-- 
-	//댓글 불러오기
-	function callBoardReplies() {
-		var contents = '';
-		$.ajax({
-			type : "POST",
-			url : "/mem/community/getBoardReplies.do",
-			dataType: "text",
-			data : {
-				board_p_seq : '<%=bpDTO.getBoard_p_seq()%>'
-			},
-			error: function() {
-				alert("통신실패");
-			},
-			success: function(data) {
-				$.each($.parseJSON(data), function(key,value) {
-					contents += '<div class="row" id="'+ value.reply_seq +'" style="padding: 4px; border-radius: 2px; background-color: #cccccc; margin:10px 0; border: 1px solid #bbbbbb;">';
-					contents += '<div style="min-height: 64px; padding: 4px;" id="replyContent'+ value.reply_seq +'">'+ value.reply_content+'</div>';
-					contents += '<div class="col-md-6" style="text-align:left;">'
-					contents += '<img src="' + value.file_py_name + '"alt="Joseph Doe" class="img-circle" data-lock-picture="/assets/images/!logged-user.jpg" />';
-					contents += ' / ' +  value.user_name + ' / ' +  value.reg_date + '</div>';
-					contents += '<div class="col-md-6" style="text-align:right">';
-					
-					현재유저와 작성자 일치 확인
-					if(value.user_seq == '<%=uDTO.getUser_seq()%>') {
-						contents += '<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callBoardReplyUpdate(' + value.reply_seq + ')" />';
-						contents += '<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callBoardReplyDelete(' + value.reply_seq + ')" />';
-					}
-					contents += '</div>';
-					contents += '</div>';
-					contents += '</div>';
-				})
-				/* value.reply_seq */
-				$('#boardReplyContainer').html(contents);
-			}
-		})
-	} --%>
 	
 	//댓글 작성
 	function callBoardReplyWriteProc(){
@@ -282,7 +261,7 @@
 				success: function(data) {
 					console.log(data);
 					//댓글 목록 불러오기 , 새로고침
-					callBoardReplies();
+					callBoardRepliesPage();
 				}
 			})
 		}

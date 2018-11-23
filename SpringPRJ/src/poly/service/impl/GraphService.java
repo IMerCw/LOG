@@ -71,6 +71,21 @@ public class GraphService implements IGraphService {
 	public List<GraphReplyDTO> getGraphReplies(String graph_seq) throws Exception {
 		return graphMapper.getGraphReplies(graph_seq);
 	}
+
+	@Override
+	public int deleteGraphReply(String reply_seq) throws Exception {
+		return graphMapper.deleteGraphReply(reply_seq);
+	}
+
+	@Override
+	public int updateBoardReply(GraphReplyDTO grDTO) throws Exception {
+		return graphMapper.updateBoardReply(grDTO);
+	}
+
+	@Override
+	public List<GraphDTO> getMyGraphList(String user_seq) throws Exception {
+		return graphMapper.getMyGraphList(user_seq);
+	}
 	
 	
 	

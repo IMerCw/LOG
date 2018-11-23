@@ -20,15 +20,12 @@
 	<!-- Mobile Metas -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-	<!-- Web Fonts  -->
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
-
 	<!-- Vendor CSS -->
 	<link rel="stylesheet" href="/assets/vendor/bootstrap/css/bootstrap.css" />
 	<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css" />
 	<link rel="stylesheet" href="/assets/vendor/magnific-popup/magnific-popup.css" />
 	<link rel="stylesheet" href="/assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
-	
+
 	<!-- Specific Page Vendor CSS -->
 	<link rel="stylesheet" href="/assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
 	<link rel="stylesheet" href="/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
@@ -45,12 +42,13 @@
 
 	<!-- Head Libs -->
 	<script src="/assets/vendor/modernizr/modernizr.js"></script>
-	<!-- Web Font -->
-	<link href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css" rel="stylesheet">
 	
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
 	<style>
-		body { font-family: 'Nanum Gothic', serif; }
-		ul.nav-main li a { font-size:14px; }
+		.logo-container{font-family: 'Amatic SC', cursive; font-size:24px;} /* 로고 글 */
+		body { font-family: 'Noto Sans KR', sans-serif; }
+		ul.nav-main li a { font-size:16px; }
 		.sidebar-widget .widget-header h6 { color:#ffffff;}
 		ul.nav-main > li > a:hover  { background-color: #171717;}
 		ul.nav-main > li > a:focus, .nav > li > a:hover, .nav > li > a:focus { background-color: transparent;}
@@ -84,6 +82,8 @@
 			}
 			
 		<%}%>
+		
+		.sidebar-widget .widget-header .widget-toggle { color:white;}
 	</style>
 </head>
 <body>
@@ -94,7 +94,7 @@
 			<div class="logo-container">
 				<a href="/mem/main.do" class="logo" style="font-size: 20px; font-weight: bold; color: #56708a;">
 					<img src="/assets/images/space.svg" height="35" alt="JSOFT Admin" />
-					LOG
+					LOG:Lay On Graph
 				</a>
 				<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
 					<i class="fa fa-bars" aria-label="Toggle sidebar" style="padding-top:8px;"></i>
@@ -240,20 +240,27 @@
 										<span>그래프 갤러리</span>
 									</a>
 								</li>
+								<%if(!"0".equals(uDTO.getUser_seq())){ %>
 								<li id="myGraph">
 									<a href="#" onclick="javascript:callPage('myGraphPage');">
 										<i class="fa fa-star-o" aria-hidden="true"></i>
 										<span>내 그래프</span>
 									</a>
 								</li>
+								<%} %>
 								<li id="community">
 									<a href="#" onclick="javascript:callPage('communityPage');">
 										<i class="fa fa-list-alt" aria-hidden="true"></i>
 										<span>커뮤니티</span>
 									</a>
 								</li>
+								
 								<li id="helpCenter">
-									<a href="#" onclick="javascript:callPage('helpCenterPage');">
+									<%if("0".equals(uDTO.getUser_seq())) {%>
+										<a href="#" onclick="javascript:callPage('adminHelpCenterPage');">
+									<%}else { %>
+										<a href="#" onclick="javascript:callPage('helpCenterPage');">
+									<%} %>
 										<i class="fa fa-question-circle" aria-hidden="true"></i>
 										<span>고객센터</span>
 									</a>
@@ -463,6 +470,25 @@
 			$.ajax({
 				type : "GET",
 				url : "/mem/helpCenter/helpCenterMain.do",
+				dataType: "text",
+				data : {currentPage : 1},
+				error: function() {
+					alert("통신실패");
+				},
+				success: function(data) {
+					$('.content-body').html(data);
+				}
+			})
+		}
+		
+		else if (pageName == 'adminHelpCenterPage'){
+			<%-- 현재 페이지 초기화 --%>
+			$('.nav-main li').removeClass('nav-active'); // 이전 페이지에서의 nav-active 클래스 제거
+			$('#helpCenter').addClass('nav-active'); // 현재 메뉴의 nav-active 클래스 추가
+			$('#helpCenter>a').blur(); // focus 해제
+			$.ajax({
+				type : "GET",
+				url : "/admin/adminHelpCenterMain.do",
 				dataType: "text",
 				data : {currentPage : 1},
 				error: function() {

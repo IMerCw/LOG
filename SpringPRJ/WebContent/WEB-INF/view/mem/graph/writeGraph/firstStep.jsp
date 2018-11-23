@@ -10,18 +10,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css">
+	<!-- Mobile Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	
+	
+
+	<!-- Vendor CSS -->
+	<link rel="stylesheet" href="/assets/vendor/magnific-popup/magnific-popup.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-datepicker/css/datepicker3.css" />
+
+	<!-- Specific Page Vendor CSS -->
+	<link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css" />
+	
 <script>
 	//제목 설정
 	$('#pageName').html('그래프 갤러리');
 </script>
 <style>
+	
 	.panel-featured * {
 		text-overflow:ellipsis;
 		overflow:hidden;
 		white-space:nowrap;
 	}
-
 </style>
 </head>
 <body>
@@ -37,13 +48,13 @@
 					<li class="completed active">
 						<a href="#w4-account" data-toggle="tab" aria-expanded="true"><span>1</span>데이터 선택</a>
 					</li>
-					<li class="">
+					<li class="secondStep">
 						<a href="#w4-profile" data-toggle="tab" aria-expanded="false"><span>2</span>데이터 정제</a>
 					</li>
-					<li>
+					<li class="thirdStep">
 						<a href="#w4-billing" data-toggle="tab"><span>3</span>그래프 선택</a>
 					</li>
-					<li>
+					<li class="fourthStep">
 						<a href="#w4-confirm" data-toggle="tab"><span>4</span>게시물 작성</a>
 					</li>
 				</ul>
@@ -91,7 +102,6 @@
 							<%} %>
 						</div>
 						
-						
 					</div>
 					
 					<!-- 2번 탭 -->
@@ -102,34 +112,15 @@
 					<!-- 3번 탭 -->
 					<div id="w4-billing" class="tab-pane" style="text-align: center;">
 						
-						
-						
 					</div>
 					<!-- 4번 탭 -->
 					<div id="w4-confirm" class="tab-pane">
 						
-						
 					</div>
-					
 					
 				</div>
 			</form>
 		</div>
-		
-		<!-- 패널 푸터 panel footer -->
-		<div class="panel-footer" style="display:none;">
-			<ul class="pager">
-				<li class="previous disabled">
-					<a><i class="fa fa-angle-left"></i> 이전</a>
-				</li>
-				<li class="finish hidden pull-right">
-					<a>작성 완료</a>
-				</li>
-				<li class="next">
-					<a>다음 <i class="fa fa-angle-right"></i></a>
-				</li>
-			</ul>
-		</div> 
 		
 	</section>
 								
@@ -151,17 +142,99 @@
 			},
 			success: function(data) {
 				$('#w4-profile').html(data);
-				$('.next').click();
+				$('.secondStep>a').click();
+				displayFirstStepSuccess();
 			}
 		});
 	}
 	
 	
+	<%---------- 모달 --------------%>
+	var stack_topleft = {"dir1": "down", "dir2": "right", "push": "top"};
+	var stack_bottomleft = {"dir1": "right", "dir2": "up", "push": "top"};
+	var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15};
+	var stack_bar_top = {"dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0};
+	var stack_bar_bottom = {"dir1": "up", "dir2": "right", "spacing1": 0, "spacing2": 0};
+	<%----------1단계 성공  ----------%>
+	function displayFirstStepSuccess() {
+		new PNotify({
+			title: '데이터 선택 성공',
+			text: '데이터 선택이 완료되었습니다.',
+			type: 'success',
+			addclass: 'stack-bar-top',
+			stack: stack_bar_top,
+			width: "100%"
+		});
+	}
+	<%----------2단계 성공  ----------%>
+	function displaySecondStepSuccess() {
+		new PNotify({
+			title: '데이터 정제 성공',
+			text: '데이터 정제가 완료되었습니다.',
+			type: 'success',
+			addclass: 'stack-bar-top',
+			stack: stack_bar_top,
+			width: "100%"
+		});
+	}
+	<%----------3단계 성공  ----------%>
+	function displayThirdStepSuccess() {
+		new PNotify({
+			title: '그래프 선택 성공',
+			text: '그래프 선택이 완료되었습니다.',
+			type: 'success',
+			addclass: 'stack-bar-top',
+			stack: stack_bar_top,
+			width: "100%"
+		});
+	}
 	
+	function displayErrorNotice() {
+		new PNotify({
+			title: '댓글 쓰기 실패',
+			text: '댓글을 작성해주세요.',
+			type: 'error',
+			shadow: true
+		});
+	}
+	function displayDeleteNotice() {
+		new PNotify({
+			title: '댓글 삭제 완료',
+			text: '댓글을 정상적으로 삭제하였습니다.',
+			shadow: true
+		});
+	}
 </script>
+<!-- Vendor -->
+<!-- 	
+	<script src="/assets/vendor/jquery/jquery.js"></script>
+	<script src="/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+	<script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+	<script src="/assets/vendor/nanoscroller/nanoscroller.js"></script>
+	<script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+	<script src="/assets/vendor/magnific-popup/magnific-popup.js"></script>
+	<script src="/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+	 -->
 	<!-- Specific Page Vendor -->
 	<script src="/assets/vendor/jquery-validation/jquery.validate.js"></script>
 	<script src="/assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
 	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+		
+	<!-- Specific Page Vendor -->
+	<script src="/assets/vendor/jquery-validation/jquery.validate.js"></script>
+	<script src="/assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
+	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+	
+	<!-- Theme Base, Components and Settings -->
+	<script src="/assets/javascripts/theme.js"></script>
+	
+	<!-- Theme Custom -->
+	<script src="/assets/javascripts/theme.custom.js"></script>
+	
+	<!-- Theme Initialization Files -->
+	<script src="/assets/javascripts/theme.init.js"></script>
+
+
+	<!-- Examples -->
 	<script src="/assets/javascripts/forms/examples.wizard.js"></script>
 </html>

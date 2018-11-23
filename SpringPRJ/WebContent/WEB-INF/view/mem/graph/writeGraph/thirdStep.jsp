@@ -130,7 +130,8 @@ function callFourthStep(graphSelect) {
 			},
 			success: function(data) {
 				$('#w4-confirm').html(data);
-				$('.next').click();
+				$('.fourthStep>a').click();
+				displayThirdStepSuccess();
 			}
 		})
 	}
@@ -167,7 +168,7 @@ setTimeout(function () {
 	            ['data3', 400, 500, 450, 700, 600, 500]
 	        ]
 	    });
-	}, 1000);
+	}, 500);
 	setTimeout(function () {
 	    lineChart.load({
 	        columns: [
@@ -175,7 +176,7 @@ setTimeout(function () {
 	             ['data2', 130, 340, 200, 500, 250, 350]
 	        ]
 	    });
-	}, 2000);
+	}, 800);
 }, 100);
 
 /*------------------------*/	
@@ -208,8 +209,8 @@ setTimeout(function () {
 	             ['data2', 130, 100, 140, 200, 150, 50]
 	        ]
 	    });
-	}, 2000);
-}, 100);
+	}, 100);
+}, 500);
 
 /*------------------------*/
 

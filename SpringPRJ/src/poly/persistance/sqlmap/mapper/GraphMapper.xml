@@ -5,6 +5,54 @@
 	<!-- insert, update, delete, select -->
 	
 
+	<!-- 내 그래프 목록 가져오기 -->
+	<select id="getMyGraphList" parameterType="string" resultType="GraphDTO">
+		SELECT
+		    *
+		FROM
+		    (
+		    SELECT
+		        ROWNUM RNUM,
+		        G.GRAPH_SEQ,
+		        G.USER_SEQ,
+		        G.GRAPH_TITLE,
+		        G.GRAPH_CONTENT,
+		        G.GRAPH_HASHTAG,
+		        G.REG_DATE,
+		        G.GRAPH_TYPE,
+		        G.RESULT_CATE,
+		        G.RESULT_X,
+		        G.JSON_FILE_NAME,
+		        G.READ_COUNT,
+		        GR.STAR_RATE,
+                UM.USER_NAME
+		    FROM
+		        GRAPH G
+            INNER JOIN USER_MEMBER UM ON G.USER_SEQ = UM.USER_SEQ
+            LEFT JOIN 
+                (
+                SELECT
+                    GRAPH_SEQ
+                    ,AVG(STAR_RATE) AS STAR_RATE
+                FROM
+                    GRAPH_REPLY
+                WHERE
+                    GRAPH_SEQ = 8
+                GROUP BY
+                    GRAPH_SEQ
+                ) GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+            WHERE
+            	G.EXP_YN = 1 AND
+            	G.USER_SEQ = #{user_seq}
+		    ORDER BY
+		        GRAPH_SEQ DESC
+		    ) A
+		WHERE
+		    RNUM BETWEEN 1 AND 10
+            
+	</select>
+	
+	
 	<!-- 그래프 목록 가져오기 -->
 	<select id="getGraphList" resultType="GraphDTO">
 		SELECT
@@ -202,14 +250,11 @@
 			GRAPH_TITLE = #{graph_title}
 			,GRAPH_CONTENT = #{graph_content}
 			,GRAPH_HASHTAG = #{graph_hashtag}
+			,UPDATE_USER_SEQ = #{update_user_seq}
+			,UPDATE_DATE = SYSDATE
 		WHERE
 			GRAPH_SEQ = #{graph_seq}
-			
 	</update>
-	
-	
-	
-	
 	
 	<!-- 댓글 등록 -->
 	<insert id="insertGraphReply" parameterType="GraphReplyDTO">
@@ -257,4 +302,25 @@
 		ORDER BY 
 		    GR.REPLY_SEQ
 	</select>
+	<!-- 그래프 댓글 삭제 -->
+	<update id="deleteGraphReply" parameterType="string">
+		UPDATE
+			GRAPH_REPLY
+		SET
+			EXP_YN = -1
+		WHERE
+			REPLY_SEQ = #{reply_seq}
+	</update>
+	
+	<!-- 그래프 댓글 수정 -->
+	<update id="updateBoardReply" parameterType="GraphReplyDTO">
+		UPDATE
+			GRAPH_REPLY
+		SET
+			REPLY_CONTENT = #{reply_content}
+			,USER_SEQ = #{user_seq}
+			,STAR_RATE = #{star_rate}
+		WHERE
+			REPLY_SEQ = #{reply_seq}
+	</update>
 </mapper>

@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import poly.dto.UserMemberDTO;
+import poly.dto.pageParamsDTO;
 import poly.persistance.mapper.AdminMapper;
 import poly.service.IAdminService;
 
@@ -17,10 +18,6 @@ public class AdminService implements IAdminService {
 	@Resource(name="AdminMapper")
 	private AdminMapper adminMapper;
 
-	@Override
-	public List<UserMemberDTO> getAllUser() throws Exception {
-		return adminMapper.getAllUser();
-	}
 
 	@Override
 	public int updateUser(UserMemberDTO updatedUDTO) throws Exception {
@@ -30,6 +27,16 @@ public class AdminService implements IAdminService {
 	@Override
 	public List<UserMemberDTO> getSearchUser(String searchContent) throws Exception {
 		return adminMapper.getSearchUser(searchContent);
+	}
+
+	@Override
+	public int getTotalMemberListCount(String searchContent) throws Exception {
+		return adminMapper.getTotalMemberListCount(searchContent);
+	}
+
+	@Override
+	public List<UserMemberDTO> getAllUser(pageParamsDTO pDTO) throws Exception {
+		return adminMapper.getAllUser(pDTO);
 	}
 	
 

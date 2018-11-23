@@ -56,27 +56,24 @@ public class GraphGalleryController {
 	/*-------------------------그래프 메인------------------------------*/
 	//그래프 갤러리 - 그래프 게시글 목록
 	@RequestMapping(value="/mem/graph/graphMain")
-	public String graphMain(HttpServletRequest request, Model model) throws Exception {
+	public String graphMain(HttpServletRequest request, Model model, HttpSession session) throws Exception {
 		log.info(this.getClass().getName() + "start!");
+		//기존 세션 삭제
+		session.removeAttribute("accessRoot");
 		
 		//가져올 갯수 정하기
 		request.getParameter("startIndex"); //시작번호의 10개까지 
 		List<GraphDTO> gDTO = graphService.getGraphList();
 		
+		String accessRoot = "graphGallery";
 		model.addAttribute("gDTO", gDTO);
+		session.setAttribute("accessRoot", accessRoot);
 		
 		log.info(this.getClass().getName() + "end");
+		
 		return "/mem/graph/graphMain";
 	}
 	
-/*	//그래프 가져오기
-	@RequestMapping(value="/mem/graph/getGraph")
-	public String getGraph() throws Exception { 
-		log.info(this.getClass().getName() + "start!");
-		
-		log.info(this.getClass().getName() + "end!");
-		return 
-	}*/
 	///////////////////////////////////////////////////////////////////
 	/*-------------------------그래프 작성------------------------------*/
 	//그래프 작성 1단계 - 데이터 선택
@@ -151,7 +148,7 @@ public class GraphGalleryController {
 	
 	//그래프 작성 최종 단계 - 글 작성
 	@RequestMapping(value="/mem/graph/writeGraph/completeWriteGraph")
-	public String completeWriteGraph(HttpServletRequest request, Model model, GraphDTO gDTO) throws Exception {
+	public String completeWriteGraph(HttpServletRequest request, Model model, GraphDTO gDTO, HttpSession session) throws Exception {
 		log.info(this.getClass().getName() + "start!");
 		
 		Date date = new Date();
@@ -188,7 +185,7 @@ public class GraphGalleryController {
 		
 		log.info(this.getClass().getName() + "end");
 		
-		return graphMain(request, model);
+		return graphMain(request, model, session);
 	}
 	
 	///////////////////////////////////////////////////////////////////
@@ -250,13 +247,13 @@ public class GraphGalleryController {
 	/*-------------------------그래프 삭제------------------------------*/
 	//그래프 삭제 처리 - 리스트보기 이동
 	@RequestMapping(value="/mem/graph/deleteGraph")
-	public String deleteGraph(HttpServletRequest request, Model model) throws Exception {
+	public String deleteGraph(HttpServletRequest request, Model model, HttpSession session) throws Exception {
 		log.info(this.getClass().getName() + "start!");
 		String graph_seq = request.getParameter("graph_seq");
 		int result = graphService.deleteGraph(graph_seq);
 		
 		log.info(this.getClass().getName() + "end");
-		return	graphMain(request, model); //삭제 완료 후 리스트 보기로 이동
+		return	graphMain(request, model, session); //삭제 완료 후 리스트 보기로 이동
 	}
 	/////////////////////////////////////////////////////////////////
 	
@@ -279,7 +276,7 @@ public class GraphGalleryController {
 	}
 	
 	//댓글 작성 Procedure
-	@RequestMapping(value="/mem/graph/boardReplyWriteProc")
+	@RequestMapping(value="/mem/graph/graphReplyWriteProc")
 	public @ResponseBody GraphReplyDTO boardReplyWriteProc(HttpServletRequest request, Model model, GraphReplyDTO grDTO) throws Exception {
 		log.info("start : " + this.getClass());
 		
@@ -299,14 +296,14 @@ public class GraphGalleryController {
 		return grDTO;
 	}
 	
-	/*
+	
 	//댓글 삭제
-	@RequestMapping(value="/mem/graph/boardReplyDelete")
-	public @ResponseBody String boardReplyDelete(HttpServletRequest request, Model model, String reply_seq) throws Exception {
+	@RequestMapping(value="/mem/graph/graphReplyDelete")
+	public @ResponseBody String graphReplyDelete(HttpServletRequest request, Model model, String reply_seq) throws Exception {
 		log.info("start : " + this.getClass());
 		
-		//댓글 가져오기
-		int result = boardReplyService.deleteBoardReply(reply_seq);
+		//댓글 삭제하기
+		int result = graphService.deleteGraphReply(reply_seq);
 		
 		String deleteResult = String.valueOf(result);
 		log.info("end : " + this.getClass());
@@ -314,13 +311,18 @@ public class GraphGalleryController {
 		return deleteResult;
 	}
 	
-	//댓글 삭제
-	@RequestMapping(value="/mem/graph/boardReplyUpdateProc")
-	public @ResponseBody String boardReplyUpdateProc(HttpServletRequest request, Model model, BoardReplyDTO brDTO) throws Exception {
+	//댓글 수정
+	@RequestMapping(value="/mem/graph/graphReplyUpdateProc")
+	public @ResponseBody String boardReplyUpdateProc(HttpServletRequest request, Model model, GraphReplyDTO grDTO) throws Exception {
 		log.info("start : " + this.getClass());
+		log.info(grDTO.getReply_seq());
+		log.info(grDTO.getReply_content());
+		log.info(grDTO.getUser_seq());
+		log.info(grDTO.getGraph_seq()) ;
+		log.info(grDTO.getStar_rate()) ;
 		
 		//댓글 가져오기
-		int result = boardReplyService.updateBoardReply(brDTO);
+		int result = graphService.updateBoardReply(grDTO);
 		
 		String updateResult = String.valueOf(result);
 		log.info("end : " + this.getClass());
@@ -328,5 +330,5 @@ public class GraphGalleryController {
 		return updateResult;
 	}
 
-*/	
+
 }

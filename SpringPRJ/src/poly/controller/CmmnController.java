@@ -51,6 +51,7 @@ public class CmmnController {
 	
 	//해쉬 함수
 	HashFunc hashfunc = new HashFunc();
+	String hashKey = "cwPark"; //해쉬함수를 위한 키
 	
 	//공통 메인 페이지
 	@RequestMapping(value="/cmmn/main")
@@ -67,7 +68,7 @@ public class CmmnController {
 		log.info(this.getClass() + " start");
 		
 		//해쉬 함수 적용
-		String user_passwd =hashfunc.doHash(uDTO.getUser_passwd());
+		String user_passwd =hashfunc.doHash(hashKey+uDTO.getUser_passwd());
 		uDTO.setUser_passwd(user_passwd);
 		
 		//아이디 및 패스워드 확인
@@ -114,6 +115,7 @@ public class CmmnController {
 		log.info(this.getClass() + " end");
 		return "/cmmn/reg";
 	}
+	
 	//아이디 중복 체크
 	@RequestMapping(value="/cmmn/idCheck")
 	public @ResponseBody int idCheck(HttpServletRequest request, Model model, String user_id) throws Exception {
@@ -142,7 +144,7 @@ public class CmmnController {
 		/*------------------------------------------*/
 		//비밀번호 해쉬 함수 적용
 		
-		String hashedResult = hashfunc.doHash(uDTO.getUser_passwd()); //해쉬 함수 적용
+		String hashedResult = hashfunc.doHash(hashKey+uDTO.getUser_passwd()); //해쉬 함수 적용
 		uDTO.setUser_passwd(hashedResult); //해쉬 결과 DTO 저장
 		
 		/*------------------------------------------*/
@@ -254,7 +256,7 @@ public class CmmnController {
 		
 		log.info("임시비밀번호: " + temppw);
 		
-		String hashedResult = hashfunc.doHash(temppw);
+		String hashedResult = hashfunc.doHash(hashKey+temppw);
 		uDTO.setUser_passwd(hashedResult);
 		int result = cmmnService.setTempPasswd(uDTO);
 		
@@ -311,7 +313,7 @@ public class CmmnController {
 		/*------------------------------------------*/
 		//비밀번호 해쉬 함수 적용
 		
-		String hashedResult = hashfunc.doHash(updatedUDTO.getUser_passwd()); //해쉬 함수 적용
+		String hashedResult = hashfunc.doHash(hashKey+updatedUDTO.getUser_passwd()); //해쉬 함수 적용
 		updatedUDTO.setUser_passwd(hashedResult); //해쉬 결과 DTO 저장
 		
 		/*------------------------------------------*/

@@ -47,12 +47,16 @@ public class HelpCenterController {
 	// 고객센터 메인
 	@RequestMapping(value="/mem/helpCenter/helpCenterMain")
 	public String helpCenterMain(HttpServletRequest request, Model model, HttpSession session) throws Exception {
-		String board_seq = "2"; //고객센터, 게시판 번호 2
+		//고객센터, 게시판 번호 2
+		String board_seq = "2";
+		//현재 사용자 가져오기
+		UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
+		String user_seq = uDTO.getUser_seq();
 		
 		//pagination 설정
 		int last_index;
 		////전체 게시글 갯수 가져오기
-		int totalBoardPosts = helpCenterService.getTotalBoardPosts(board_seq);
+		int totalBoardPosts = helpCenterService.getTotalBoardPosts(user_seq);
 		////전체 페이지 갯수 (한 페이지 보여 줄 게시글 10 개라고 가정할 때)
 		int totalPages = (totalBoardPosts-1) / 5 + 1;
 		////현재 요청 페이지
@@ -69,13 +73,12 @@ public class HelpCenterController {
 		//파라미터 확인
 		log.info("Current page is : " + currentPage);
 		log.info("last index is : " + last_index);
+		log.info("totalBoardPosts is : " + totalBoardPosts);
 		
 		
 		Map<String, Integer> bpMap = new HashMap<String, Integer>();
 		
-		//현재 사용자 가져오기
-		UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
-		String user_seq = uDTO.getUser_seq();
+
 		
 		//service 파라미터 설정
 		bpMap.put("board_seq", Integer.parseInt(board_seq));
@@ -115,15 +118,15 @@ public class HelpCenterController {
 		String currentPage = CmmUtil.nvl(request.getParameter("currentPage"));
 		
 		//조회수 하나 증가
-		int result = communityService.increaseBoardCount(board_p_seq);
+		int result = helpCenterService.increaseBoardCount(board_p_seq);
 		
 		//게시글 가져오기
-		BoardPostDTO bpDTO = communityService.getBoardPostDetailDTO(board_p_seq);
+		BoardPostDTO bpDTO = helpCenterService.getBoardPostDetailDTO(board_p_seq);
 		
 		//커뮤니티 게시글 상세 확인
-		log.info(bpDTO.getBoard_p_title());
-		log.info(bpDTO.getBoard_p_content());
-		
+		log.info("BOARD P TITLE " + bpDTO.getBoard_p_title());
+		log.info("BOARD P CONTENT :" + bpDTO.getBoard_p_content());
+		log.info("REPLY TOTAL : " + bpDTO.getReply_total());
 		//bpDTO, 현재페이지, 댓글 내용 전송
 		model.addAttribute("bpDTO", bpDTO);
 		model.addAttribute("currentPage", currentPage);

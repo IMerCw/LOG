@@ -424,7 +424,8 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 				},
 				success: function(data) {
 					$('#w4-billing').html(data);
-					$('.next').click();
+					$('.thirdStep>a').click();
+					displaySecondStepSuccess();
 				}
 			});
 			
