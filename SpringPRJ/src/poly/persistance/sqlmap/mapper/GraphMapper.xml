@@ -36,8 +36,6 @@
                     ,AVG(STAR_RATE) AS STAR_RATE
                 FROM
                     GRAPH_REPLY
-                WHERE
-                    GRAPH_SEQ = 8
                 GROUP BY
                     GRAPH_SEQ
                 ) GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
@@ -73,10 +71,12 @@
 		        G.JSON_FILE_NAME,
 		        G.READ_COUNT,
 		        GR.STAR_RATE,
-                UM.USER_NAME
+                UM.USER_NAME,
+                IMG.FILE_PY_NAME
 		    FROM
 		        GRAPH G
             INNER JOIN USER_MEMBER UM ON G.USER_SEQ = UM.USER_SEQ
+            INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
             LEFT JOIN 
                 (
                 SELECT
@@ -84,8 +84,6 @@
                     ,AVG(STAR_RATE) AS STAR_RATE
                 FROM
                     GRAPH_REPLY
-                WHERE
-                    GRAPH_SEQ = 8
                 GROUP BY
                     GRAPH_SEQ
                 ) GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ

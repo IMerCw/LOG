@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,32 +16,73 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.NoticeDTO;
 import poly.dto.UserMemberDTO;
 import poly.service.IMemberService;
+import poly.service.INoticeService;
 import poly.util.CmmUtil;
 
 @Controller
-public class MemberController {
-
+public class NoticeController {
+	//로그
+	private Logger log = Logger.getLogger(this.getClass());
+	
 	//service 선언
-	@Resource(name="MemberService")
-	private IMemberService memberService;
+	@Resource(name="NoticeService")
+	private INoticeService noticeService;
 	
 	String msg = null, url = null;
 	
-	// 메인 화면 프레임
-	@RequestMapping(value="/mem/main")
-	public String MemMain() throws Exception{
-		return "/mem/mainFrame";
+	//새소식 갯수 가져오기
+	@RequestMapping(value="/mem/getNoticeCount")
+	public @ResponseBody int getNoticeCount(HttpServletRequest request, HttpSession session, Model model) throws Exception {
+		log.info("start : " +this.getClass().getName());
+		
+		//필요한 파라미터 가져오기
+		String user_seq = (String)request.getParameter("user_seq");
+		//새 소식 갯수 4개까지만 가져오기
+		int noticeCount = noticeService.getNoticeCount(user_seq);
+		
+		log.info("end : " +this.getClass().getName());
+		return noticeCount;
+	}
+	//새소식 보기
+	@RequestMapping(value="/mem/notificationWidget")
+	public String notification(HttpServletRequest request, HttpSession session, Model model) throws Exception {
+		log.info("start : " +this.getClass().getName());
+		
+		//필요한 파라미터 가져오기
+		String user_seq = (String)request.getParameter("user_seq");
+		
+		//위젯용 요약데이터 : 특정 회원의 최근 7일, 4개의 데이터를 가져옴 
+		List<NoticeDTO> nDTOs = noticeService.getNotificationSummary(user_seq);
+		
+		//모델 전송
+		model.addAttribute("nDTOs", nDTOs);
+		
+		log.info("end : " +this.getClass().getName());
+		return "/mem/notice/notificationWidget";
+	}	
+	
+	//새소식 자세히 보기
+	@RequestMapping(value="/mem/notificationDetail")
+	public String nofiticationDetail(HttpServletRequest request, Model model) throws Exception {
+		log.info("start : " +this.getClass().getName());
+		
+		//필요한 파라미터 가져오기
+		String user_seq = (String)request.getParameter("user_seq");
+		
+		//특정 유저의 게시글 중 댓글 최근 10개의 데이터 가져오기
+		List<NoticeDTO> nDTOs = noticeService.getNotification(user_seq);		
+		
+		//모델 전송
+		model.addAttribute("nDTOs", nDTOs);
+		
+		log.info("end : " +this.getClass().getName());
+		
+		return "/mem/notice/notificationDetail";
 	}
 	
-	// 메인 화면 내용
-	@RequestMapping(value="/mem/mainContentBody")
-	public String mainContentBody() throws Exception{
-		return "/mem/mainContentBody";
-	}
-	
-
 /*	//회원 가입
 	@RequestMapping(value="member/memberRegProc")
 	public String memberRegProc(HttpServletRequest req, Model model, UserMemberDTO mDTO) throws Exception{

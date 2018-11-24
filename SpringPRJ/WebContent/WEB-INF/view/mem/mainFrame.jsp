@@ -52,7 +52,7 @@
 		.sidebar-widget .widget-header h6 { color:#ffffff;}
 		ul.nav-main > li > a:hover  { background-color: #171717;}
 		ul.nav-main > li > a:focus, .nav > li > a:hover, .nav > li > a:focus { background-color: transparent;}
-		.sidebar-left .sidebar-header .sidebar-title { color:white;}
+		.sidebar-left, .sidebar-header, .sidebar-title { color:white;}
 		
 		@media only screen and (max-width: 767px){
 			.content-body  {
@@ -83,7 +83,8 @@
 			
 		<%}%>
 		
-		.sidebar-widget .widget-header .widget-toggle { color:white;}
+		.sidebar-widget, .widget-header, .widget-toggle { color:white;}
+		
 	</style>
 </head>
 <body>
@@ -97,10 +98,10 @@
 					LOG:Lay On Graph
 				</a>
 				<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
-					<i class="fa fa-bars" aria-label="Toggle sidebar" style="padding-top:8px;"></i>
+					<i class="fa fa-bars" aria-label="Toggle sidebar" style="padding-top:8px; font-size: 14px;"></i>
 				</div>
 			</div>
-		
+			
 			<!-- start: search & user box -->
 			<div class="header-right" style="padding-top: 8px;">
 			
@@ -114,58 +115,14 @@
 				</form>
 		
 				<!-- start : 새 소식 알림 notification -->
-				<ul class="notifications" style="margin: 0 20px;">
+				<ul id="notificationWidget" class="notifications" style="margin: 0 20px; position: relative;">
 					<li>
-						<a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+						<a href="#" class="dropdown-toggle notification-icon" id="noticeButton" data-toggle="dropdown">
 							<i class="fa fa-bell"></i>
-							<span class="badge">3</span>
+							<span class="badge"></span>
 						</a>
-						
-						<div class="dropdown-menu notification-menu">
-							<div class="notification-title">
-								<span class="pull-right label label-default">3</span>
-								새 소식 알림
-							</div>
-		
-							<div class="content">
-								<ul>
-									<li>
-										<a href="#" class="clearfix">
-											<div class="image">
-												<i class="fa fa-thumbs-down bg-danger"></i>
-											</div>
-											<span class="title">Server is Down!</span>
-											<span class="message">Just now</span>
-										</a>
-									</li>
-									<li>
-										<a href="#" class="clearfix">
-											<div class="image">
-												<i class="fa fa-lock bg-warning"></i>
-											</div>
-											<span class="title">User Locked</span>
-											<span class="message">15 minutes ago</span>
-										</a>
-									</li>
-									<li>
-										<a href="#" class="clearfix">
-											<div class="image">
-												<i class="fa fa-signal bg-success"></i>
-											</div>
-											<span class="title">Connection Restaured</span>
-											<span class="message">10/10/2014</span>
-										</a>
-									</li>
-								</ul>
-		
-								<hr />
-		
-								<div class="text-right">
-									<a href="#" class="view-more">View All</a>
-								</div>
-							</div>
-						</div>
 					</li>
+					<div id="notificationContent" style="display:none;"></div>
 				</ul>
 				<!-- end : 새 소식 알림 notification -->
 				
@@ -289,7 +246,7 @@
 						<div class="sidebar-widget widget-tasks">
 							<div class="widget-header">
 								<h6>Projects</h6>
-								<div class="widget-toggle">+</div>
+								<div class="widget-toggle" style="color:white">+</div>
 							</div>
 							<div class="widget-content">
 								<ul class="list-unstyled m-none">
@@ -305,7 +262,7 @@
 						<div class="sidebar-widget widget-stats">
 							<div class="widget-header">
 								<h6>Company Stats</h6>
-								<div class="widget-toggle">+</div>
+								<div class="widget-toggle" style="color:white">+</div>
 							</div>
 							<div class="widget-content">
 								<ul>
@@ -533,11 +490,79 @@
 			})
 		}			
 	}
-	
-	/* blur foucs해제 */
+	/*------------------------------------------------------------------*/
+	//로그인 후 처음으로 메인 접근 시 갯수 파악을 위한 변수
+	$.ajax({
+		type:"POST",
+		url:"/mem/getNoticeCount.do",
+		data: {
+			user_seq : '<%=uDTO.getUser_seq()%>'
+		},
+		dataType:'text',
+		error:function() {
+			alert('통신실패');
+		},
+		success: function(noticeCount) {
+			console.log("noticeCount: " + noticeCount);
+			if(noticeCount > 3) {
+				$('.badge').html('3+');
+			}else {
+				$('.badge').html(noticeCount);
+			}
 
+		}
+	})
 	
-	
+	/* 새소식 알람 버튼 클릭시 이벤트 */
+	$('#notificationWidget').click(function() {
 		
+		if( $('#notificationContent').css('display') == 'none' ) {
+			getNotice();
+		} else {
+			$('#notificationContent').css('display', 'none');
+		}
+		
+	})
+	
+	
+	// 새소식 정보 가져오기 AJAX이벤트
+	function getNotice() {
+		$.ajax({
+			type : "POST",
+			url : "/mem/notificationWidget.do",
+			data: {
+				user_seq : '<%=uDTO.getUser_seq()%>'
+			},
+			dataType:'text',
+			error: function() {
+				alert("통신 실패");
+			},
+			success: function(data) {
+				$('#notificationContent').html(data);
+				$('#notificationContent > .dropdown-menu').css('display', 'block');
+				$('#notificationContent').css('display', 'block');
+				
+			}
+		});
+	}	
+	
+	// 새 소식 자세한 정보페이지 이동
+	function callNotificationDetail() {
+		$.ajax({
+			type : "POST",
+			url : "/mem/notificationDetail.do",
+			dataType: "text",
+			data: {
+				user_seq : '<%=uDTO.getUser_seq()%>'
+			},
+			error: function() {
+				alert("통신실패");
+			},
+			success: function(data) {
+				$('.content-body').html(data);
+			}
+		})
+	}
+	/*------------------------------------------------------------------*/
 </script>
 </html>

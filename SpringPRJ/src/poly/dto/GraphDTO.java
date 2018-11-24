@@ -11,6 +11,7 @@ public class GraphDTO {
 	private String result_cate;
 	private String result_x;
 	private String reg_date;
+	private String update_user_seq;
 	private String update_date;
 	private String exp_yn;
 	private String json_file_name;
@@ -155,6 +156,14 @@ public class GraphDTO {
 
 	public void setFile_py_name(String file_py_name) {
 		this.file_py_name = file_py_name;
+	}
+
+	public String getUpdate_user_seq() {
+		return update_user_seq;
+	}
+
+	public void setUpdate_user_seq(String update_user_seq) {
+		this.update_user_seq = update_user_seq;
 	}
 	
 }

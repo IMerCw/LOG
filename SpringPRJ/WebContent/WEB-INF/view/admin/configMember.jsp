@@ -63,15 +63,15 @@
 	#userSeach:focus {
 		border : 1px solid #999999;
 	}
-	.fa {
-		font-size:18px;
-	}
 	.fa-sort-desc, .fa-sort-asc, .cursor-pointer {
 		cursor:pointer;
 	}
 	.hidden-icon {
 		color:#cccccc;
 		transition: all 0.4s linear;
+	}
+	.fa-pencil, .fa-check {
+		font-size:23px;
 	}
 </style>
 	
@@ -170,7 +170,6 @@
 								<input type="text" class="form-control input-sm" id="userNameBoxInput<%=uDTO.getUser_seq()%>" value="<%=uDTO.getUser_name()%>"/>
 							</td>
 							<!-------------->
-							
 							<td style=" text-align:center;"> <img src="<%=uDTO.getFile_py_name() %>" class="img-circle" style="max-height:32px;"/></td> 
 							<td><%=uDTO.getUser_reg_date() %> </td>
 							<td id="userState<%=uDTO.getUser_seq() %>">

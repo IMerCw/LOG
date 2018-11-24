@@ -8,5 +8,11 @@ import poly.dto.NoticeDTO;
 @Mapper("NoticeMapper")
 public interface NoticeMapper {
 
+	List<NoticeDTO> getNotification(String user_seq) throws Exception;
+
+	int getNoticeCount(String user_seq) throws Exception;
+
+	List<NoticeDTO> getNotificationSummary(String user_seq) throws Exception;
+
 	
 }

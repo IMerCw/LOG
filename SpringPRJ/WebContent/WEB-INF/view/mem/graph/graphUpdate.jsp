@@ -1,9 +1,11 @@
+<%@page import="poly.dto.UserMemberDTO"%>
 <%@page import="poly.dto.GraphDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	GraphDTO gDTO = (GraphDTO) request.getAttribute("gDTO");
+	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
 	Float starRate;
 %>
 <html>
@@ -127,7 +129,7 @@ function callGraphMain() {
 //게시글 수정완료
 function callGraphUpdateProc() {
 	var graph_content = $('.note-editable').html();
-	if(graph_content) return false;
+	if(graph_content == '') return false;
 	
 	$.ajax({
 		type : "POST",
@@ -137,7 +139,8 @@ function callGraphUpdateProc() {
 			graph_seq: '<%=gDTO.getGraph_seq()%>', 
 			graph_title: $('#graph_title').val(), 
 			graph_content: graph_content,
-			graph_hashtag: $('#graph_hashtag').val()
+			graph_hashtag: $('#graph_hashtag').val(),
+			update_user_seq : '<%=uDTO.getUser_seq()%>'
 		},
 		error: function() {
 			alert("통신실패");

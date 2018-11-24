@@ -312,10 +312,8 @@ public class CmmnController {
 		
 		/*------------------------------------------*/
 		//비밀번호 해쉬 함수 적용
-		
 		String hashedResult = hashfunc.doHash(hashKey+updatedUDTO.getUser_passwd()); //해쉬 함수 적용
 		updatedUDTO.setUser_passwd(hashedResult); //해쉬 결과 DTO 저장
-		
 		/*------------------------------------------*/
 		int result;
 		
@@ -366,8 +364,8 @@ public class CmmnController {
 		
 		log.info("회원 상태 변경 결과: " + result);
 		
-		msg = "성공적으로 수정하였습니다.";
-		url = "/mem/main.do";
+		msg = "성공적으로 수정하였습니다. 다시 로그인하여 주시기 바랍니다.";
+		url = "/cmmn/main.do";
 		
 		model.addAttribute("msg", msg);
 		model.addAttribute("url", url);

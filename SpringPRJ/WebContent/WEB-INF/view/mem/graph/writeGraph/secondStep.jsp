@@ -236,7 +236,9 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 		var selectedItemFactorVal = $('#factor option:selected').val();
 					
 		//데이터 정제		
-		var data =  d3.csv('/public_data/' + '<%=pdDTO.getFile_name()%>', function(csv_data) {
+		var dataSource = '/public_data/' + '<%=pdDTO.getFile_name()%>';
+		
+		var data =  d3.csv(dataSource, function(csv_data) {
 			
 				return {
 					
@@ -335,7 +337,6 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 						else if(nestedData[i].values[j].key == 'undefined') {
 							//범주 미 선택시 합계함수 이름을 저장
 							rsltJson[$('.radioBox input:checked').val()] = nestedData[i].values[j].value;
-							
 						}
 						else {
 							rsltJson[nestedData[i].values[j].key] = nestedData[i].values[j].value;
@@ -374,12 +375,18 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 				contents += '<h4>선택된 범주 값 목록: </h4>';
 				contents += '<p>';
 				
-				resultCategory.forEach(item => {
+				if(selectedItemFactorVal==-1) {
 					
-					contents += item + ', ';	
-					
-				});
+					contents += '선택하지 않았습니다.';
+				}
 				
+				else {
+					resultCategory.forEach(item => {
+					
+						contents += item + ', ';	
+					
+					});
+				}
 				contents += '</p>';
 				
 				

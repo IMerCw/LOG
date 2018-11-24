@@ -18,7 +18,29 @@
 <link href="/assets/css/starRating.css" rel="stylesheet" type="text/css" />
 <!-- Specific Page Vendor -->
 <link rel="stylesheet" href="/assets/vendor/pnotify/pnotify.custom.css">
+
+<!-- Vendor -->
+<script src="/assets/vendor/jquery/jquery.js"></script>
+<script src="/assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="/assets/vendor/nanoscroller/nanoscroller.js"></script>
+<script src="/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script src="/assets/vendor/magnific-popup/magnific-popup.js"></script>
+<script src="/assets/vendor/jquery-placeholder/jquery.placeholder.js"></script>
+
+<!-- Specific Page Vendor -->
 <script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
+
+<!-- Theme Base, Components and Settings -->
+<script src="/assets/javascripts/theme.js"></script>
+
+<!-- Theme Custom -->
+<script src="/assets/javascripts/theme.custom.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="/assets/javascripts/theme.init.js"></script>
+
+<!-- Examples -->
 <script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
 
 <!-- Load c3.css -->
@@ -63,11 +85,11 @@
 				<%-- 별점 표시 --%>
 				<h3>
 				<%if(gDTO.getStar_rate() != null) {%>
-					<%= starRate = Float.valueOf(gDTO.getStar_rate()) %>
+					<% starRate = Float.valueOf(gDTO.getStar_rate()); %>
 					<%for(int j = 0; j < 5; j++, starRate--) {%>
 						<%if(starRate < 1 && starRate >= 0.5 ) {%>
 							<i class="fa fa-star-half-o"></i> 
-						<%} else if (starRate <= 0.0 ){ %>
+						<%}else if (starRate < 0.5 ){ %>
 							<i class="fa fa-star-o"></i> 
 						<%}else { %>
 							<i class="fa fa-star"></i>
@@ -487,7 +509,34 @@ function callGraphDelete() {
 	/*------------------------*/	
 	<%}%>
 	<%if(graphType.equals("pieChart")) {%>
-
+	
+	var resultCategory = ('<%=gDTO.getResult_cate()%>').split(','); 
+	/*---------------------------파이 그래프 용 변수 설정---------------------------*/
+	//범주 미 선택시 변수 다시 설정
+	var resultDataPieChart = [];
+	var rsltDataJsonPieChart = {};
+	var resultCategoryPieChart = []; //범주로 들어갈 변수 선언
+	console.log("test");
+	console.log(resultCategory);
+	console.log(resultCategory.length==1);
+	if(resultCategory.length==1) {
+	
+		jsonData.forEach(item=>{
+			rsltDataJsonPieChart = {}; // 배열에 한 행씩 저장될 JSON 선언
+			rsltDataJsonPieChart.factor = item.factor; // 각 배열의 첫 번째 열 값을 factor라는 이름으로 저장
+			rsltDataJsonPieChart[item.factor] = item[resultCategory.toString()]; //각 배열의 두 번째 열 값을 그 배열의 팩터 값으로 저장
+			resultDataPieChart.push(rsltDataJsonPieChart); //최종 배열에 각각의 JSON변수 저장
+			
+			//범주용 데이터 설정
+			resultCategoryPieChart.push(item.factor);
+			
+		});
+		
+		jsonData = resultDataPieChart;
+		resultCategory = resultCategoryPieChart;
+	}
+	/*---------------------------------------------------------------------*/	
+	
 	/*---------파이그래프--------*/
 	setTimeout(function () {
 		

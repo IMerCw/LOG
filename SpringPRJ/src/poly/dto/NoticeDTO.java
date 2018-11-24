@@ -1,110 +1,70 @@
 package poly.dto;
 
-/**
- * @author 이협건
- * @version 1.1 공지사항 DTO
- */
 public class NoticeDTO {
 
-	private String notice_seq; // 기본키, 순번
-	private String title; // 제목
-	private String notice_yn; // 공지글 여부
-	private String contents; // 글 내용
-	private String user_id; // 작성자
-	private String read_cnt; // 조회수
-	private String reg_id; // 등록자 아이디
-	private String reg_dt; // 등록일
-	private String chg_id; // 수정자 아이디
-	private String chg_dt; // 수정일
-
-	private String user_name; // 등록자명
-
+	private String board_seq;
+	private String board_p_seq;
+	private String board_p_title;
+	private String reply_seq;
+	private String reg_date;
+	private String reply_content;
+	private String user_seq;
+	private String user_name;
+	private String file_py_name;
+	
+	public String getBoard_seq() {
+		return board_seq;
+	}
+	public void setBoard_seq(String board_seq) {
+		this.board_seq = board_seq;
+	}
+	public String getBoard_p_seq() {
+		return board_p_seq;
+	}
+	public void setBoard_p_seq(String board_p_seq) {
+		this.board_p_seq = board_p_seq;
+	}
+	public String getReply_seq() {
+		return reply_seq;
+	}
+	public void setReply_seq(String reply_seq) {
+		this.reply_seq = reply_seq;
+	}
+	public String getReg_date() {
+		return reg_date;
+	}
+	public void setReg_date(String reg_date) {
+		this.reg_date = reg_date;
+	}
+	public String getReply_content() {
+		return reply_content;
+	}
+	public void setReply_content(String reply_content) {
+		this.reply_content = reply_content;
+	}
+	public String getUser_seq() {
+		return user_seq;
+	}
+	public void setUser_seq(String user_seq) {
+		this.user_seq = user_seq;
+	}
 	public String getUser_name() {
 		return user_name;
 	}
-
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
-
-	public String getNotice_seq() {
-		return notice_seq;
+	public String getFile_py_name() {
+		return file_py_name;
 	}
-
-	public void setNotice_seq(String notice_seq) {
-		this.notice_seq = notice_seq;
+	public void setFile_py_name(String file_py_name) {
+		this.file_py_name = file_py_name;
 	}
-
-	public String getTitle() {
-		return title;
+	public String getBoard_p_title() {
+		return board_p_title;
 	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getNotice_yn() {
-		return notice_yn;
-	}
-
-	public void setNotice_yn(String notice_yn) {
-		this.notice_yn = notice_yn;
-	}
-
-	public String getContents() {
-		return contents;
-	}
-
-	public void setContents(String contents) {
-		this.contents = contents;
-	}
-
-	public String getUser_id() {
-		return user_id;
-	}
-
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
-	}
-
-	public String getRead_cnt() {
-		return read_cnt;
-	}
-
-	public void setRead_cnt(String read_cnt) {
-		this.read_cnt = read_cnt;
-	}
-
-	public String getReg_id() {
-		return reg_id;
-	}
-
-	public void setReg_id(String reg_id) {
-		this.reg_id = reg_id;
-	}
-
-	public String getReg_dt() {
-		return reg_dt;
-	}
-
-	public void setReg_dt(String reg_dt) {
-		this.reg_dt = reg_dt;
-	}
-
-	public String getChg_id() {
-		return chg_id;
-	}
-
-	public void setChg_id(String chg_id) {
-		this.chg_id = chg_id;
-	}
-
-	public String getChg_dt() {
-		return chg_dt;
-	}
-
-	public void setChg_dt(String chg_dt) {
-		this.chg_dt = chg_dt;
+	public void setBoard_p_title(String board_p_title) {
+		this.board_p_title = board_p_title;
 	}
 
 }

@@ -31,7 +31,7 @@
 	<%if (accessRoot.equals("graphGallery")) {%>
 	<div class="row">
 		<div class="col-md-12">
-			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right;" onclick="javascript:callWriteGraphFirstStep()">그래프 작성하기</button>
+			<button type="button" class="mb-xs mt-xs mr-xs btn btn-primary" style="float:right; font-size: 20px;" onclick="javascript:callWriteGraphFirstStep()">그래프 작성하기</button>
 		</div>
 	</div>
 	<%} if (gDTO.isEmpty()) {%>
@@ -77,13 +77,15 @@
 						<%} %>
 					</div>
 					<div class="col-md-6" style="text-align:right;">
-						조회수 <%=gDTO.get(i).getRead_count() %> &nbsp;
+						<img src="<%=gDTO.get(i).getFile_py_name()%>" class="img-circle" style="max-width: 30px; max-height: 32px;">
+						&nbsp;&nbsp;
 						<%=gDTO.get(i).getUser_name() %>
 					</div>
 				</div>
 				
 				<div class="row">
 					<div class="col-md-12" style="text-align:right;">
+						조회수 <%=gDTO.get(i).getRead_count() %> /
 						<%=gDTO.get(i).getReg_date() %>
 					</div>
 				</div>
@@ -222,6 +224,35 @@
 			<%if(graphType.equals("pieChart")) {%>
 	
 			/*---------파이그래프--------*/
+			
+			var resultCategory = ('<%=gDTO.get(i).getResult_cate()%>').split(','); 
+			
+			//범주 미 선택시 변수 다시 설정
+			var resultDataPieChart = [];
+			var rsltDataJsonPieChart = {};
+			var resultCategoryPieChart = []; //범주로 들어갈 변수 선언
+			console.log("test");
+			console.log(resultCategory);
+			console.log(resultCategory.length==1);
+			if(resultCategory.length==1) {
+			
+				jsonData.forEach(item=>{
+					rsltDataJsonPieChart = {}; // 배열에 한 행씩 저장될 JSON 선언
+					rsltDataJsonPieChart.factor = item.factor; // 각 배열의 첫 번째 열 값을 factor라는 이름으로 저장
+					rsltDataJsonPieChart[item.factor] = item[resultCategory.toString()]; //각 배열의 두 번째 열 값을 그 배열의 팩터 값으로 저장
+					resultDataPieChart.push(rsltDataJsonPieChart); //최종 배열에 각각의 JSON변수 저장
+					
+					//범주용 데이터 설정
+					resultCategoryPieChart.push(item.factor);
+					
+				});
+				
+				jsonData = resultDataPieChart;
+				resultCategory = resultCategoryPieChart;
+			}
+			
+			
+			
 			setTimeout(function () {
 				
 				var pieChart = c3.generate({
@@ -232,7 +263,7 @@
 						    ,
 						    keys: {
 						       x: 'factor', // it's possible to specify 'x' when category axis
-						       value: ('<%=gDTO.get(i).getResult_cate()%>').split(',')
+						       value: resultCategory
 						    }
 						    ,
 					        type : 'pie',

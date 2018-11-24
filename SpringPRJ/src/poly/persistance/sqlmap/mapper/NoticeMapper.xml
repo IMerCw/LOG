@@ -2,5 +2,274 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- JAVA와 연결할 Mapper 파일 설정 -->
 <mapper namespace="poly.persistance.mapper.NoticeMapper">
-
+	<select id="getNoticeCount" parameterType="string" resultType="integer">
+		SELECT
+		    COUNT(*)
+		FROM
+		    (
+		    SELECT
+		        BP.BOARD_SEQ AS BOARD_SEQ
+		        ,BP.BOARD_P_SEQ AS BOARD_P_SEQ
+		        ,BR.REPLY_SEQ AS REPLY_SEQ
+		        ,TO_CHAR(BR.REG_DATE, 'YY-MM-DD hh24:mi') AS REG_DATE
+		        ,BR.REPLY_CONTENT AS REPLY_CONTENT
+		        ,BR.USER_SEQ AS USER_SEQ
+		    FROM
+		        BOARD_POST BP
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,BOARD_P_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_SEQ
+		                    FROM
+		                        BOARD_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq} 
+		                        AND TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>    
+		                                                        )
+		                )
+		                BR ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
+		        
+		    WHERE
+		        BP.USER_SEQ = #{user_seq}
+		        
+		    UNION ALL
+		    
+		    SELECT
+		        3
+		        ,G.GRAPH_SEQ
+		        ,GR.REPLY_SEQ
+		        ,TO_CHAR(GR.REG_DATE, 'YY-MM-DD hh24:mi')
+		        ,GR.REPLY_CONTENT
+		        ,GR.USER_SEQ
+		    FROM
+		        GRAPH G
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,GRAPH_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_SEQ
+		                    FROM
+		                        GRAPH_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq}
+		                        AND TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>
+		                                                        )
+		                )
+		                GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+		        
+		    WHERE
+		        G.USER_SEQ = #{user_seq}
+		    ORDER BY
+		        REG_DATE DESC
+		    ) A
+		    INNER JOIN USER_MEMBER UM ON A.USER_SEQ = UM.USER_SEQ
+		    INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		    
+		WHERE
+		    ROWNUM BETWEEN 1 AND 4
+	</select>
+	
+	<!-- 위젯용 요약데이터 : 특정 회원의 최근 7일, 4개의 데이터를 가져옴 -->
+	<select id="getNotificationSummary" parameterType="string" resultType="NoticeDTO">
+		SELECT
+			A.BOARD_SEQ
+		    ,A.*
+		    ,UM.USER_NAME
+		    ,IMG.FILE_PY_NAME
+		FROM
+		    (
+		    SELECT
+		        BP.BOARD_SEQ AS BOARD_SEQ
+		        ,BP.BOARD_P_SEQ AS BOARD_P_SEQ
+		        ,BR.REPLY_SEQ AS REPLY_SEQ
+		        ,BR.REG_DATE AS REG_DATE
+		        ,BR.REPLY_CONTENT AS REPLY_CONTENT
+		        ,BR.USER_SEQ AS USER_SEQ
+		    FROM
+		        BOARD_POST BP
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,BOARD_P_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_sEQ
+		                    FROM
+		                        BOARD_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq}
+		                    	AND
+		                        TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>    
+		                                                        )
+		                )
+		                BR ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
+		        
+		    WHERE
+		        BP.USER_SEQ = #{user_seq}
+		        
+		    UNION ALL
+		    
+		    SELECT
+		        3
+		        ,G.GRAPH_SEQ
+		        ,GR.REPLY_SEQ
+		        ,GR.REG_DATE
+		        ,GR.REPLY_CONTENT
+		        ,GR.USER_SEQ
+		    FROM
+		        GRAPH G
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,GRAPH_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_SEQ
+		                    FROM
+		                        GRAPH_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq}
+		                    	AND
+		                        TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>
+		                                                        )
+		                )
+		                GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+		        
+		    WHERE
+		        G.USER_SEQ = #{user_seq}
+		    ORDER BY
+		        REG_DATE DESC
+		    ) A
+		    INNER JOIN USER_MEMBER UM ON A.USER_SEQ = UM.USER_SEQ
+		    INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		    
+		WHERE
+		    ROWNUM BETWEEN 1 AND 10
+	</select> 
+	
+	<!-- 상세 데이터 : 특정 회원의 최근 7일, 10개의 데이터를 가져옴 -->
+	<select id="getNotification" parameterType="string" resultType="NoticeDTO">
+		SELECT
+		    A.*
+		    ,UM.USER_NAME
+		    ,IMG.FILE_PY_NAME
+		FROM
+		    (
+		    SELECT
+		        BP.BOARD_SEQ AS BOARD_SEQ
+		        ,BP.BOARD_P_SEQ AS BOARD_P_SEQ
+		        ,BP.BOARD_P_TITLE AS BOARD_P_TITLE
+		        ,BR.REPLY_SEQ AS REPLY_SEQ
+		        ,TO_CHAR(BR.REG_DATE, 'YY-MM-DD hh24:mi') AS REG_DATE
+		        ,BR.REPLY_CONTENT AS REPLY_CONTENT
+		        ,BR.USER_SEQ AS USER_SEQ
+		    FROM
+		        BOARD_POST BP
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,BOARD_P_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_SEQ
+		                    FROM
+		                        BOARD_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq}
+		                    	AND
+		                        TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>    
+		                                                        )
+		                )
+		                BR ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
+		        
+		    WHERE
+		        BP.USER_SEQ = #{user_seq}
+		        
+		    UNION ALL
+		    
+		    SELECT
+		        3
+		        ,G.GRAPH_SEQ
+		        ,G.GRAPH_TITLE
+		        ,GR.REPLY_SEQ
+		        ,TO_CHAR(GR.REG_DATE, 'YY-MM-DD hh24:mi')
+		        ,GR.REPLY_CONTENT
+		        ,GR.USER_SEQ
+		    FROM
+		        GRAPH G
+		            INNER JOIN 
+		                (
+		                    SELECT
+		                        REG_DATE
+		                        ,GRAPH_SEQ
+		                        ,REPLY_SEQ
+		                        ,REPLY_CONTENT
+		                        ,USER_SEQ
+		                    FROM
+		                        GRAPH_REPLY 
+		                    WHERE
+		                    	USER_SEQ != #{user_seq}
+		                    	AND
+		                        TO_CHAR(REG_DATE,'YYYY-MM-DD') = ANY (
+		                                                         SELECT 
+		                                                            to_char(SYSDATE + 1 - LEVEL,'YYYY-MM-DD') AS rdate
+		                                                        FROM 
+		                                                            dual
+		                                                        CONNECT BY 
+		                                                            <![CDATA[LEVEL <= 7 ]]>
+		                                                        )
+		                )
+		                GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+		        
+		    WHERE
+		        G.USER_SEQ = #{user_seq}
+		    ORDER BY
+		        REG_DATE DESC
+		    ) A
+		    INNER JOIN USER_MEMBER UM ON A.USER_SEQ = UM.USER_SEQ
+		    INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		    
+		WHERE
+		    ROWNUM BETWEEN 1 AND 10
+	</select> 
 </mapper>
