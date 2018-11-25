@@ -46,6 +46,7 @@ public class MyGraphController {
 		
 		//내 그래프 리스트 가져오기
 		List<GraphDTO> gDTO = graphService.getMyGraphList(user_seq);
+		
 		//접근한 경로 저장
 		String accessRoot = "myGraph";
 		

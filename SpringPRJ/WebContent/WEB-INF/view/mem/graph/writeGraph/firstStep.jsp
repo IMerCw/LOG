@@ -219,12 +219,7 @@
 	<script src="/assets/vendor/jquery-validation/jquery.validate.js"></script>
 	<script src="/assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
 	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
-		
-	<!-- Specific Page Vendor -->
-	<script src="/assets/vendor/jquery-validation/jquery.validate.js"></script>
-	<script src="/assets/vendor/bootstrap-wizard/jquery.bootstrap.wizard.js"></script>
-	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
-	
+
 	<!-- Theme Base, Components and Settings -->
 	<script src="/assets/javascripts/theme.js"></script>
 	

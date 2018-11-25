@@ -75,7 +75,7 @@
 	
 	<!-- 도메인만 입력했을 경우, 보여주는 페이지 -->
 	<welcome-file-list>
-		<welcome-file>/main.do</welcome-file>
+		<welcome-file>/cmmn/main.do</welcome-file>
 	</welcome-file-list>
 		
 	<!-- 에러 발생시, 에러페이지 이동 -->
@@ -85,10 +85,10 @@
 	</error-page>
 	<error-page>
 		<error-code>404</error-code>
-		<location>/common/error.jsp</location>
+		<location>/onerror/404Error.jsp</location>
 	</error-page>
 	<error-page>
 		<error-code>500</error-code>
-		<location>/common/error.jsp</location>
+		<location>/onerror/404Error.jsp</location>
 	</error-page>	
 </web-app>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.StatMapper">
+
+	<select id="getGraphRate" resultType="StatGraphRateDTO">
+		SELECT
+		    B.RN
+		    ,B.GRAPH_SEQ
+		    ,B.GRAPH_TITLE
+		    ,B.STAR_RATE
+		    ,B.RATE_COUNT
+		    ,B.USER_SEQ
+		    ,B.USER_NAME
+		    ,B.FILE_PY_NAME
+		    ,B.REG_DATE
+		FROM (
+		        SELECT
+		            A.*,
+		            ROWNUM AS RN
+		        FROM
+		            ( SELECT
+		                G.GRAPH_SEQ
+		                ,GRAPH_TITLE
+		                ,GR.STAR_RATE
+		                ,GR.RATE_COUNT
+		                ,UM.USER_SEQ
+		                ,UM.USER_NAME
+		                ,IMG.FILE_PY_NAME
+		                ,G.REG_DATE
+		            FROM
+		                GRAPH G
+		                INNER JOIN (
+		                    SELECT
+		                        GRAPH_SEQ
+		                        ,ROUND(AVG(STAR_RATE)*10) / 10 AS STAR_RATE 
+		                        ,COUNT(GRAPH_SEQ) AS RATE_COUNT
+		                    FROM
+		                        GRAPH_REPLY
+		                    WHERE
+		                        EXP_YN = 1
+		                    GROUP BY
+		                        GRAPH_SEQ
+		                )GR ON G.GRAPH_SEQ = GR.GRAPH_SEQ
+		                INNER JOIN USER_MEMBER UM ON G.USER_SEQ = UM.USER_SEQ
+		                INNER JOIN IMAGE IMG ON UM.IMG_SEQ = IMG.IMG_SEQ
+		            WHERE
+		                G.EXP_YN = 1
+		            ORDER BY
+		                GR.STAR_RATE DESC, GR.RATE_COUNT DESC
+		            ) A
+		        ) B
+		WHERE
+		    B.RN BETWEEN 1 AND 10
+	</select> 
+	
+</mapper>

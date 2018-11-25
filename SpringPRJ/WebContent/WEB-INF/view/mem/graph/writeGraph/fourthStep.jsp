@@ -83,7 +83,6 @@
 <script>
 
 
-
 // 4번째 단계 - 그래프 선택 완료
 function completeWriteGraph() {
 	$.ajax({

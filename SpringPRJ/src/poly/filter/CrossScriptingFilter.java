@@ -9,6 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import poly.dto.UserMemberDTO;
 
 public class CrossScriptingFilter implements Filter {
 	 
@@ -24,9 +28,22 @@ public class CrossScriptingFilter implements Filter {
  
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
- 
-        chain.doFilter(new UrlFilter((HttpServletRequest) request), response);
+    	
+    	HttpServletRequest httpReq = (HttpServletRequest) request;
+    	HttpSession session = httpReq.getSession(false);
+/*
+    	
+    	if(session.getAttribute("uDTO") == null) {
+    		System.out.println("세션 만료됨");
+    		
+    	} else {
+    	}
+    	*/
+    	chain.doFilter(new UrlFilter((HttpServletRequest) request), response);
+    	
+    	
  
     }
+
  
 }

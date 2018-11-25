@@ -45,7 +45,7 @@
 </head>
 <body>
 	<div class="container-fluid" style="background-color:#ffffff; color:black; border-radius: 4px; padding-bottom: 8px;">
-		<div class="row">
+		<div class="row"  style="margin-bottom:10px;">
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
@@ -56,7 +56,9 @@
 		<div class="row" style="width: 100%; background-color: #cccccc; margin: 10px 0; height: 2px;"></div>
 
 		<div class="row" style="min-height: 180px; padding-top: 6px;">
-			<div class="col-md-12"><%=bpDTO.getBoard_p_content() %></div>
+			<div class="col-md-12">
+				<%=bpDTO.getBoard_p_content().replaceAll("& lt;", "<").replaceAll("& gt;", ">") %>
+			</div>
 		</div>		
 		
 		<%if(uDTO.getUser_seq().equals(bpDTO.getUser_seq()) || "0".equals(uDTO.getUser_seq()) )  {%>

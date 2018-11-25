@@ -35,21 +35,16 @@
 	.boardWritingInfo > div:first-child {
 		text-align:left;
 	}
-	.img-circle {
-		width:20px; max-height: 28px;
-	}
 </style>
 </head>
 <body>
 	<div class="container-fluid" style="background-color:#ffffff; color:black; border-radius: 4px; padding-bottom: 8px;">
-		<div class="row">
+		<div class="row" style="margin-bottom:10px;">
 			<div class="col-md-12"><h3><%=bpDTO.getBoard_p_title()%></h3></div>
 		</div>
 		<div class="row">
 		
-			<%if("0".equals(uDTO.getUser_seq())) { %>
-				<div class="col-md-4" style="text-align:left;"><img src="<%=bpDTO.getFile_py_name()%>" class="img-circle">&nbsp;<%=bpDTO.getUser_name() %></div> 
-			<%} %>
+			<div class="col-md-4" style="text-align:left;"><img src="<%=bpDTO.getFile_py_name()%>" style="width:28px;" class="img-circle">&nbsp;<%=bpDTO.getUser_name() %></div> 
 			
 			<div class="col-md-8" style="text-align:right;">
 				문의날짜:<%=bpDTO.getReg_date() %>

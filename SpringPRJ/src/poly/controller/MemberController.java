@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import poly.dto.StatGraphRateDTO;
 import poly.dto.UserMemberDTO;
 import poly.service.IMemberService;
+import poly.service.IStatService;
 import poly.util.CmmUtil;
 
 @Controller
@@ -25,6 +27,9 @@ public class MemberController {
 	//service 선언
 	@Resource(name="MemberService")
 	private IMemberService memberService;
+	
+	@Resource(name="StatService")
+	private IStatService statService;
 	
 	String msg = null, url = null;
 	
@@ -36,7 +41,12 @@ public class MemberController {
 	
 	// 메인 화면 내용
 	@RequestMapping(value="/mem/mainContentBody")
-	public String mainContentBody() throws Exception{
+	public String mainContentBody(Model model) throws Exception{
+		
+		List<StatGraphRateDTO> sgrDTOs = statService.getGraphRate();
+		
+		model.addAttribute("sgrDTOs", sgrDTOs);
+		
 		return "/mem/mainContentBody";
 	}
 	
