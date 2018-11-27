@@ -6,7 +6,7 @@
 	UserMemberDTO uDTO = (UserMemberDTO)session.getAttribute("uDTO");
 	Boolean isAdmin = (uDTO.getUser_id().equals("admin"));
 %>
-<html class="fixed">
+<html class="fixed sidebar-left-collapsed">
 <head>
 	
 	<!-- Basic -->
@@ -48,7 +48,7 @@
 	<style>
 		.logo-container{font-family: 'Amatic SC', cursive; font-size:24px;} /* 로고 글 */
 		body { font-family: 'Noto Sans KR', sans-serif; }
-		ul.nav-main li a { font-size:16px; }
+		ul.nav-main li a { font-size:32px; }
 		.sidebar-widget .widget-header h6 { color:#ffffff;}
 		ul.nav-main > li > a:hover  { background-color: #171717;}
 		ul.nav-main > li > a:focus, .nav > li > a:hover, .nav > li > a:focus { background-color: transparent;}
@@ -68,6 +68,18 @@
 		.img-circle{
 			border-radius:20%;
 		}
+		
+		.sidebar-widget, .widget-header, .widget-toggle { color:white;}
+		
+		ul.nav-main li i {
+			font-size: 2.8rem;
+		}
+		
+		ul.nav-main li a {
+		    padding: 18px;
+		    font-size: 26px;
+		}
+		
 		<%--관리자일 경우 CSS변경 --%>
 		<%if(isAdmin) {%>
 		
@@ -83,7 +95,6 @@
 			
 		<%}%>
 		
-		.sidebar-widget, .widget-header, .widget-toggle { color:white;}
 		
 	</style>
 </head>
@@ -93,8 +104,8 @@
 		<!-- start: header -->
 		<header class="header">
 			<div class="logo-container">
-				<a href="/mem/main.do" class="logo" style="font-size: 20px; font-weight: bold; color: #56708a;">
-					<img src="/assets/images/space.svg" height="35" alt="JSOFT Admin" />
+				<a href="/mem/main.do" class="logo" style="font-size: 32px; font-weight: bold; color: #56708a;">
+					<img src="/assets/images/space.svg" height="40px" alt="JSOFT Admin" />
 					LOG:Lay On Graph
 				</a>
 				<div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
@@ -243,7 +254,7 @@
 			
 						<hr class="separator" />
 			
-						<div class="sidebar-widget widget-tasks">
+						<div class="sidebar-widget widget-tasks" style="display:none;">
 							<div class="widget-header">
 								<h6>Projects</h6>
 								<div class="widget-toggle" style="color:white">+</div>
@@ -259,7 +270,7 @@
 			
 						<hr class="separator" />
 			
-						<div class="sidebar-widget widget-stats">
+						<div class="sidebar-widget widget-stats" style="display:none;">
 							<div class="widget-header">
 								<h6>Company Stats</h6>
 								<div class="widget-toggle" style="color:white">+</div>

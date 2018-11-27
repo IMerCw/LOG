@@ -254,7 +254,7 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 					
 
 					
-					//Aggregation Key Setting / 어떤 키를 기준으로 잡을 것인가
+					//Aggregation Key Setting / X값 어떤 키를 기준으로 잡을 것인가
 				 	.key(function(d) {
 						var slctdItmX = d[selectedItemX];  
 							
@@ -268,9 +268,9 @@ var resultCategory = []; //최종 데이터의 X값 카테고리
 				 			
 				 		}	
 						
-					}) 
+					}).sortKeys(d3.ascending) //Key 오름차순 정렬
 					
-					//Aggregation Key Setting / 어떤 키를 기준으로 잡을 것인가
+					//Aggregation Key Setting / 범주 어떤 키를 기준으로 잡을 것인가
 				 	.key(function(d) {
 				 		
 				 		var slctdItmFctr = d[selectedItemFactor];

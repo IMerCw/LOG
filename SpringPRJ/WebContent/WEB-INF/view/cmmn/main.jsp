@@ -45,7 +45,7 @@
 				<div class="wrap-login100">
 					<form class="login100-form validate-form" action="/cmmn/loginProc.do" method="post">
 						<span class="login100-form-title p-b-43">
-							로그인
+							LOG ::: Lay On Graph
 						</span>
 						
 						

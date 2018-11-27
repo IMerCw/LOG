@@ -17,6 +17,9 @@
 	.reply_container:hover {
 		background-color:#eeeeee;
 	}
+	.img-circle {
+		width:20px; max-height: 28px;
+	}
 </style>
 </head>
 <body>
@@ -35,7 +38,6 @@
 			
 			<div class="col-md-6" style="text-align:right">
 				<%if(uDTO.getUser_seq().equals(brDTO.getUser_seq()) || isAdmin) {%>
-					
 					<%-- <img src="/assets/images/previous_white.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callReReply('<%=brDTO.getReply_seq()%>')" /> --%>
 					<img src="/assets/images/edit.svg" style="height:18px; margin: 0 8px; cursor:pointer;" onclick="callBoardReplyUpdate('<%=brDTO.getReply_seq()%>')" />
 					<img src="/assets/images/garbage.svg" style="height:18px; cursor:pointer;" onclick="callBoardReplyDelete('<%=brDTO.getReply_seq()%>')" />
