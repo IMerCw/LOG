@@ -6,10 +6,36 @@
 <%
 	BoardPostDTO bpDTO = (BoardPostDTO) request.getAttribute("bpDTO"); 
 	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
+	
+	String boardPContent = bpDTO.getBoard_p_content();
 %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- Specific Page Vendor CSS -->
+	<link rel="stylesheet" href="/assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css" />
+	<link rel="stylesheet" href="/assets/vendor/select2/select2.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css" />
+	<link rel="stylesheet" href="/assets/vendor/dropzone/css/basic.css" />
+	<link rel="stylesheet" href="/assets/vendor/dropzone/css/dropzone.css" />
+	<link rel="stylesheet" href="/assets/vendor/bootstrap-markdown/css/bootstrap-markdown.min.css" />
+	<link rel="stylesheet" href="/assets/vendor/summernote/summernote.css" />
+	<link rel="stylesheet" href="/assets/vendor/summernote/summernote-bs3.css" />
+	<link rel="stylesheet" href="/assets/vendor/codemirror/lib/codemirror.css" />
+	<link rel="stylesheet" href="/assets/vendor/codemirror/theme/monokai.css" />
+	<link rel="stylesheet" href="assets/vendor/pnotify/pnotify.custom.css">
+	
+	<!-- Skin CSS -->
+	<link rel="stylesheet" href="/assets/stylesheets/skins/default.css" />
+
+	<!-- Theme Custom CSS -->
+	<link rel="stylesheet" href="/assets/stylesheets/theme-custom.css">
+
+	<!-- Head Libs -->
+	<script src="/assets/vendor/modernizr/modernizr.js"></script>
 <script>
 	//제목 설정
 	$('#pageName').html('고객센터 글 쓰기');
@@ -19,7 +45,7 @@
 		height:400px;	
 	}
 	.form-horizontal .control-label{ 
-		padding-bottom:12px; font-size:18px;
+		padding-bottom:12px; font-size:18px; 
 	}
 	
 </style>
@@ -44,7 +70,7 @@
 					<div class="form-group">
 						<label class="col-sm-12 control-label">글 내용 <span class="required"></span></label>
 						<div class="col-sm-12">
-							<textarea name="board_p_content" id="board_p_content" rows="5" class="form-control" placeholder="글 내용을 작성해주세요." required><%=bpDTO.getBoard_p_content()%>	</textarea>
+							<%@include file="/assets/summernote/summernote.jsp"%>
 						</div>
 					</div>
 				</div>
@@ -65,6 +91,9 @@
 </body>
 
 <script>
+
+//이전 게시물의 내용 불러오기
+$('.note-editable').html('<%=bpDTO.getBoard_p_content().replaceAll("& lt;", "<").replaceAll("& gt;", ">")%>');
 	//목록 보기
 	function callHelpCenterMain() {
 		$.ajax({
@@ -82,6 +111,9 @@
 	}
 	//수정 하기
 	function callHelpCenterUpdateProc() {
+		var graph_content = $('.note-editable').html();
+		if(graph_content == '') return false;
+		
 		$.ajax({
 			type : "POST",
 			url : "/mem/helpCenter/helpCenterUpdateProc.do",
@@ -89,7 +121,7 @@
 			data:{
 				board_p_seq: '<%=bpDTO.getBoard_p_seq()%>', 
 				board_p_title: $('#board_p_title').val(), 
-				board_p_content: $('#board_p_content').val(),
+				board_p_content: graph_content,
 				update_user_seq: '<%=uDTO.getUser_seq()%>',
 				currentPage: '${currentPage}'
 			},
@@ -119,4 +151,42 @@
 	}
 
 </script>
+<!-- Specific Page Vendor -->
+	<script src="/assets/vendor/jquery-ui/js/jquery-ui-1.10.4.custom.js"></script>
+	<script src="/assets/vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js"></script>
+	<script src="/assets/vendor/select2/select2.js"></script>
+	<script src="/assets/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+	<script src="/assets/vendor/jquery-maskedinput/jquery.maskedinput.js"></script>
+	<script src="/assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+	<script src="/assets/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+	<script src="/assets/vendor/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+	<script src="/assets/vendor/fuelux/js/spinner.js"></script>
+	<script src="/assets/vendor/dropzone/dropzone.js"></script>
+	<script src="/assets/vendor/bootstrap-markdown/js/markdown.js"></script>
+	<script src="/assets/vendor/bootstrap-markdown/js/to-markdown.js"></script>
+	<script src="/assets/vendor/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+	<script src="/assets/vendor/codemirror/lib/codemirror.js"></script>
+	<script src="/assets/vendor/codemirror/addon/selection/active-line.js"></script>
+	<script src="/assets/vendor/codemirror/addon/edit/matchbrackets.js"></script>
+	<script src="/assets/vendor/codemirror/mode/javascript/javascript.js"></script>
+	<script src="/assets/vendor/codemirror/mode/xml/xml.js"></script>
+	<script src="/assets/vendor/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+	<script src="/assets/vendor/codemirror/mode/css/css.js"></script>
+	<script src="/assets/vendor/summernote/summernote.js"></script>
+	<script src="/assets/vendor/bootstrap-maxlength/bootstrap-maxlength.js"></script>
+	<script src="/assets/vendor/ios7-switch/ios7-switch.js"></script>
+	
+	
+	<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
+
+	<!-- Theme Base, Components and Settings -->
+	<script src="/assets/javascripts/theme.js"></script>
+	
+	<!-- Theme Custom -->
+	<script src="/assets/javascripts/theme.custom.js"></script>
+	
+	<!-- Theme Initialization Files -->
+	<script src="/assets/javascripts/ui-elements/examples.notifications.js"></script>
+	<script src="/assets/javascripts/theme.init.js"></script>
+	<script src="/assets/javascripts/forms/examples.advanced.form.js" /></script>
 </html>

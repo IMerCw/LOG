@@ -10,6 +10,15 @@
 	UserMemberDTO uDTO = (UserMemberDTO) session.getAttribute("uDTO");
 	String userSeq;
 	boolean isAdmin = uDTO.getUser_id().equals("admin"); //관리자 권한 참 거짓
+	
+	String boardPContent = bpDTO.getBoard_p_content();
+/*     boardPContent.replaceAll("& lt;","<").replaceAll("& gt;",">");
+    boardPContent.replaceAll("& #40;", "\\(").replaceAll("& #41;","\\)");
+    boardPContent.replaceAll("& #39;", "'");
+    boardPContent.replaceAll("","eval\\((.*)\\)");
+    boardPContent.replaceAll("\"\"", "[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']");
+    boardPContent.replaceAll("","script"); */
+	
 %>
 <html>
 <head>
@@ -59,7 +68,7 @@
 		<div class="row" style="width: 100%; background-color: #cccccc; margin: 10px 0; height: 2px;"></div>
 
 		<div class="row" style="min-height: 180px; padding-top: 6px;">
-			<div class="col-md-12"><%=bpDTO.getBoard_p_content() %></div>
+			<div class="col-md-12">	<%=bpDTO.getBoard_p_content().replaceAll("& lt;", "<").replaceAll("& gt;", ">") %></div>
 		</div>		
 		
 		<div class="row" style="padding:12px;"> 

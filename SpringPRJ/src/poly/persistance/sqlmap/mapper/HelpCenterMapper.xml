@@ -37,7 +37,12 @@
 	
 	<!-- 게시글 가져오기 -->
 	<select id="getBoardPostDTO" parameterType="hashmap" resultType="BoardPostDTO">
-		SELECT 
+	SELECT
+	    A.RN,
+	    A.*
+	FROM(
+	    SELECT 
+            ROWNUM AS RN,
 			BP.BOARD_P_SEQ,
 			BP.USER_SEQ,
 			BP.BOARD_P_TITLE,
@@ -68,7 +73,6 @@
 	        	BOARD_SEQ = #{board_seq} AND
 		        BP.EXP_YN = 1 AND
 		        BP.USER_SEQ = #{user_seq}
-	         ORDER BY BP.REG_DATE DESC, BP.BOARD_P_SEQ DESC
 		    ) BP
 		     LEFT OUTER JOIN (
                 SELECT 
@@ -82,6 +86,9 @@
             ON BP.BOARD_P_SEQ = BR.BOARD_P_SEQ
             	
             INNER JOIN IMAGE IMG ON BP.IMG_SEQ = IMG.IMG_SEQ
+            ORDER BY BP.REG_DATE DESC, BP.BOARD_P_SEQ DESC
+		) A
+
 		WHERE 
 			RN BETWEEN #{last_index} - 4 AND #{last_index}
 	</select>

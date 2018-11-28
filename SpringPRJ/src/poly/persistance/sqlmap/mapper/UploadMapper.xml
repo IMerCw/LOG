@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.UploadMapper">
+	<insert id="updateImage" parameterType="UserMemberDTO">
+		INSERT INTO
+			IMAGE (
+				IMG_SEQ
+		        ,FILE_PY_NAME
+		        ,REG_USER_SEQ
+		        ,REG_DATE
+			)
+		VALUES (
+				IMAGE_SEQ.NEXTVAL
+				,#{file_py_name}
+				,#{reg_user_seq}
+				,SYSDATE
+		)
+		
+	</insert>
+	<select id="getImgSeq" parameterType="string" resultType="string">
+		SELECT
+		    MAX(IMG_SEQ)
+		FROM
+		    IMAGE
+		WHERE
+		    REG_USER_SEQ = #{user_seq} 
+			
+	</select>
+</mapper>
