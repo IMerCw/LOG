@@ -54,8 +54,6 @@
 	<script src="/assets/vendor/ios7-switch/ios7-switch.js"></script>
 	
 	
-	<script src="/assets/vendor/pnotify/pnotify.custom.js"></script>
-
 	<!-- Theme Base, Components and Settings -->
 	<script src="/assets/javascripts/theme.js"></script>
 	
@@ -172,6 +170,7 @@ function callCommunityWriteProc() {
 	})
 }
 
+//서머노트 에디터 불러오기
 $('.summernote').summernote({
     height : 350,
    	onImageUpload : function(files, editor, welEditable) {
@@ -181,6 +180,7 @@ $('.summernote').summernote({
     lang : 'ko-KR'
 });
 
+//이미지 업로드
 function sendFile(file, editor, welEditable) {
     data = new FormData();
     data.append("uploadFile", file);

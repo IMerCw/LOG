@@ -8,7 +8,7 @@
 <body>
 	<div class="summernote" data-plugin-summernote=""
 		data-plugin-options="{ &quot;height&quot;: 180, &quot;codemirror&quot;: { &quot;theme&quot;: &quot;ambiance&quot; } }"
-		style="display: none;">Start typing...</div>
+		style="display: none;">여기에 게시글을 작성해주시기 바랍니다...</div>
 	<div class="note-editor">
 		<div class="note-dropzone" style="width: 529px; height: 271px;">
 			<div class="note-dropzone-message">Drag Image Here</div>

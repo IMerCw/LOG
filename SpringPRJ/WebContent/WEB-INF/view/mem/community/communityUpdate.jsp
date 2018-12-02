@@ -55,7 +55,7 @@
 				<header class="panel-heading">
 					<h2 class="panel-title">커뮤니티 게시글 수정</h2>
 					<p class="panel-subtitle">
-						커뮤니티에 게시글을 작성해주세요. 규정에 위반되는 글은 삭제됩니다.
+						문의하고 싶은 사항을 작성해 주시기 바랍니다. 규정에 위반되는 게시글은 삭제됩니다.
 					</p>
 				</header>
 				<div class="panel-body">
@@ -91,7 +91,7 @@
 
 <script>
 	//기본 글 세팅
-	$('.note-editable').html('<%=bpDTO.getBoard_p_content().replaceAll("& lt;", "<").replaceAll("& gt;", ">")%>');
+	$('.note-editable').html('<%=bpDTO.getBoard_p_content().replaceAll("& lt;", "<").replaceAll("& gt;", ">").replaceAll("\r","/r") %>');
 	
 	//목록 보기
 	function callCommunityMain() {
